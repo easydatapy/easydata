@@ -70,7 +70,7 @@ The quick way::
     pip install easydata
 
 See the install section in the documentation at
-https://docs.scrapy.org/en/master/installation.html for more details.
+https://easydata.readthedocs.io/en/latest/installation.html for more details.
 
 Example
 =======
@@ -192,4 +192,4 @@ Contributing
 
 **Yes please!**  We are always looking for contributions, additions and improvements.
 
-See https://easydata.readthedocs.io/en/master/contributing.html for more details.
+See https://easydata.readthedocs.io/en/latest/contributing.html for more details.

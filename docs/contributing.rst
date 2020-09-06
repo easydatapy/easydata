@@ -12,7 +12,7 @@ project is *very* generous of you.
 .. important::
 
     Double check that you are reading the most recent version of this document at
-    https://easydata.readthedocs.io/en/master/contributing.html
+    https://easydata.readthedocs.io/en/latest/contributing.html
 
 There are many ways to contribute to EasyData. Here are some of them:
 
