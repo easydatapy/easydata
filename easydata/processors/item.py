@@ -1,0 +1,222 @@
+from typing import List, Optional, Union
+
+from easydata.processors.base import BaseProcessor
+from easydata.utils import price, validate
+
+__all__ = (
+    "ItemKeysMergeIntoListProcessor",
+    "ItemKeysMergeProcessor",
+    "ItemKeysMergeIntoDictProcessor",
+    "ItemValueToStrProcessor",
+    "ItemRemoveKeysProcessor",
+    "ItemDiscountProcessor",
+)
+
+
+class ItemKeysMergeIntoListProcessor(BaseProcessor):
+    def __init__(
+        self,
+        new_item_key: str,
+        item_keys: List[str],
+        preserve_original=False,
+        ignore_none=True,
+    ):
+
+        self.new_item_key = new_item_key
+        self.item_keys = item_keys
+        self.preserve_original = preserve_original
+        self.ignore_none = ignore_none
+
+    def parse(self, item: dict) -> dict:
+        new_item_value_list = [v for f, v in self._get_item_values(item)]
+
+        item[self.new_item_key] = new_item_value_list
+
+        return item
+
+    def _get_item_values(self, item):
+        for item_key in self.item_keys:
+            validate.key_in_item(item_key, item)
+
+            value = item[item_key]
+
+            if value is None and self.ignore_none:
+                continue
+
+            if not self.preserve_original:
+                del item[item_key]
+
+            yield item_key, value
+
+
+class ItemKeysMergeIntoDictProcessor(ItemKeysMergeIntoListProcessor):
+    def parse(self, item: dict) -> dict:
+        new_item_value_dict = {f: v for f, v in self._get_item_values(item)}
+
+        item[self.new_item_key] = new_item_value_dict
+
+        return item
+
+
+class ItemKeysMergeProcessor(ItemKeysMergeIntoListProcessor):
+    def __init__(
+        self,
+        new_item_key: str,
+        item_keys: List[str],
+        preserve_original=False,
+        separator: str = " ",
+    ):
+
+        self.separator = separator
+
+        super(ItemKeysMergeProcessor, self).__init__(
+            new_item_key=new_item_key,
+            item_keys=item_keys,
+            preserve_original=preserve_original,
+        )
+
+    def parse(self, item: dict) -> dict:
+        item = super(ItemKeysMergeProcessor, self).parse(item)
+
+        if not all(isinstance(val, str) for val in item[self.new_item_key]):
+            error_msg = (
+                "Item value in order to be merged into {} " "has to be of type str!"
+            )
+            raise TypeError(error_msg.format(self.new_item_key))
+
+        item[self.new_item_key] = self.separator.join(item[self.new_item_key])
+
+        return item
+
+
+class ItemValueToStrProcessor(BaseProcessor):
+    def __init__(
+        self,
+        item_keys: List[str],
+        none_as_empty_string: bool = True,
+    ):
+
+        self.item_keys = item_keys
+        self.none_as_empty_string = none_as_empty_string
+
+    def parse(self, item: dict) -> dict:
+        for item_key in self.item_keys:
+            value = item[item_key]
+
+            if isinstance(value, str):
+                continue
+
+            if self.none_as_empty_string and value is None:
+                item[item_key] = ""
+            elif value and isinstance(value, (int, float)):
+                item[item_key] = str(value)
+
+        return item
+
+
+class ItemRemoveKeysProcessor(BaseProcessor):
+    def __init__(self, item_keys: List[str]):
+
+        self.item_keys = item_keys
+
+    def parse(self, item: dict) -> dict:
+        for item_key in self.item_keys:
+            del item[item_key]
+
+        return item
+
+
+class ItemDiscountProcessor(BaseProcessor):
+    def __init__(
+        self,
+        item_price_key: Optional[str] = None,
+        item_sale_price_key: Optional[str] = None,
+        item_discount_key: Optional[str] = None,
+        decimals: Optional[int] = None,
+        no_decimals: Optional[bool] = None,
+        rm_item_sale_price_key: Optional[bool] = None,
+    ):
+
+        self._item_price_key = item_price_key
+        self._item_sale_price_key = item_sale_price_key
+        self._item_discount_key = item_discount_key
+        self._decimals = decimals
+        self._no_decimals = no_decimals
+        self._rm_item_sale_price_key = rm_item_sale_price_key
+
+    @property
+    def item_price_key(self):
+        config_key = "ED_ITEM_DISCOUNT_ITEM_PRICE_KEY"
+        return self._item_price_key or self.config[config_key]
+
+    @property
+    def item_sale_price_key(self):
+        config_key = "ED_ITEM_DISCOUNT_ITEM_SALE_PRICE_KEY"
+        return self._item_sale_price_key or self.config[config_key]
+
+    @property
+    def item_discount_key(self):
+        config_key = "ED_ITEM_DISCOUNT_ITEM_DISCOUNT_KEY"
+        return self._item_discount_key or self.config[config_key]
+
+    @property
+    def decimals(self):
+        config_key = "ED_ITEM_DISCOUNT_DECIMALS"
+        return self._decimals or self.config[config_key]
+
+    @property
+    def no_decimals(self):
+        config_key = "ED_ITEM_DISCOUNT_NO_DECIMALS"
+        return self._no_decimals or self.config[config_key]
+
+    @property
+    def rm_item_sale_price_key(self):
+        config_key = "ED_ITEM_DISCOUNT_RM_ITEM_SALE_PRICE_KEY"
+        return self._rm_item_sale_price_key or self.config[config_key]
+
+    def parse(self, item: dict) -> dict:
+        item_price = self._get_float_price_value_from_item_by_key(
+            item=item,
+            item_price_key=self.item_price_key,
+        )
+
+        item_sale_price = self._get_float_price_value_from_item_by_key(
+            item=item,
+            item_price_key=self.item_sale_price_key,
+            allow_none=True,
+        )
+
+        if not item_sale_price:
+            item[self.item_discount_key] = 0
+        else:
+            item[self.item_discount_key] = price.get_discount(
+                price=item_price,
+                sale_price=item_sale_price,
+                decimals=self.decimals,
+                no_decimals=self.no_decimals,
+            )
+
+        if self.rm_item_sale_price_key:
+            del item[self.item_sale_price_key]
+
+        return item
+
+    def _get_float_price_value_from_item_by_key(
+        self,
+        item: dict,
+        item_price_key: str,
+        allow_none: bool = False,
+    ) -> Union[float, int]:
+
+        item_price = item[item_price_key]
+
+        if isinstance(item_price, str):
+            item_price = price.to_float(item_price)
+
+        validate.price_value_type(
+            item_price_key,
+            item_price,
+            allow_none,
+        )
+
+        return item_price if item_price else 0

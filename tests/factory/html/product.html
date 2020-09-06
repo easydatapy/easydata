@@ -1,0 +1,180 @@
+<html>
+    <body>
+        <input name="product-code" value="1122">
+        <a id="link" href="https://example.com/product/1122"></a>
+        <a id="link-partial" href="/product/1122"></a>
+        <a id="link-partial-protocol" href="//example.com/product/1122"></a>
+
+        <p id="full-name">GROOVE Easybook Pro 13</p>
+        <p id="name">Easybook Pro 13</p>
+        <p id="name-lower">easybook pro 13</p>
+        <p id="name-upper">EASYBOOK PRO 13</p>
+        <p id="bad-name">Easybook Pro 13 &lt;3 uÌˆnicode</p>
+        <p id="added">Fri, 12 Dec 2018 10:55:50</p>
+        <p class="brand">GROOVE</p>
+        <input name="product-name" value="Easybook Pro 13" />
+
+        <div id="nested-name">
+            <div class="nested-brand">GROOVE</div>
+
+            Easybook Pro 13
+        </div>
+
+        <p id="was-price">
+            Was 99.9€
+        </p>
+        <p id="was-price-comma">
+            Was 99,90
+        </p>
+        <p id="was-price-big-dot">
+            Was 3.330,90
+        </p>
+        <p id="was-price-big-comma">
+            Was 3,330.90
+        </p>
+        <p id="now-price">
+            33€
+        </p>
+
+        <div id="description">
+            <div class="content">
+                <strong>SKU#</strong> 88872<br /><br />
+                Some text is here
+                <p>
+                    <b>Intel Core 2 Duo processor</b>
+                </p>
+                <p>Powered by an Intel Core 2 Duo     processor.</p><div>Built-in <span>iSight</span> camera.</div>
+            </div>
+            <ul class="features">
+                <li>Material: aluminium <span>MATERIAL</span></li><li>style: <strong>elegant</strong> is this</li>
+                <li>Date added: Fri, 12 Dec 2018 10:55</li>
+            </ul>
+            <ul class="tfeatures">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Material:</td>
+                            <td>aluminium</td>
+                        </tr>
+                        <tr>
+                            <td>style:</td>
+                            <td>elegant</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ul>
+        </div>
+
+        <div id="url">
+            Brands url is:
+            <a href="https://brand.com/?home=true">https://brand.com/home</a>
+        </div>
+
+        <div id="image-container">
+            <img id="image" src="https://demo.com/imgs/1.jpg">
+            <div id="images">
+                <img class="image" src="https://demo.com/imgs/1.jpg">
+                <img class="image" src="https://demo.com/imgs/2.jpg">
+                <img class="image" src="https://demo.com/imgs/3.jpg">
+            </div>
+        </div>
+
+        <ul id="size-variants">
+            <li size-stock="true" class="in-stock">
+                <input class="size-variant" value="l">
+                l
+            </li>
+            <li size-stock="false">
+                <input class="size-variant" value="xl">
+                xl
+            </li>
+            <li size-stock="true" class="in-stock">
+                <input class="size-variant" value="xxl">
+                xxl
+            </li>
+        </ul>
+    <script type="text/javascript">
+        let cconfig = new Product.Simple({
+            "title": "Easybook Air 13",
+            "brand": "GROOVE"
+        });
+    </script>
+    <script type="text/javascript">
+        let spConfig = new Product.Config({
+            "basePrice": "149.95",
+            "oldPrice": "149.95",
+            "attributes": {
+                "122": {
+                    "id": "122",
+                    "code": "size",
+                    "label": "Size",
+                    "options": [{
+                        "id": "122",
+                        "label": "5.5",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13750"],
+                        "saleable": ["122", "8"]
+                    }, {
+                        "id": "12",
+                        "label": "6",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13183"],
+                        "saleable": ["12", "8"]
+                    }, {
+                        "id": "14",
+                        "label": "7",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13184"],
+                        "saleable": ["14", "8"]
+                    }, {
+                        "id": "16",
+                        "label": "8",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13185"],
+                        "saleable": ["16", "8"]
+                    }, {
+                        "id": "18",
+                        "label": "9",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13186"],
+                        "saleable": []
+                    }, {
+                        "id": "20",
+                        "label": "10",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "products": ["13187"],
+                        "saleable": ["20", "8"]
+                    }, {
+                        "id": "120",
+                        "label": "11",
+                        "price": "0",
+                        "oldPrice": "0",
+                        "basePrice": "0",
+                        "products": ["13188"],
+                        "saleable": []
+                    }]
+                }
+            },
+            "template": "$#{price}",
+            "productId": "13175",
+            "chooseText": "Choose an Option...",
+            "taxConfig": {
+                "includeTax": false,
+                "showIncludeTax": false,
+                "showBothPrices": false,
+                "defaultTax": 7.25,
+                "currentTax": 0,
+                "inclTaxTitle": "Incl. Tax"
+            }
+        });
+        let dynamicStatus = '0';
+        let elem = document.getElementById("8");
+    </script>
+    </body>
+</html>

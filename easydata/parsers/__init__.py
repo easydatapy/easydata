@@ -1,0 +1,10 @@
+from easydata.parsers.base import *  # noqa: F401 F403
+from easydata.parsers.bool import *  # noqa: F401 F403
+from easydata.parsers.clause import *  # noqa: F401 F403
+from easydata.parsers.desc import *  # noqa: F401 F403
+from easydata.parsers.dict import *  # noqa: F401 F403
+from easydata.parsers.list import *  # noqa: F401 F403
+from easydata.parsers.price import *  # noqa: F401 F403
+from easydata.parsers.text import *  # noqa: F401 F403
+from easydata.parsers.time import *  # noqa: F401 F403
+from easydata.parsers.url import *  # noqa: F401 F403

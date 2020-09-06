@@ -1,0 +1,5 @@
+.. _`extending-queries`:
+
+=======
+Queries
+=======
