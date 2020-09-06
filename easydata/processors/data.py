@@ -33,25 +33,25 @@ class DataBaseProcessor(BaseProcessor, ABC):
         process_source_data=None,
     ):
 
-        self.source = source
-        self.new_source = new_source
-        self.process_source_data = process_source_data
+        self._source = source
+        self._new_source = new_source
+        self._process_source_data = process_source_data
 
     def parse(self, data: DataBag) -> DataBag:
-        new_source = self.new_source
+        new_source = self._new_source
 
-        source_data = data[self.source]
+        source_data = data[self._source]
 
-        if self.process_source_data:
-            source_data = self.process_source_data(source_data)
+        if self._process_source_data:
+            source_data = self._process_source_data(source_data)
 
-        trans_data = self.process_data(source_data)
+        trans_data = self._process_data(source_data)
 
         if new_source is None:
-            original_source = "{}_raw".format(self.source)
-            data[original_source] = data[self.source]
+            original_source = "{}_raw".format(self._source)
+            data[original_source] = data[self._source]
 
-            new_source = self.source
+            new_source = self._source
 
         data[new_source] = trans_data
 
@@ -66,22 +66,22 @@ class DataBaseProcessor(BaseProcessor, ABC):
         return self.parse(data)
 
     @abstractmethod
-    def process_data(self, source_data) -> Any:
+    def _process_data(self, source_data) -> Any:
         pass
 
 
 class DataProcessor(DataBaseProcessor):
-    def process_data(self, source_data) -> Any:
+    def _process_data(self, source_data) -> Any:
         return source_data
 
 
 class DataToPqProcessor(DataBaseProcessor):
-    def process_data(self, source_data: str) -> PyQuery:
+    def _process_data(self, source_data: str) -> PyQuery:
         return PyQuery(source_data)
 
 
 class DataJsonToDictProcessor(DataBaseProcessor):
-    def process_data(self, source_data: str) -> PyQuery:
+    def _process_data(self, source_data: str) -> PyQuery:
         return json.loads(source_data)
 
 
@@ -111,7 +111,6 @@ class DataXmlToDictProcessor(DataBaseProcessor):
 
         self._namespace_separator = namespace_separator
         self._encoding = encoding
-        self._item_depth = item_depth
         self._strip_whitespace = strip_whitespace
         self._attr_prefix = attr_prefix
         self._cdata_key = cdata_key
@@ -120,20 +119,22 @@ class DataXmlToDictProcessor(DataBaseProcessor):
         self._namespaces = namespaces
         self._force_list = force_list
 
+        self.__item_depth = item_depth
+
         super(DataXmlToDictProcessor, self).__init__(**kwargs)
 
     @property
-    def item_depth(self):
+    def _item_depth(self):
         config_key = "ED_DATA_XML_TO_DICT_ITEM_DEPTH"
-        return self._item_depth or self.config[config_key]
+        return self.__item_depth or self.config[config_key]
 
-    def process_data(self, data: Any) -> Any:
+    def _process_data(self, data: Any) -> Any:
         return xmltodict.parse(
             xml_input=data,
             encoding=self._encoding,
             process_namespaces=self._process_namespaces,
             namespace_separator=self._namespace_separator,
-            item_depth=self.item_depth,
+            item_depth=self._item_depth,
             strip_whitespace=self._strip_whitespace,
             attr_prefix=self._attr_prefix,
             cdata_key=self._cdata_key,
@@ -152,17 +153,17 @@ class DataFromQueryProcessor(DataBaseProcessor):
     ):
 
         if isinstance(query, QuerySearch):
-            self.query = [query]
+            self._query = [query]
 
         super(DataFromQueryProcessor, self).__init__(**kwargs)
 
-    def process_data(self, data: Any) -> Any:
-        return parse.query_search(self.query, data)
+    def _process_data(self, data: Any) -> Any:
+        return parse.query_search(self._query, data)
 
 
 class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
     def process_data(self, data: Any) -> Any:
-        jt = super(DataJsonFromQueryToDictProcessor, self).process_data(data)
+        jt = super(DataJsonFromQueryToDictProcessor, self)._process_data(data)
 
         return json.loads(jt)
 
@@ -178,38 +179,38 @@ class DataTextFromReProcessor(DataBaseProcessor):
         **kwargs,
     ):
 
-        self.re_query = re_query
-        self.multi = multi
-        self.dotall = dotall
-        self.none_if_empty = none_if_empty
-        self.process_value = process_value
+        self._re_query = re_query
+        self._multi = multi
+        self._dotall = dotall
+        self._none_if_empty = none_if_empty
+        self._process_value = process_value
 
         super(DataTextFromReProcessor, self).__init__(**kwargs)
 
-    def process_data(self, source_data: str) -> Any:
-        results = re.findall(self.re_query, source_data, re.DOTALL)
+    def _process_data(self, source_data: str) -> Any:
+        results = re.findall(self._re_query, source_data, re.DOTALL)
 
         if not results:
-            if self.none_if_empty:
+            if self._none_if_empty:
                 return None
 
             error_msg = 'No matches were found for a re queries "{}"'
-            raise ValueError(error_msg.format(self.re_query))
+            raise ValueError(error_msg.format(self._re_query))
 
-        if self.process_value:
-            results = [self.process_value(result) for result in results]
+        if self._process_value:
+            results = [self._process_value(result) for result in results]
 
-        return results if self.multi else results[0]
+        return results if self._multi else results[0]
 
 
 class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
-    def process_data(self, source_data: str) -> Any:
-        res = super(DataJsonFromReToDictProcessor, self).process_data(source_data)
+    def _process_data(self, source_data: str) -> Any:
+        res = super(DataJsonFromReToDictProcessor, self)._process_data(source_data)
 
         if not res:
             return None
 
-        if self.multi:
+        if self._multi:
             return [json.loads(result) for result in res]
 
         return json.loads(res)
@@ -241,29 +242,29 @@ class DataVariantProcessor(DataBaseProcessor):
         if "new_source" not in kwargs:
             kwargs["new_source"] = "{}_variants".format(kwargs["source"])
 
-        self.parser = parser
-        self.variant_parser = variant_parser
-        self.query = query
-        self.variant_query = variant_query
-        self.multi_values = multi_values
-        self.with_variant_values = with_variant_values
-        self.variant_values_lower = variant_values_lower
+        self._parser = parser
+        self._variant_parser = variant_parser
+        self._query = query
+        self._variant_query = variant_query
+        self._multi_values = multi_values
+        self._with_variant_values = with_variant_values
+        self._variant_values_lower = variant_values_lower
 
         super(DataVariantProcessor, self).__init__(**kwargs)
 
-    def process_data(self, data: Any) -> Any:
-        if self.parser:
-            data = self.parser.parse(data)
+    def _process_data(self, data: Any) -> Any:
+        if self._parser:
+            data = self._parser.parse(data)
 
-        if self.query:
-            data = self.query.parse(data)
+        if self._query:
+            data = self._query.parse(data)
 
         variants_data: Dict[Optional[str], Any] = {}
 
         for data_info in data:
             variant_key = self._get_variant_key(data_info)
 
-            if self.with_variant_values and self.variant_values_lower:
+            if self._with_variant_values and self._variant_values_lower:
                 if variant_key:
                     variant_key = variant_key.lower()
 
@@ -272,18 +273,18 @@ class DataVariantProcessor(DataBaseProcessor):
 
             variants_data[variant_key].append(data_info)
 
-        if not self.multi_values:
+        if not self._multi_values:
             variants_data = {k: v[0] for k, v in variants_data.items() if v}
 
-        if self.with_variant_values:
+        if self._with_variant_values:
             return variants_data
 
         return list(variants_data.values())
 
     def _get_variant_key(self, data: Any) -> Optional[str]:
-        if self.variant_parser:
-            return self.variant_parser.parse(data)
-        elif self.variant_query:
-            return self.variant_query.parse(data)
+        if self._variant_parser:
+            return self._variant_parser.parse(data)
+        elif self._variant_query:
+            return self._variant_query.parse(data)
 
         return None

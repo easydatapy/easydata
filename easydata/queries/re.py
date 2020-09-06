@@ -16,8 +16,8 @@ class ReQuery(QuerySearch):
         bytes_to_string_decode: str = "utf-8",
     ):
 
-        self.query = re.compile(query, flag)
-        self.bytes_to_string_decode = bytes_to_string_decode
+        self._query = re.compile(query, flag)
+        self._bytes_to_string_decode = bytes_to_string_decode
 
     def parse(
         self,
@@ -32,12 +32,12 @@ class ReQuery(QuerySearch):
         data: Any,
     ) -> Iterable[Any]:
 
-        results = re.finditer(self.query, data)
+        results = re.finditer(self._query, data)
 
         for result in results:
             yield result.group(1)
 
-    def process_data(
+    def _process_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -53,7 +53,7 @@ class ReQuery(QuerySearch):
             data = dumps(data)
 
         if isinstance(data, bytes):
-            data = data.decode(self.bytes_to_string_decode)
+            data = data.decode(self._bytes_to_string_decode)
 
         if not isinstance(data, str):
             raise TypeError("Provided data must be string in order to make re search")

@@ -11,12 +11,12 @@ class QuerySearch(ABC):
         source: str = "data",
     ) -> Any:
 
-        self.validate_data(data, source)
+        self._validate_data(data, source)
 
         if not data:
             return data
 
-        data = self.process_data(data, source)
+        data = self._process_data(data, source)
 
         return self.parse(data)
 
@@ -33,16 +33,16 @@ class QuerySearch(ABC):
         source: Optional[str] = None,
     ) -> Iterable[Any]:
 
-        self.validate_data(data, source)
+        self._validate_data(data, source)
 
         if not data:
             return data
 
-        data = self.process_data(data, source)
+        data = self._process_data(data, source)
 
         yield from self.iter_parse(data)
 
-    def validate_data(
+    def _validate_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -68,7 +68,7 @@ class QuerySearch(ABC):
         pass
 
     @abstractmethod
-    def process_data(
+    def _process_data(
         self,
         data: Any,
         source: Optional[str] = None,

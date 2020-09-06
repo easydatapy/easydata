@@ -12,7 +12,7 @@ class JmesPathSearch(KeyQuery):
     ):
 
         data = jmespath.search(
-            expression=self.query,
+            expression=self._query,
             data=data,
         )
 
