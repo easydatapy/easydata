@@ -58,8 +58,14 @@ models.
 * read feed files or process multiple items at the same time since it's architecture
   is designed to process each row/item at the time.*
 
+Where next?
+=================
+If you are new to EasyData, please refer to :ref:`getting-started` section where you
+will get to know basics, and if you are already familiar with basics, then jump to
+:ref:`advanced` section.
+
 Contributing
-------------
+============
 
 **Yes please!**  We are always looking for contributions, additions and improvements.
 
@@ -85,10 +91,3 @@ minor tweaks to this documentation or the core.
     faq
     tutorials/index
     contributing
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
