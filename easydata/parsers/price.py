@@ -18,7 +18,7 @@ class PriceFloat(Text):
         **kwargs,
     ):
 
-        self._decimals = decimals
+        self.__decimals = decimals
 
         super().__init__(
             *args,
@@ -26,11 +26,11 @@ class PriceFloat(Text):
         )
 
     @property
-    def decimals(self):
-        if self._decimals is False or isinstance(self._decimals, int):
-            return self._decimals
+    def _decimals(self):
+        if self.__decimals is False or isinstance(self.__decimals, int):
+            return self.__decimals
 
-        return self._decimals or self.config["ED_PRICE_DECIMALS"]
+        return self.__decimals or self.config["ED_PRICE_DECIMALS"]
 
     def _parse_value(
         self,
@@ -46,7 +46,7 @@ class PriceFloat(Text):
         if value:
             return price.to_float(
                 price_value=value,
-                decimals=self.decimals,
+                decimals=self._decimals,
             )
 
         return None

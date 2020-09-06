@@ -20,7 +20,7 @@ class PyQuerySearch(QuerySearch):
         items: bool = False,
     ):
 
-        self.query = query
+        self._query = query
         self._attr = attr
         self._rm_query = rm
         self._text = text
@@ -97,7 +97,7 @@ class PyQuerySearch(QuerySearch):
         for spq in pq.items():
             yield self._extract_data_from_pq(spq)
 
-    def process_data(
+    def _process_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -136,8 +136,8 @@ class PyQuerySearch(QuerySearch):
         first: bool = True,
     ) -> PyQuery:
 
-        if self.query:
-            pq = pq(self.query)
+        if self._query:
+            pq = pq(self._query)
 
         if pq and first:
             pq = pq.eq(0)

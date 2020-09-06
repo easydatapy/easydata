@@ -13,7 +13,7 @@ class KeyQuery(QuerySearch):
         values: bool = False,
     ):
 
-        self.query = query
+        self._query = query
         self._keys = keys
         self._values = values
 
@@ -32,7 +32,7 @@ class KeyQuery(QuerySearch):
         data: Any,
     ):
 
-        data = data.get(self.query)
+        data = data.get(self._query)
 
         return self._process_data_key_values(data)
 
@@ -49,7 +49,7 @@ class KeyQuery(QuerySearch):
         for sjdata in jdata:
             yield sjdata
 
-    def process_data(
+    def _process_data(
         self,
         data: Any,
         source: Optional[str] = None,
