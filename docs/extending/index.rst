@@ -2,6 +2,8 @@
 Extending
 =========
 
+*Documentation is coming soon...*
+
 .. toctree::
     :maxdepth: 2
 

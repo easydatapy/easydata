@@ -3,3 +3,5 @@
 =======
 Queries
 =======
+
+*Documentation is coming soon...*
