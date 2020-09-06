@@ -3,7 +3,7 @@ import json
 from pyquery import PyQuery
 
 from easydata import processors
-from easydata.queries import jp, key
+from easydata.queries import jp, key, pq
 
 test_html_text = "<p>Sample text</p>"
 
@@ -157,17 +157,16 @@ def test_data_variant_processor_multi_values() -> None:
     ]
     assert list(db["data_variants"].values())[0] == expected_values_result
 
-    # # Lets test with HTML data and pq selector
-    # db = processors.DataVariantProcessor(
-    #     query=pq('#color-variants .color').items,
-    #     variant_query=pq().text
-    # ).parse_data(test_variants_html_data)
-    #
-    # assert isinstance(db['data_variants'], dict)
-    #
-    # assert len(db['data_variants']) == 2
-    #
-    # assert list(db['data_variants'].keys())[0] == 'black'
+    # Lets test with HTML data and pq selector
+    db = processors.DataVariantProcessor(
+        query=pq("#color-variants .color").items, variant_query=pq().text
+    ).parse_data(test_variants_html_data)
+
+    assert isinstance(db["data_variants"], dict)
+
+    assert len(db["data_variants"]) == 2
+
+    assert list(db["data_variants"].keys())[0] == "black"
 
 
 def test_data_variant_processor_lower_false() -> None:

@@ -18,7 +18,7 @@ class QuerySearch(ABC):
 
         data = self._process_data(data, source)
 
-        return self.parse(data)
+        return self._parse(data)
 
     def get_all(
         self,
@@ -40,7 +40,7 @@ class QuerySearch(ABC):
 
         data = self._process_data(data, source)
 
-        yield from self.iter_parse(data)
+        yield from self._iter_parse(data)
 
     def _validate_data(
         self,
@@ -54,14 +54,14 @@ class QuerySearch(ABC):
             )
 
     @abstractmethod
-    def parse(
+    def _parse(
         self,
         data: Any,
     ):
         pass
 
     @abstractmethod
-    def iter_parse(
+    def _iter_parse(
         self,
         data: Any,
     ) -> Iterable[Any]:

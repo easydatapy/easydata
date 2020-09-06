@@ -27,7 +27,7 @@ class KeyQuery(QuerySearch):
 
         return self
 
-    def parse(
+    def _parse(
         self,
         data: Any,
     ):
@@ -36,12 +36,12 @@ class KeyQuery(QuerySearch):
 
         return self._process_data_key_values(data)
 
-    def iter_parse(
+    def _iter_parse(
         self,
         data: Any,
     ) -> Iterable[Any]:
 
-        jdata = self.parse(data)
+        jdata = self._parse(data)
 
         if not jdata:
             return None

@@ -19,15 +19,15 @@ class ReQuery(QuerySearch):
         self._query = re.compile(query, flag)
         self._bytes_to_string_decode = bytes_to_string_decode
 
-    def parse(
+    def _parse(
         self,
         data: Any,
     ):
 
-        for result in self.iter_parse(data):
+        for result in self._iter_parse(data):
             return result
 
-    def iter_parse(
+    def _iter_parse(
         self,
         data: Any,
     ) -> Iterable[Any]:
