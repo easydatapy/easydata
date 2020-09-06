@@ -75,19 +75,19 @@ class PyQuerySearch(QuerySearch):
 
         return self
 
-    def parse(
+    def _parse(
         self,
         pq: PyQuery,
     ) -> Any:
 
         if self._items:
-            return [i for i in self.iter_parse(pq)]
+            return [i for i in self._iter_parse(pq)]
         else:
             pq = self._parse_pq(pq, self._first)
 
             return self._extract_data_from_pq(pq)
 
-    def iter_parse(
+    def _iter_parse(
         self,
         pq: PyQuery,
     ) -> Iterable[Any]:

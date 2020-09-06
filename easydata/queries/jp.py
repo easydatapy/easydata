@@ -6,7 +6,7 @@ from easydata.queries.key import KeyQuery
 
 
 class JmesPathSearch(KeyQuery):
-    def parse(
+    def _parse(
         self,
         data: Any,
     ):
