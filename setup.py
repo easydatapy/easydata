@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='easydata',
     version='0.0.1',
-    description='Data manipulation library',
+    description='Data transformation and manipulation library',
     long_description=open('README.rst').read(),
     long_description_content_type="text/x-rst",
     author='Rok Grabnar',
@@ -12,12 +12,12 @@ setup(
     packages=find_packages(exclude=['tests']),
     install_requires=[
         'dateparser',
+        'easytxt',
         'furl',
         'ftfy',
         'jmespath',
         'price-parser',
         'pyquery',
-        'easytxt',
         'xmltodict'
     ],
     dependency_links=[
