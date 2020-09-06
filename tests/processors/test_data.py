@@ -159,15 +159,14 @@ def test_data_variant_processor_multi_values() -> None:
 
     # Lets test with HTML data and pq selector
     db = processors.DataVariantProcessor(
-        query=pq('#color-variants .color').items,
-        variant_query=pq().text
+        query=pq("#color-variants .color").items, variant_query=pq().text
     ).parse_data(test_variants_html_data)
 
-    assert isinstance(db['data_variants'], dict)
+    assert isinstance(db["data_variants"], dict)
 
-    assert len(db['data_variants']) == 2
+    assert len(db["data_variants"]) == 2
 
-    assert list(db['data_variants'].keys())[0] == 'black'
+    assert list(db["data_variants"].keys())[0] == "black"
 
 
 def test_data_variant_processor_lower_false() -> None:
