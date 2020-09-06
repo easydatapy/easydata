@@ -23,7 +23,7 @@ copyright = '2020, Rok Grabnar'
 author = 'Rok Grabnar'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.0.2'
 
 
 # -- General configuration ---------------------------------------------------
