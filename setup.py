@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='easydata',
-    version='0.0.1',
+    version='0.0.2',
     description='Data transformation and manipulation library',
     long_description=open('README.rst').read(),
     long_description_content_type="text/x-rst",
@@ -19,9 +19,6 @@ setup(
         'price-parser',
         'pyquery',
         'xmltodict'
-    ],
-    dependency_links=[
-        'http://github.com/sitegroove/easytxt/tarball/master#egg=easytxt-0.0.1'
     ],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
