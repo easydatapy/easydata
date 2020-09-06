@@ -257,7 +257,7 @@ class DataVariantProcessor(DataBaseProcessor):
             data = self._parser.parse(data)
 
         if self._query:
-            data = self._query.parse(data)
+            data = self._query.get(data)
 
         variants_data: Dict[Optional[str], Any] = {}
 
@@ -285,6 +285,6 @@ class DataVariantProcessor(DataBaseProcessor):
         if self._variant_parser:
             return self._variant_parser.parse(data)
         elif self._variant_query:
-            return self._variant_query.parse(data)
+            return self._variant_query.get(data)
 
         return None
