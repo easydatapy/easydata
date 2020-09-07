@@ -6,69 +6,36 @@ from pyquery import PyQuery
 from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 
+_attr_shortcut_mappings = {
+    'val': 'value',
+    'src': 'src',
+    'href': 'href',
+    'name': 'name',
+    'content': 'content'
+}
+
 
 class PyQuerySearch(QuerySearch):
+
     def __init__(
         self,
         query: Optional[str] = None,
-        attr: Optional[str] = None,
         rm: Optional[str] = None,
-        text: bool = False,
-        ntext: bool = False,
-        html: bool = False,
         first: bool = True,
-        items: bool = False,
     ):
 
         self._query = query
-        self._attr = attr
         self._rm_query = rm
-        self._text = text
-        self._ntext = ntext
-        self._html = html
         self._first = first
-        self._items = items
 
-    def attr(self, attr: str):
-        self._attr = attr
+        self._attr = None
+        self._text = False
+        self._ntext = False
+        self._html = False
+        self._items = False
 
-        return self
-
-    @property
-    def val(self):
-        return self.attr("value")
-
-    @property
-    def src(self):
-        return self.attr("src")
-
-    @property
-    def href(self):
-        return self.attr("href")
-
-    @property
-    def text(self):
-        self._text = True
-
-        return self
-
-    @property
-    def ntext(self):
-        self._ntext = True
-
-        return self
-
-    @property
-    def html(self):
-        self._html = True
-
-        return self
-
-    @property
-    def items(self):
-        self._items = True
-
-        return self
+        if self._query and "::" in self._query:
+            self._initialize_custom_pseudo_keys()
 
     def rm(self, query: str):
         self._rm_query = query
@@ -146,3 +113,37 @@ class PyQuerySearch(QuerySearch):
             pq = pq.clone().remove(self._rm_query)
 
         return pq
+
+    def _initialize_custom_pseudo_keys(self):
+        query_parts = self._query.split("::")
+
+        self._query = None if self._query.startswith("::") else query_parts[0]
+
+        pseudo_key = query_parts[-1]
+
+        if "-items" in pseudo_key:
+            pseudo_key = pseudo_key.split("-")[0]
+
+            self._items = True
+
+        if pseudo_key.startswith("attr"):
+            attr_value = pseudo_key.split("(")[-1].strip(")")
+            self._attr = attr_value
+        elif pseudo_key in _attr_shortcut_mappings:
+            self._attr = _attr_shortcut_mappings[pseudo_key]
+        elif pseudo_key == "text":
+            self._text = True
+        elif pseudo_key == "ntext":
+            self._ntext = True
+        elif pseudo_key == "html":
+            self._html = True
+        elif pseudo_key == "items":
+            self._items = True
+        else:
+            raise ValueError(
+                "Pseudo type '{}' is not supported for extraction type. Currently "
+                "supported are: text,ntext,html,items,<pseudo el>-items, "
+                "attr(<value>),{}".format(
+                    pseudo_key, ','.join(_attr_shortcut_mappings.keys())
+                )
+            )
