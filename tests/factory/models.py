@@ -13,7 +13,7 @@ class ProductModel(ItemModel):
 
     item_designer = parsers.Text(from_item="brand")
 
-    item_name = parsers.Text(pq(".name").text)
+    item_name = parsers.Text(pq(".name::text"))
 
     def item_stock(self, data):
         return data["json_data"]["info"]["stock"]

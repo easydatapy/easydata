@@ -14,9 +14,9 @@ test_html = """
 
 
 class PricingBlock(Block):
-    item_price = parsers.PriceFloat(pq("#price").text)
+    item_price = parsers.PriceFloat(pq("#price::text"))
 
-    item_sale_price = parsers.PriceFloat(pq("#sale-price").text)
+    item_sale_price = parsers.PriceFloat(pq("#sale-price::text"))
 
     items_processors = [("discount", ItemDiscountProcessor())]
 

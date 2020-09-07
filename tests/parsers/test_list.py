@@ -34,26 +34,29 @@ expected_urls_non_unique = [
 expected_urls_max_2 = ["https://demo.com/imgs/1.jpg", "https://demo.com/imgs/2.jpg"]
 
 
-def test_list_field():
-    list_parser = parsers.List(pq("#images img").items, parsers.Url(pq(attr="src")))
+def test_list():
+    list_parser = parsers.List(
+        pq("#images img::items"),
+        parsers.Url(pq("::src"))
+    )
 
     assert list_parser.parse(db) == expected_urls
 
-    list_parser = parsers.List(pq("#images img").attr("src").items, parsers.Url())
+    list_parser = parsers.List(pq("#images img::src-items"), parsers.Url())
 
     assert list_parser.parse(db) == expected_urls
 
-    list_parser = parsers.List(pq("#images img").attr("src").items)
+    list_parser = parsers.List(pq("#images img::src-items"))
 
     assert list_parser.parse(db) == expected_urls
 
-    test_list = ["hello", "World &lt;3"]
-    assert parsers.List().parse(test_list) == ["hello", "World &lt;3"]
+    test_list_values = ["hello", "World &lt;3"]
+    assert parsers.List().parse(test_list_values) == ["hello", "World &lt;3"]
 
 
 def test_list_unique_true():
     list_parser = parsers.List(
-        pq("#image-container img").items, parsers.Url(pq(attr="src")), unique=True
+        pq("#image-container img::items"), parsers.Url(pq("::src")), unique=True
     )
 
     assert list_parser.parse(db) == expected_urls
@@ -61,8 +64,8 @@ def test_list_unique_true():
 
 def test_list_unique_default():
     list_parser = parsers.List(
-        pq("#image-container img").items,
-        parsers.Url(pq(attr="src")),
+        pq("#image-container img::items"),
+        parsers.Url(pq("::src")),
     )
 
     assert list_parser.parse(db) == expected_urls
@@ -70,7 +73,7 @@ def test_list_unique_default():
 
 def test_list_unique_false():
     list_parser = parsers.List(
-        pq("#image-container img").items, parsers.Url(pq(attr="src")), unique=False
+        pq("#image-container img::items"), parsers.Url(pq("::src")), unique=False
     )
 
     assert list_parser.parse(db) == expected_urls_non_unique
@@ -78,7 +81,7 @@ def test_list_unique_false():
 
 def test_list_max_num():
     list_parser = parsers.List(
-        pq("#image-container img").items, parsers.Url(pq(attr="src")), max_num=2
+        pq("#image-container img::items"), parsers.Url(pq("::src")), max_num=2
     )
 
     assert list_parser.parse(db) == expected_urls_max_2

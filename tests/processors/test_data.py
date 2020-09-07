@@ -159,7 +159,7 @@ def test_data_variant_processor_multi_values() -> None:
 
     # Lets test with HTML data and pq selector
     db = processors.DataVariantProcessor(
-        query=pq("#color-variants .color").items, variant_query=pq().text
+        query=pq("#color-variants .color::items"), variant_query=pq("::text")
     ).parse_data(test_variants_html_data)
 
     assert isinstance(db["data_variants"], dict)

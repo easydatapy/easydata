@@ -25,26 +25,26 @@ test_dict_sizes = {"sizes": {"l": True, "xl": False, "xxl": True}}
 
 def test_dict():
     dict_parser = parsers.Dict(
-        pq("#size-variants li").items,
-        key_parser=parsers.Text(pq().text),
-        value_parser=parsers.Bool(pq().attr("size-stock"), contains=["true"]),
+        pq("#size-variants li::items"),
+        key_parser=parsers.Text(pq("::text")),
+        value_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
     )
 
     expected_result = {"l": True, "xl": False, "xxl": True}
     assert dict_parser.parse(test_html) == expected_result
 
     dict_parser = parsers.Dict(
-        pq("#size-variants li").items,
-        key_query=pq().text,
-        value_parser=parsers.Bool(pq().attr("size-stock"), contains=["true"]),
+        pq("#size-variants li::items"),
+        key_query=pq("::text"),
+        value_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
     )
 
     assert dict_parser.parse(test_html) == expected_result
 
     dict_parser = parsers.Dict(
-        pq("#size-variants li").items,
-        key_query=pq().text,
-        value_query=pq().attr("size-stock"),
+        pq("#size-variants li::items"),
+        key_query=pq("::text"),
+        value_query=pq("::attr(size-stock)"),
     )
 
     expected_text_result = {"l": "true", "xl": "false", "xxl": "true"}
@@ -78,9 +78,9 @@ def test_dict():
 
 def test_bool_dict():
     bool_dict_parser = parsers.BoolDict(
-        pq("#size-variants li").items,
-        key_query=pq().text,
-        value_query=pq().attr("size-stock"),
+        pq("#size-variants li::items"),
+        key_query=pq("::text"),
+        value_query=pq("::attr(size-stock)"),
     )
 
     expected_text_result = {"l": True, "xl": False, "xxl": True}
