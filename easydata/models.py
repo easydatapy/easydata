@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Any, List
 
-from easydata import config, parsers
+from easydata import parsers
 from easydata.data import DataBag
 from easydata.managers import ObjectManager
 from easydata.mixins import ConfigMixin
 from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
 from easydata.processors.data import DataBaseProcessor
-from easydata.utils import mix
+from easydata.utils import config, mix
 
 __all__ = ("ItemModel",)
 

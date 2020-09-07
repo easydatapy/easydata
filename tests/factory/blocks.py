@@ -1,5 +1,4 @@
-from easydata import parsers
-from easydata.block import Block
+from easydata import Block, parsers
 from easydata.processors import ItemDiscountProcessor
 from easydata.queries import pq
 

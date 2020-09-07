@@ -1,11 +1,11 @@
 from typing import Optional, Union
 
-from easydata import config
-from easydata.default import Config
+from easydata.config.loader import ConfigLoader
+from easydata.utils import config
 
 
 class ConfigMixin:
-    _config: Optional[Config] = None
+    _config: Optional[ConfigLoader] = None
 
     @property
     def config(self):
@@ -14,8 +14,8 @@ class ConfigMixin:
 
         return self._config
 
-    def init_config(self, config_obj: Union[dict, Config]):
-        if isinstance(config_obj, Config):
+    def init_config(self, config_obj: Union[dict, ConfigLoader]):
+        if isinstance(config_obj, ConfigLoader):
             self._config = config_obj
         else:
             new_config = config.copy()

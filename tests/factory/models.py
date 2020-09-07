@@ -1,5 +1,4 @@
-from easydata import parsers
-from easydata.models import ItemModel
+from easydata import ItemModel, parsers
 from easydata.processors import DataJsonToDictProcessor, ItemDiscountProcessor
 from easydata.queries import jp, pq
 
