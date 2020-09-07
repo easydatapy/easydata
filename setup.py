@@ -1,10 +1,15 @@
+import re
+
 from setuptools import setup, find_packages
 
-from easydata import __version__ as version
+
+(__version__, ) = re.findall(r"__version__.*\s*=\s*[\"]([^']+)[\"]",
+                             open('easydata/__init__.py').read())
+
 
 setup(
     name='easydata',
-    version=version,
+    version=__version__,
     description='Data transformation and manipulation library',
     long_description=open('README.rst').read(),
     long_description_content_type="text/x-rst",
