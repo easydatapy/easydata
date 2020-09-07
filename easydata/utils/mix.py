@@ -3,8 +3,8 @@ from typing import Any, List, Optional, Union
 from easytxt.text import to_list
 from pyquery import PyQuery
 
+from easydata.config.loader import ConfigLoader
 from easydata.data import DataBag
-from easydata.default import Config
 from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
 
@@ -70,7 +70,7 @@ def pq_extract_value_items(
 
 def init_processors_config(
     processors: list,
-    config: Config,
+    config: ConfigLoader,
 ):
 
     for processor in processors:
