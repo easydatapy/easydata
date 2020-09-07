@@ -46,11 +46,11 @@ data from the HTML above.
 
     class PricingBlock(Block):
         item_price = parsers.PriceFloat(
-            pq('#price').text
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloat(
-            pq('#sale-price').text
+            pq('#sale-price::text')
         )
 
         items_processors = [
@@ -73,15 +73,15 @@ lets create our ``ItemModel`` bellow.
         ]
 
         item_name = parsers.TextParser(
-            pq('.name').text(),
+            pq('.name::text'),
         )
 
         item_brand = parsers.TextParser(
-            pq('.brand').text()
+            pq('.brand::text')
         )
 
         item_stock = parsers.BoolParser(
-            pq('.stock').attr('available'),
+            pq('.stock::attr(available)'),
             contains=['yes']
         )
 
@@ -134,7 +134,7 @@ We can also override ``item_price`` from the ``PricingBlock`` in our ``ProductIt
         ]
 
         item_price = parsers.PriceFloat(
-            pq('#price').text
+            pq('#price::text')
         )
 
         ...
@@ -162,11 +162,11 @@ Example:
         ):
 
             self.item_price = parsers.PriceFloat(
-                pq(price_css).text
+                pq(price_css)
             )
 
             self.item_sale_price = parsers.PriceFloat(
-                pq(price_css).text
+                pq(price_css)
             )
 
             if calculate_discount:
@@ -181,8 +181,8 @@ Now lets use ``PricingCssBlock`` in our ``ProductItemModel``.
     class ProductItemModel(ItemModel):
         blocks = [
             PricingCssBlock(
-                price_css='#price',
-                sale_price_css='#sale-price'
+                price_css='#price::text',
+                sale_price_css='#sale-price::text'
             )
         ]
 
@@ -204,11 +204,11 @@ For starters lets create ``Block`` without named item processors.
 
     class PricingBlock(Block):
         item_price = parsers.PriceFloat(
-            pq('#price').text
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloat(
-            pq('#sale-price').text
+            pq('#sale-price::text')
         )
 
         items_processors = [
@@ -253,11 +253,11 @@ To solve this issue, named processors are the solution. Lets recreate our
 
     class PricingBlock(Block):
         item_price = parsers.PriceFloat(
-            pq('#price').text
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloat(
-            pq('#sale-price').text
+            pq('#sale-price::text')
         )
 
         items_processors = [
@@ -312,11 +312,11 @@ Lets show this in example below.
 
     class ProductItemModel(ItemModel):
         item_temp_price = parsers.PriceFloat(
-            pq('#price').text
+            pq('#price::text')
         )
 
         item_temp_sale_price = parsers.PriceFloat(
-            pq('#sale-price').text
+            pq('#sale-price::text')
         )
 
         items_processors = [

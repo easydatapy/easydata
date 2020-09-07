@@ -122,41 +122,50 @@ item *dict*.
 
     class ProductItemModel(ItemModel):
         item_name = parsers.TextParser(
-            pq('.name').text(),
+            pq('.name::text'),
         )
 
         item_brand = parsers.TextParser(
-            pq('.brand').text()
+            pq('.brand::text')
         )
 
         item_description = parsers.DescriptionParser(
-            pq('#description').text()
+            pq('#description::text')
         )
 
         item_price = parsers.PriceFloatParser(
-            pq('#price').text()
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloatParser(
-            pq('#sale-price').text()
+            pq('#sale-price::text')
         )
 
         item_color = parsers.FeatureParser(
-            pq('#description').text(),
+            pq('#description::text'),
             key='color'
         )
 
+        item_stock = parsers.BoolParser(
+            pq('.stock::attr(available)'),
+            contains=['yes']
+        )
+
         item_images = parsers.ListParser(
-            pq('.images'),
+            pq('.images img::items'),
             parser=parsers.UrlParser(
-                pq('img').attr('src')
+                pq('::src')
             )
         )
 
-        item_stock = parsers.BoolParser(
-            pq('.stock').attr('available'),
-            contains=['yes']
-        )
+        """
+        Alternative with selecting src values in a first css query:
+
+            item_images = parsers.ListParser(
+                pq('.images img::src-items'),
+                parser=parsers.UrlParser()
+            )
+        """
 
 In example bellow we will demonstrate how newly created ``ProductItemModel``
 will parse provided *HTML* data into ``dict`` object.
