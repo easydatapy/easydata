@@ -47,7 +47,7 @@ through other components.
         item_price = parsers.PriceFloat(jp('price'))
 
         item_temp_sale_price = parsers.PriceFloat(
-            pq('sale_price'),
+            pq('sale_price::text'),
             source='html'
         )
 

@@ -11,7 +11,8 @@ def test_union():
     """
 
     union_parser = parsers.Union(
-        parsers.Text(pq(".brand-wrong").text), parsers.Text(pq(".brand").text)
+        parsers.Text(pq(".brand-wrong::text")),
+        parsers.Text(pq(".brand::text")),
     )
     assert union_parser.parse(test_html) == "EasyData"
 
@@ -23,7 +24,8 @@ def test_union_first():
     """
 
     union_parser = parsers.Union(
-        parsers.Text(pq(".brand").text), parsers.Text(pq("#name").text)
+        parsers.Text(pq(".brand::text")),
+        parsers.Text(pq("#name::text")),
     )
     assert union_parser.parse(test_html) == "EasyData"
 
@@ -34,8 +36,8 @@ def test_union_none():
     """
 
     union_parser = parsers.Union(
-        parsers.Text(pq(".brand-wrong").text),
-        parsers.Text(pq(".brand-wrong-again").text),
+        parsers.Text(pq(".brand-wrong::text")),
+        parsers.Text(pq(".brand-wrong-again::text")),
     )
     assert union_parser.parse(test_html) is None
 
@@ -52,13 +54,13 @@ def test_with():
     """
 
     with_parser = parsers.With(
-        parsers.Sentences(pq("#description .features").text, allow=["date added"]),
+        parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
         parsers.DateTimeSearch(),
     )
     assert with_parser.parse(test_html) == "12/12/2018 10:55:00"
 
     with_parser = parsers.With(
-        parsers.Sentences(pq("#description .features").text, allow=["date added"]),
+        parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
         parsers.Text(split_key=("added:", -1)),
         parsers.DateTime(),
     )
@@ -72,12 +74,12 @@ def test_join_text():
     """
 
     join_text_parser = parsers.JoinText(
-        parsers.Text(pq(".brand").text), parsers.Text(pq("#name").text)
+        parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text"))
     )
     assert join_text_parser.parse(test_html) == "EasyData Easybook Pro 13"
 
     join_text_parser = parsers.JoinText(
-        parsers.Text(pq(".brand-wrong-selector").text), parsers.Text(pq("#name").text)
+        parsers.Text(pq(".brand-wrong-selector::text")), parsers.Text(pq("#name::text"))
     )
     assert join_text_parser.parse(test_html) == "Easybook Pro 13"
 
@@ -89,7 +91,7 @@ def test_join_text_custom_separator():
     """
 
     join_text_parser = parsers.JoinText(
-        parsers.Text(pq(".brand").text), parsers.Text(pq("#name").text), separator="-"
+        parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text")), separator="-"
     )
     assert join_text_parser.parse(test_html) == "EasyData-Easybook Pro 13"
 

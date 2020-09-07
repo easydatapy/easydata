@@ -113,16 +113,16 @@ object through which we can use css selectors.
 .. code-block:: python
 
     list_parser = parsers.List(
-        pq('#images img'),
-        parser=parsers.Url(pq.attr('src'))
+        pq('#images img::items'),
+        parser=parsers.Url(pq('::src'))
     )
 
-Please note that ``pq('#images img')`` will be iterated through our ``List``
+Please note that ``pq('#images img::items')`` will be iterated through our ``List``
 parser and that img html node object will be passed to ``Url`` parser upon which
 ``pq`` query selector can be used again to output final result. Since in example
-above in our ``List`` parser, we already selected with css img html node, there
-is no need to use css selector again in ``Url`` parser and therefore we just
-tell ``pq`` query selector to get data from ``src`` attribute.
+above in our ``List`` parser, we already selected with css img html node, so in
+``Url`` parser we just add into query selector ``::src`` pseudo element in order
+to get data from ``src`` attribute in HTML element.
 
 Now lets parse ``test_html_text`` data and print our result.
 

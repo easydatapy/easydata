@@ -66,8 +66,8 @@ def test_bool_contains_case(ccontains_keys, test_data, result):
 @pytest.mark.parametrize(
     "query, contains_query, test_data, result",
     [
-        (pq("#full-name").text, pq(".brand").text, date_test_text, False),
-        (pq("#full-name").text, pq(".brand").text.items, date_test_text, False),
+        (pq("#full-name::text"), pq(".brand::text"), date_test_text, False),
+        (pq("#full-name::text"), pq(".brand::text-items"), date_test_text, False),
     ],
 )
 def test_bool_contains_query(query, contains_query, test_data, result):

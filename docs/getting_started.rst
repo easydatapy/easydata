@@ -59,7 +59,9 @@ In this example we will use following html:
     """
 
 Now lets create an ``ItemModel`` which will process html above and parse it to
-item dict.
+item dict. To select data in a text parser we will use ``pq``, which is based
+on a PyQuery library and also adds custom pseudo element support like ``::text``,
+``attr()``
 
 .. code-block:: python
 
@@ -70,41 +72,50 @@ item dict.
 
     class ProductItemModel(ItemModel):
         item_name = parsers.TextParser(
-            pq('.name').text(),
+            pq('.name::text'),
         )
 
         item_brand = parsers.TextParser(
-            pq('.brand').text()
+            pq('.brand::text')
         )
 
         item_description = parsers.DescriptionParser(
-            pq('#description').text()
+            pq('#description::text')
         )
 
         item_price = parsers.PriceFloatParser(
-            pq('#price').text()
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloatParser(
-            pq('#sale-price').text()
+            pq('#sale-price::text')
         )
 
         item_color = parsers.FeatureParser(
-            pq('#description').text(),
+            pq('#description::text'),
             key='color'
         )
 
+        item_stock = parsers.BoolParser(
+            pq('.stock::attr(available)'),
+            contains=['yes']
+        )
+
         item_images = parsers.ListParser(
-            pq('.images'),
+            pq('.images img::items'),
             parser=parsers.UrlParser(
-                pq('img').attr('src')
+                pq('::src')
             )
         )
 
-        item_stock = parsers.BoolParser(
-            pq('.stock').attr('available'),
-            contains=['yes']
-        )
+        """
+        Alternative with selecting src values in a first css query:
+
+            item_images = parsers.ListParser(
+                pq('.images img::src-items'),
+                parser=parsers.UrlParser()
+            )
+        """
 
 
 Parsing data with Model
@@ -244,7 +255,7 @@ Lets create our item model with ``data_processors`` included.
         )
 
         item_css_name = parsers.TextParser(
-            pq('.name').text(),
+            pq('.name::text'),
         )
 
 .. code-block:: python
@@ -301,7 +312,7 @@ because there wouldn't be any HTML data to extract info from.
 .. code-block:: python
 
     item_css_name = parsers.TextParser(
-        pq('.name').text(),
+        pq('.name::text'),
     )
 
 We can also specify multiple data processors if needed:
@@ -369,19 +380,19 @@ Lets create our item model with ``items_processors``
 
     class ProductItemModel(ItemModel):
         item_name = parsers.TextParser(
-            pq('#name', rm='.brand').text()
+            pq('#name::text', rm='.brand')
         )
 
         item_brand = parsers.TextParser(
-            pq('.brand').text()
+            pq('.brand::text')
         )
 
         item_price = parsers.PriceFloatParser(
-            pq('#price').text()
+            pq('#price::text')
         )
 
         item_sale_price = parsers.PriceFloatParser(
-            pq('#sale-price').text()
+            pq('#sale-price::text')
         )
 
         items_processors = [

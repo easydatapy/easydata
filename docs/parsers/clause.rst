@@ -27,8 +27,8 @@ Lets write our ``Union`` parser.
     '''
 
     union_parser = parsers.Union(
-        parsers.Text(pq('.brand-wrong-selector').text),
-        parsers.Text(pq('.brand').text)
+        parsers.Text(pq('.brand-wrong-selector::text')),
+        parsers.Text(pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -41,7 +41,7 @@ Now lets parse ``test_html`` data and print our result.
 
     'EasyData'
 
-First our ``parsers.Text(pq('.brand-wrong-selector').text),`` output was ``None``,
+First our ``parsers.Text(pq('.brand-wrong-selector::text')),`` output was ``None``,
 while next ``Text`` parser in line has produced output, since it's selector was able
 to extract data from ``HTML``.
 
@@ -58,8 +58,8 @@ Please note that even if query selector found a match and it's content was still
     '''
 
     union_parser = parsers.Union(
-        parsers.Text(pq('#name').text),
-        parsers.Text(pq('.brand').text)
+        parsers.Text(pq('#name::text')),
+        parsers.Text(pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -107,7 +107,7 @@ Lets write our ``With`` parser.
 
     with_parser = parsers.With(
         parsers.Sentences(
-            pq('#description .features').text,
+            pq('#description .features::text'),
             allow=['date added']
         ),
         parsers.DateTimeSearch()
@@ -150,8 +150,8 @@ Lets write our ``JoinText`` parser.
     '''
 
     join_text_parser = parsers.JoinText(
-        parsers.Text(pq('#name').text),
-        parsers.Text(pq('.brand').text)
+        parsers.Text(pq('#name::text')),
+        parsers.Text(pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
