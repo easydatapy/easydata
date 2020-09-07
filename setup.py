@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
+from easydata import __version__ as version
+
 setup(
     name='easydata',
-    version='0.0.2',
+    version=version,
     description='Data transformation and manipulation library',
     long_description=open('README.rst').read(),
     long_description_content_type="text/x-rst",
