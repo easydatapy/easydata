@@ -26,6 +26,10 @@ ED_URL_PROTOCOL: str = "https"
 # Config attributes used by price parsers
 ED_PRICE_DECIMALS: Union[int, bool] = 2
 
+ED_PRICE_MIN_VALUE: Optional[Union[int, float]] = None
+
+ED_PRICE_MAX_VALUE: Optional[Union[int, float]] = None
+
 # Config attributes used by DataXmlToDictProcessor
 ED_DATA_XML_TO_DICT_ITEM_DEPTH: int = 0
 
