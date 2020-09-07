@@ -4,7 +4,7 @@ import os
 from easydata.default import Config
 from easydata.default import config as default_config
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 config = Config()
 
