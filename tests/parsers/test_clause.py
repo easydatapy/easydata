@@ -148,9 +148,9 @@ def test_item_dict(ignore_non_values, result):
 
     item_dict_parser = parsers.ItemDict(
         ignore_non_values=ignore_non_values,
-        color=parsers.Text(jp('color')),
-        ram=parsers.Text(jp('ram'), source='specs'),
-        brand=parsers.Text(jp('features.brand'))
+        color=parsers.Text(jp("color")),
+        ram=parsers.Text(jp("ram"), source="specs"),
+        brand=parsers.Text(jp("features.brand")),
     )
 
     data_bag = DataBag(data=test_features_dict, specs=test_specs_dict)
@@ -169,10 +169,10 @@ def test_item_list(ignore_non_values, result):
     test_specs_dict = {"proc": "i7", "ram": "16 gb"}
 
     item_list_parser = parsers.ItemList(
-        parsers.Text(jp('color')),
-        parsers.Bool(jp('display'), contains=['retina2']),
-        parsers.Text(jp('ram'), source='specs'),
-        parsers.Text(jp('features.brand')),
+        parsers.Text(jp("color")),
+        parsers.Bool(jp("display"), contains=["retina2"]),
+        parsers.Text(jp("ram"), source="specs"),
+        parsers.Text(jp("features.brand")),
         ignore_non_values=ignore_non_values,
     )
 
