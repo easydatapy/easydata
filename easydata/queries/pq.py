@@ -7,16 +7,15 @@ from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 
 _attr_shortcut_mappings = {
-    'val': 'value',
-    'src': 'src',
-    'href': 'href',
-    'name': 'name',
-    'content': 'content'
+    "val": "value",
+    "src": "src",
+    "href": "href",
+    "name": "name",
+    "content": "content",
 }
 
 
 class PyQuerySearch(QuerySearch):
-
     def __init__(
         self,
         query: Optional[str] = None,
@@ -144,6 +143,6 @@ class PyQuerySearch(QuerySearch):
                 "Pseudo type '{}' is not supported for extraction type. Currently "
                 "supported are: text,ntext,html,items,<pseudo el>-items, "
                 "attr(<value>),{}".format(
-                    pseudo_key, ','.join(_attr_shortcut_mappings.keys())
+                    pseudo_key, ",".join(_attr_shortcut_mappings.keys())
                 )
             )

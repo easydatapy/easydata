@@ -35,10 +35,7 @@ expected_urls_max_2 = ["https://demo.com/imgs/1.jpg", "https://demo.com/imgs/2.j
 
 
 def test_list():
-    list_parser = parsers.List(
-        pq("#images img::items"),
-        parsers.Url(pq("::src"))
-    )
+    list_parser = parsers.List(pq("#images img::items"), parsers.Url(pq("::src")))
 
     assert list_parser.parse(db) == expected_urls
 

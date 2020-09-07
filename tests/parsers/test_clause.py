@@ -79,8 +79,7 @@ def test_join_text():
     assert join_text_parser.parse(test_html) == "EasyData Easybook Pro 13"
 
     join_text_parser = parsers.JoinText(
-        parsers.Text(pq(".brand-wrong-selector::text")),
-        parsers.Text(pq("#name::text"))
+        parsers.Text(pq(".brand-wrong-selector::text")), parsers.Text(pq("#name::text"))
     )
     assert join_text_parser.parse(test_html) == "Easybook Pro 13"
 
