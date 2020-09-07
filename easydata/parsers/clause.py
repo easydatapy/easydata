@@ -8,6 +8,8 @@ __all__ = (
     "JoinText",
     "JoinList",
     "JoinDict",
+    "ItemDict",
+    "ItemList",
 )
 
 
@@ -163,3 +165,71 @@ class JoinDict(Union):
             joined_dictionary = {**joined_dictionary, **value}
 
         return joined_dictionary
+
+
+class ItemDict(Base):
+    def __init__(
+        self,
+        ignore_non_values: bool = False,
+        **kwargs,
+    ):
+
+        self._ignore_non_values = ignore_non_values
+        self._parser_dict = kwargs
+
+    def parse(
+        self,
+        data: Any,
+        parent_data: Any = None,
+        with_parent_data: bool = False,
+    ) -> Any:
+
+        parser_dict = {}
+
+        for name, parser in self._parser_dict.items():
+            value = parser.parse(
+                data=data,
+                parent_data=parent_data,
+                with_parent_data=with_parent_data,
+            )
+
+            if self._ignore_non_values and value is None:
+                continue
+
+            parser_dict[name] = value
+
+        return parser_dict
+
+
+class ItemList(Base):
+    def __init__(
+        self,
+        *kwargs,
+        ignore_non_values: bool = True,
+    ):
+
+        self._parser_list = kwargs
+        self._ignore_non_values = ignore_non_values
+
+    def parse(
+        self,
+        data: Any,
+        parent_data: Any = None,
+        with_parent_data: bool = False,
+    ) -> Any:
+
+        parser_list = []
+
+        for parser in self._parser_list:
+            value = parser.parse(
+                data=data,
+                parent_data=parent_data,
+                with_parent_data=with_parent_data,
+            )
+
+            if self._ignore_non_values and value is None:
+                continue
+
+            parser_list.append(value)
+
+        return parser_list
