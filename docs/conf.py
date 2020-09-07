@@ -1,4 +1,3 @@
-import sphinx_rtd_theme
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -13,6 +12,11 @@ import sphinx_rtd_theme
 
 import os
 import sys
+
+import sphinx_rtd_theme
+
+from easydata import __version__ as version
+
 sys.path.insert(0, os.path.abspath('..'))
 
 
@@ -23,7 +27,7 @@ copyright = '2020, Rok Grabnar'
 author = 'Rok Grabnar'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.2'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
