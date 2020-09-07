@@ -1,4 +1,7 @@
+import pytest
+
 from easydata import parsers
+from easydata.data import DataBag
 from easydata.queries import jp, pq
 from tests import factory
 
@@ -130,3 +133,48 @@ def test_join_dict():
         "ram": "16 gb",
     }
     assert join_dict_parser.parse(test_dict) == expected_result
+
+
+@pytest.mark.parametrize(
+    "ignore_non_values, result",
+    [
+        (False, {"brand": None, "color": "gold", "ram": "16 gb"}),
+        (True, {"color": "gold", "ram": "16 gb"}),
+    ],
+)
+def test_item_dict(ignore_non_values, result):
+    test_features_dict = {"color": "gold", "display": "retina"}
+    test_specs_dict = {"proc": "i7", "ram": "16 gb"}
+
+    item_dict_parser = parsers.ItemDict(
+        ignore_non_values=ignore_non_values,
+        color=parsers.Text(jp("color")),
+        ram=parsers.Text(jp("ram"), source="specs"),
+        brand=parsers.Text(jp("features.brand")),
+    )
+
+    data_bag = DataBag(data=test_features_dict, specs=test_specs_dict)
+    assert item_dict_parser.parse(data_bag) == result
+
+
+@pytest.mark.parametrize(
+    "ignore_non_values, result",
+    [
+        (False, ["gold", False, "16 gb", None]),
+        (True, ["gold", False, "16 gb"]),
+    ],
+)
+def test_item_list(ignore_non_values, result):
+    test_features_dict = {"color": "gold", "display": "retina"}
+    test_specs_dict = {"proc": "i7", "ram": "16 gb"}
+
+    item_list_parser = parsers.ItemList(
+        parsers.Text(jp("color")),
+        parsers.Bool(jp("display"), contains=["retina2"]),
+        parsers.Text(jp("ram"), source="specs"),
+        parsers.Text(jp("features.brand")),
+        ignore_non_values=ignore_non_values,
+    )
+
+    data_bag = DataBag(data=test_features_dict, specs=test_specs_dict)
+    assert item_list_parser.parse(data_bag) == result

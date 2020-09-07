@@ -6,7 +6,7 @@ __all__ = ("DataBag",)
 
 
 class DataBag(ConfigMixin):
-    def __init__(self, model, **kwargs) -> None:
+    def __init__(self, model=None, **kwargs) -> None:
 
         self._model = model
 
