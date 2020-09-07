@@ -27,6 +27,7 @@ class BaseData(Base, ABC):
         query: OptionalQuerySearch = None,
         from_item: Optional[str] = None,
         default: Optional[Any] = None,
+        default_from_item: Optional[str] = None,
         source: Optional[str] = None,
         process_raw_value: Optional[Callable] = None,
         process_value: Optional[Callable] = None,
@@ -38,6 +39,7 @@ class BaseData(Base, ABC):
         self._query = self._query_to_list(query)
         self._from_item = from_item
         self._default = default
+        self._default_from_item = default_from_item
         self._source = source if source else "data"
         self._process_raw_value = process_raw_value
         self._process_value = process_value
@@ -65,6 +67,9 @@ class BaseData(Base, ABC):
         if self._process_value:
             value = self._process_value(value, data)
 
+        if value is None and self._default_from_item is not None:
+            value = data.get(self._default_from_item)
+
         if value is None and self._default is not None:
             return self._default
 
@@ -82,7 +87,7 @@ class BaseData(Base, ABC):
                 source=self._source,
             )
 
-        return self._parse_default_value(data)
+        return self._parse_default_data_value(data)
 
     def _parse_query(
         self,
@@ -105,12 +110,12 @@ class BaseData(Base, ABC):
 
         return value
 
-    def _parse_default_value(
+    def _parse_default_data_value(
         self,
         data: Any,
     ) -> Any:
 
-        return parse.default_value(data, self._source)
+        return parse.default_data_value(data, self._source)
 
     def _query_to_list(
         self,
