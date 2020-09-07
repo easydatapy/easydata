@@ -64,7 +64,7 @@ def test_base_data_default(query, default, test_data, result):
 def test_base_data_default_from_item():
     block = Block()
     block.item_name = Data(query=jp("title"))
-    block.item_brand = Data(query=jp("brandwrong"), default_from_item='name')
+    block.item_brand = Data(query=jp("brandwrong"), default_from_item="name")
 
     result = block.parse_item(test_dict_data)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
