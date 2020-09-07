@@ -34,7 +34,7 @@ def query_search_iter(
     return [v for v in values_iter] if values_iter else None
 
 
-def default_value(
+def default_data_value(
     data: Any,
     source: Optional[str],
 ) -> Any:

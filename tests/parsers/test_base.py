@@ -1,11 +1,14 @@
 import pytest
 
+from easydata.block import Block
 from easydata.parsers.data import Data
 from easydata.queries import jp, key
 from tests.factory import load_data_bag_with_json
 
 db = load_data_bag_with_json("product")
 db["additional_data"] = {"proc": "i7"}
+
+test_dict_data = {"title": "Easybook Pro 13"}
 
 
 def process_raw_value(value, data):
@@ -15,6 +18,15 @@ def process_raw_value(value, data):
 def test_base_data_field_query():
     item_data = Data(query=jp("info.name"))
     assert item_data.parse(db) == "Easybook Pro 13"
+
+
+def test_base_data_from_item():
+    block = Block()
+    block.item_name = Data(query=jp("title"))
+    block.item_brand = Data(from_item="name")
+
+    result = block.parse_item(test_dict_data)
+    assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
 def test_base_data_field_query_as_first_parameter():
@@ -44,9 +56,18 @@ def test_base_data_field_query_chain(query, query2, test_data, result):
         (jp("info.name"), "Easybook Def 13", db, "Easybook Pro 13"),
     ],
 )
-def test_base_data_field_query_default(query, default, test_data, result):
+def test_base_data_default(query, default, test_data, result):
     item_data = Data(query, default=default)
     assert item_data.parse(test_data) == result
+
+
+def test_base_data_default_from_item():
+    block = Block()
+    block.item_name = Data(query=jp("title"))
+    block.item_brand = Data(query=jp("brandwrong"), default_from_item='name')
+
+    result = block.parse_item(test_dict_data)
+    assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
 @pytest.mark.parametrize(
