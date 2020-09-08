@@ -16,11 +16,7 @@ _attr_shortcut_mappings = {
 
 
 class PyQuerySearch(QuerySearch):
-    def __init__(
-        self,
-        query: Optional[str] = None,
-        rm: Optional[str] = None
-    ):
+    def __init__(self, query: Optional[str] = None, rm: Optional[str] = None):
 
         self._query = query
         self._rm_query = rm
