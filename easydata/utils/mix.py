@@ -156,9 +156,9 @@ def multiply_list_values(
 
 
 def filter_list_by_bool_callable(
-        list_values: List[Any],
-        data: Any,
-        callable_param: Callable,
+    list_values: List[Any],
+    data: Any,
+    callable_param: Callable,
 ):
 
     filtered_list_values = []
@@ -167,7 +167,7 @@ def filter_list_by_bool_callable(
         ignore: bool = callable_param(value, data)
 
         if not isinstance(ignore, bool):
-            raise TypeError('Allow callable must return bool.')
+            raise TypeError("Allow callable must return bool.")
 
         if ignore is False:
             continue

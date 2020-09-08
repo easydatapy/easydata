@@ -104,8 +104,8 @@ def test_list_allow_callables():
     list_parser = parsers.List(
         parser=parsers.Text(),
         split_key=",",
-        preprocess_allow=lambda v, d: 'country' not in v.lower(),
-        process_allow=lambda v, d: 'name' in v.lower()
+        preprocess_allow=lambda v, d: "country" not in v.lower(),
+        process_allow=lambda v, d: "name" in v.lower(),
     )
 
     expected_result = ["name", "surname"]
@@ -123,7 +123,7 @@ def test_list_allow_callables_type_error():
     with pytest.raises(TypeError) as excinfo:
         list_parser.parse(test_name_list)
 
-    assert 'allow callable must return bool' in str(excinfo.value).lower()
+    assert "allow callable must return bool" in str(excinfo.value).lower()
 
 
 def test_text_list():

@@ -62,7 +62,7 @@ class List(BaseData):
             list_values = mix.filter_list_by_bool_callable(
                 list_values=list_values,
                 data=data,
-                callable_param=self._preprocess_allow
+                callable_param=self._preprocess_allow,
             )
 
         parsed_list_values = [
@@ -77,7 +77,7 @@ class List(BaseData):
             filtered_list_values = mix.filter_list_by_bool_callable(
                 list_values=filtered_list_values,
                 data=data,
-                callable_param=self._process_allow
+                callable_param=self._process_allow,
             )
 
         return filtered_list_values
