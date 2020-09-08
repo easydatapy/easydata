@@ -3,6 +3,11 @@ from easydata.queries import pq
 test_html = """
     <html>
         <body>
+            <div class="breadcrumbs">
+                <div class="breadcrumb">Home</div>
+                <div class="breadcrumb">Phone</div>
+                <div class="breadcrumb">Smartphone</div>
+            </div>
             <h2 class="name">
                 <div class="brand">EasyData</div>
                 Test Product Item
@@ -27,6 +32,15 @@ exp_result_images = [
 
 def test_pq_query_text():
     assert pq(".brand::text").get(test_html) == "EasyData"
+
+
+def test_pq_query_all():
+    # Test default
+    assert pq(".breadcrumbs .breadcrumb::text").get(test_html) == "Home"
+
+    # Test all
+    result = "Home Phone Smartphone"
+    assert pq(".breadcrumbs .breadcrumb::text-all").get(test_html) == result
 
 
 def test_pq_query_attr():
