@@ -24,8 +24,6 @@ EasyData
     is reached and therefore is not suitable to be used in production or
     on a larger scale.
 
-![main](https://github.com/sitegroove/easydata/workflows/main/badge.svg)
-
 Overview
 ========
 
