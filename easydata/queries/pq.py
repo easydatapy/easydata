@@ -19,14 +19,13 @@ class PyQuerySearch(QuerySearch):
     def __init__(
         self,
         query: Optional[str] = None,
-        rm: Optional[str] = None,
-        first: bool = True,
+        rm: Optional[str] = None
     ):
 
         self._query = query
         self._rm_query = rm
-        self._first = first
 
+        self._first = True
         self._attr = None
         self._text = False
         self._ntext = False
@@ -124,6 +123,10 @@ class PyQuerySearch(QuerySearch):
             pseudo_key = pseudo_key.split("-")[0]
 
             self._items = True
+        elif "-all" in pseudo_key:
+            pseudo_key = pseudo_key.split("-")[0]
+
+            self._first = False
 
         if pseudo_key.startswith("attr"):
             attr_value = pseudo_key.split("(")[-1].strip(")")
