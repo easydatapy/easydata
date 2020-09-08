@@ -2,12 +2,29 @@
 EasyData
 ========
 
+.. image:: https://github.com/sitegroove/easydata/workflows/main/badge.svg?style=flat-square
+    :target: https://github.com/sitegroove/easydata/actions?query=workflow%3Amain
+    :alt: Build status
+
+.. image:: https://readthedocs.org/projects/easydata/badge/?version=latest
+    :target: https://easydata.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+
+.. image:: https://badge.fury.io/py/easydata.svg?style=flat-square
+    :target: https://easydata.readthedocs.io/en/latest/?badge=latest
+    :alt: pypi package version
+
 .. warning::
 
     ``EasyData`` is in early stages of development; backwards incompatible
     changes are possible without deprecation warnings until beta status
     is reached and therefore is not suitable to be used in production or
     on a larger scale.
+
+![main](https://github.com/sitegroove/easydata/workflows/main/badge.svg)
 
 Overview
 ========
