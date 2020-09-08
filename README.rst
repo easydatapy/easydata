@@ -12,9 +12,10 @@ EasyData
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
+    :alt: code style black
 
 .. image:: https://badge.fury.io/py/easydata.svg?style=flat-square
-    :target: https://easydata.readthedocs.io/en/latest/?badge=latest
+    :target: https://pypi.org/project/easydata/
     :alt: pypi package version
 
 .. warning::
