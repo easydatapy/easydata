@@ -1,3 +1,5 @@
+import pytest
+
 from easydata import parsers
 from easydata.queries import pq
 from tests.factory import load_data_bag_with_pq
@@ -31,7 +33,10 @@ expected_urls_non_unique = [
     "https://demo.com/imgs/3.jpg",
 ]
 
-expected_urls_max_2 = ["https://demo.com/imgs/1.jpg", "https://demo.com/imgs/2.jpg"]
+expected_urls_max_2 = [
+    "https://demo.com/imgs/1.jpg",
+    "https://demo.com/imgs/2.jpg",
+]
 
 
 def test_list():
@@ -91,6 +96,34 @@ def test_list_split_key():
 
     expected_result = ["name", "surname", "age", "country"]
     assert list_parser.parse(test_text) == expected_result
+
+
+def test_list_allow_callables():
+    test_text = "name,surname,age,country_code,country_group"
+
+    list_parser = parsers.List(
+        parser=parsers.Text(),
+        split_key=",",
+        preprocess_allow=lambda v, d: "country" not in v.lower(),
+        process_allow=lambda v, d: "name" in v.lower(),
+    )
+
+    expected_result = ["name", "surname"]
+    assert list_parser.parse(test_text) == expected_result
+
+
+def test_list_allow_callables_type_error():
+    test_name_list = ["name", "surname"]
+
+    list_parser = parsers.List(
+        parser=parsers.Text(),
+        preprocess_allow=lambda v, d: None,
+    )
+
+    with pytest.raises(TypeError) as excinfo:
+        list_parser.parse(test_name_list)
+
+    assert "allow callable must return bool" in str(excinfo.value).lower()
 
 
 def test_text_list():

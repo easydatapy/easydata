@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from easytxt.text import to_list
 from pyquery import PyQuery
@@ -153,6 +153,28 @@ def multiply_list_values(
                 new_all_list_values.append(new_list_value)
 
     return new_all_list_values
+
+
+def filter_list_by_bool_callable(
+    list_values: List[Any],
+    data: Any,
+    callable_param: Callable,
+):
+
+    filtered_list_values = []
+
+    for value in list_values:
+        ignore: bool = callable_param(value, data)
+
+        if not isinstance(ignore, bool):
+            raise TypeError("Allow callable must return bool.")
+
+        if ignore is False:
+            continue
+
+        filtered_list_values.append(value)
+
+    return filtered_list_values
 
 
 def validate_parser(

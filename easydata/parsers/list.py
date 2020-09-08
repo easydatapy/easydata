@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 from typing import List as ListType
 from typing import Optional, Union
 
@@ -26,6 +26,8 @@ class List(BaseData):
         unique: bool = True,
         max_num: Optional[int] = None,
         split_key: Optional[str] = None,
+        preprocess_allow: Optional[Callable] = None,
+        process_allow: Optional[Callable] = None,
         **kwargs,
     ):
 
@@ -40,6 +42,8 @@ class List(BaseData):
         self._unique = unique
         self._max_num = max_num
         self._split_key = split_key
+        self._preprocess_allow = preprocess_allow
+        self._process_allow = process_allow
 
         super().__init__(**kwargs)
 
@@ -54,13 +58,29 @@ class List(BaseData):
 
         list_values = self._preprocess_list_values(value)
 
+        if self._preprocess_allow:
+            list_values = mix.filter_list_by_bool_callable(
+                list_values=list_values,
+                data=data,
+                callable_param=self._preprocess_allow,
+            )
+
         parsed_list_values = [
             self._parser.parse(data, lvalue, True) for lvalue in list_values
         ]
 
         processed_list_values = self._process_list_values(parsed_list_values)
 
-        return self._filter_list_values(processed_list_values)
+        filtered_list_values = self._filter_list_values(processed_list_values)
+
+        if self._process_allow:
+            filtered_list_values = mix.filter_list_by_bool_callable(
+                list_values=filtered_list_values,
+                data=data,
+                callable_param=self._process_allow,
+            )
+
+        return filtered_list_values
 
     def _preprocess_list_values(self, list_values: Any) -> ListType[Any]:
 
@@ -80,7 +100,6 @@ class List(BaseData):
         return list_values
 
     def _filter_list_values(self, list_values: ListType[str]) -> ListType[Any]:
-
         if self._unique and list_values:
             list_values = mix.unique_list(list_values)
 
