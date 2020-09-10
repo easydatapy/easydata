@@ -47,9 +47,9 @@ def test_model_manager():
     assert isinstance(model_manager.get_item_val("brand"), parsers.Text)
 
 
-def test_model_manager_model_blocks():
+def test_model_manager_block_models():
     model = ProductModel()
-    model.model_blocks = [SettingsBaseModel(), SettingsModel()]
+    model.block_models = [SettingsBaseModel(), SettingsModel()]
 
     model_manager = ModelManager(model)
 
@@ -81,9 +81,9 @@ def test_model_manager_model_blocks():
     assert item_designer_parser.config[config_variants] == "variants_test_override"
 
 
-def test_model_manager_model_blocks_reverse_order():
+def test_model_manager_block_models_reverse_order():
     model = ProductModel()
-    model.model_blocks = [
+    model.block_models = [
         SettingsModel(),
         SettingsBaseModel(),
     ]
@@ -97,12 +97,12 @@ def test_model_manager_model_blocks_reverse_order():
     assert item_data["language"] == "en"
 
 
-def test_model_manager_model_blocks_nested():
+def test_model_manager_block_models_nested():
     model = ProductModel()
     settings_model = SettingsBaseModel()
-    settings_model.model_blocks = [SettingsModel()]
+    settings_model.block_models = [SettingsModel()]
 
-    model.model_blocks = [settings_model]
+    model.block_models = [settings_model]
 
     model_manager = ModelManager(model)
 

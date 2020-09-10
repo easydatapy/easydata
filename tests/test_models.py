@@ -29,9 +29,9 @@ def test_item_model():
     assert item == item_model_expected_result
 
 
-def test_item_model_blocks():
+def test_item_block_models():
     product_model = ProductModel()
-    product_model.model_blocks = [PricingBlockModel(), SettingsBlockModel()]
+    product_model.block_models = [PricingBlockModel(), SettingsBlockModel()]
 
     item = product_model.parse(test_html_source, json_data=test_dict_source)
 
@@ -41,6 +41,28 @@ def test_item_model_blocks():
         "price": 999.9,
         "sale_price": 499.9,
         "discount": 50.01,
+    }
+
+    item_model_result = item_model_expected_result.copy()
+
+    assert item == {**item_model_result, **item_block_result}
+
+
+def test_item_model_as_item_model_value():
+    product_model = ProductModel()
+    product_model.item_prices = PricingBlockModel()
+    product_model.block_models = [SettingsBlockModel()]
+
+    item = product_model.parse(test_html_source, json_data=test_dict_source)
+
+    item_block_result = {
+        "calling_code": 44,
+        "country": "UK",
+        "prices": {
+            "price": 999.9,
+            "sale_price": 499.9,
+            "discount": 50.01,
+        },
     }
 
     item_model_result = item_model_expected_result.copy()
