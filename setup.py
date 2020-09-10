@@ -18,6 +18,7 @@ setup(
         'jmespath',
         'price-parser',
         'pyquery',
+        'pyyaml',
         'xmltodict'
     ]
 )
