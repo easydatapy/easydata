@@ -6,12 +6,16 @@ __all__ = ("DataBag",)
 
 
 class DataBag(ConfigMixin):
-    def __init__(self, model=None, **kwargs) -> None:
+    def __init__(
+        self,
+        model_manager=None,
+        **kwargs,
+    ) -> None:
 
-        self._model = model
+        self._model_manager = model_manager
 
-        if model:
-            self.init_config(model.config)
+        if model_manager:
+            self.init_config(model_manager.config)
 
         self._cached_results: Dict[str, Any] = {}
 
@@ -21,34 +25,44 @@ class DataBag(ConfigMixin):
     def add(self, arg_name: str, arg_value):
         setattr(self, arg_name, arg_value)
 
-    def get(self, item_name: str) -> Any:
+    def has(self, arg_name):
+        return hasattr(self, arg_name)
+
+    def get(self, item_key: str) -> Any:
         """Each item class field or item method are called only once
         and results are cached which leads to a faster performance!"""
 
-        if item_name in self._cached_results:
-            return self._cached_results[item_name]
+        if item_key in self._cached_results:
+            return self._cached_results[item_key]
 
-        self._cached_results[item_name] = self._model.parse_item_properties(
-            item_name, self
+        self._cached_results[item_key] = self._model_manager.process_item_parser(
+            item_key=item_key,
+            data=self,
         )
 
-        return self._cached_results[item_name]
+        return self._cached_results[item_key]
 
-    def get_multi(self, item_names: List[str]) -> dict:
+    def get_all(self) -> dict:
+        return self.get_multi(self._model_manager.item_keys())
+
+    def get_multi(self, item_keys: List[str]):
         results = {}
 
-        for item_name in item_names:
-            results[item_name] = self.get(item_name)
+        for item_key in item_keys:
+            results[item_key] = self.get(item_key)
 
         return results
 
     def copy(self):
         data_copy = self.__dict__.copy()
 
-        del data_copy["_model"]
+        del data_copy["_model_manager"]
         del data_copy["_cached_results"]
 
-        return DataBag(model=self._model, **data_copy)
+        return DataBag(
+            model_manager=self._model_manager,
+            **data_copy,
+        )
 
     @property
     def cached_results(self):
