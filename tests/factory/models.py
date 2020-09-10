@@ -55,3 +55,17 @@ class ProductSimpleWithProcessItemModel(ItemModel):
         item["final_sale"] = bool(item["discount"])
 
         return item
+
+
+class PricingBlockModel(ItemModel):
+    item_price = parsers.PriceFloat(pq("#price::text"))
+
+    item_sale_price = parsers.PriceFloat(pq("#sale-price::text"))
+
+    items_processors = [("discount", ItemDiscountProcessor())]
+
+
+class SettingsBlockModel(ItemModel):
+    item_calling_code = 44
+
+    item_country = "UK"

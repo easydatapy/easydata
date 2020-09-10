@@ -26,4 +26,4 @@ class SimpleJsonItemModel(ItemModel):
     def extract_data(self):
         json_data = load_json("product")
 
-        return self.parse_item(json_data)
+        return self.parse(json_data)

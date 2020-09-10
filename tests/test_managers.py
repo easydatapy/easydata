@@ -1,62 +1,115 @@
-from easydata.managers import ObjectManager
-from easydata.processors.data import DataJsonToDictProcessor, DataToPqProcessor
+from easydata import parsers
+from easydata.managers import ModelManager
+from easydata.models import ItemModel
+from easydata.queries import jp
 
 
-def test_object_manager():
-    test_data_processors = [
-        ("data_to_json", DataJsonToDictProcessor()),
-        DataToPqProcessor(),
+class SettingsBaseModel(ItemModel):
+    ED_DATA_VARIANTS_KEY_NAME = "variants_key_test"
+
+    item_language = "fr"
+
+    item_country = ["FR"]
+
+    item_currency = "EUR"
+
+
+class SettingsModel(ItemModel):
+    ED_DATA_VARIANTS_NAME = "variants_test"
+
+    item_language = "en-us"
+
+    item_country = ["US"]
+
+    item_currency = "USD"
+
+    item_domain = "us.demo.com"
+
+
+class ProductModel(ItemModel):
+    ED_DATA_VARIANTS_NAME = "variants_test_override"
+
+    item_language = "en"
+
+    item_tags = ["phones", "ecommerce"]
+
+    item_temp_brand = parsers.Text(jp("brand"), source="json_data")
+
+    item_designer = parsers.Text(from_item="brand")
+
+
+def test_model_manager():
+    model_manager = ModelManager(ProductModel())
+    assert model_manager.item_keys() == ["designer", "language", "tags", "brand"]
+
+    assert isinstance(model_manager.get_item_val("tags"), list)
+
+    assert isinstance(model_manager.get_item_val("brand"), parsers.Text)
+
+
+def test_model_manager_model_blocks():
+    model = ProductModel()
+    model.model_blocks = [SettingsBaseModel(), SettingsModel()]
+
+    model_manager = ModelManager(model)
+
+    result_keys = [
+        "country",
+        "currency",
+        "language",
+        "domain",
+        "designer",
+        "tags",
+        "brand",
+    ]
+    assert model_manager.item_keys() == result_keys
+
+    item_data = model_manager.items()
+
+    assert item_data["language"] == "en"
+
+    assert item_data["currency"] == "USD"
+
+    assert item_data["country"] == ["US"]
+
+    config_variants = "ED_DATA_VARIANTS_NAME"
+
+    assert model_manager.config[config_variants] == "variants_test_override"
+
+    item_designer_parser = model_manager.get_item_val("designer")
+
+    assert item_designer_parser.config[config_variants] == "variants_test_override"
+
+
+def test_model_manager_model_blocks_reverse_order():
+    model = ProductModel()
+    model.model_blocks = [
+        SettingsModel(),
+        SettingsBaseModel(),
     ]
 
-    om = ObjectManager(test_data_processors)
+    model_manager = ModelManager(model)
 
-    assert len(om) == 2
-    assert isinstance(list(om)[0], DataJsonToDictProcessor)
-    assert isinstance(list(om)[1], DataToPqProcessor)
+    item_data = model_manager.items()
 
-    om.add("data_to_json2", DataJsonToDictProcessor())
+    assert item_data["country"] == ["FR"]
 
-    assert len(om) == 3
-    assert isinstance(list(om)[2], DataJsonToDictProcessor)
+    assert item_data["language"] == "en"
 
-    assert isinstance(om["data_to_json2"], DataJsonToDictProcessor)
-    assert isinstance(om["1"], DataToPqProcessor)
 
-    assert list(om.keys()) == ["data_to_json", "1", "data_to_json2"]
+def test_model_manager_model_blocks_nested():
+    model = ProductModel()
+    settings_model = SettingsBaseModel()
+    settings_model.model_blocks = [SettingsModel()]
 
-    om.del_if_exists("4")
+    model.model_blocks = [settings_model]
 
-    assert len(om) == 3
+    model_manager = ModelManager(model)
 
-    om.del_if_exists("data_to_json2")
+    item_data = model_manager.items()
 
-    assert len(om) == 2
+    assert item_data["country"] == ["FR"]
 
-    om.del_by_type(DataToPqProcessor)
+    assert item_data["language"] == "en"
 
-    assert len(om) == 1
-
-    assert isinstance(list(om)[0], DataJsonToDictProcessor)
-
-    om.add(None, DataJsonToDictProcessor())
-    om.add(None, DataJsonToDictProcessor())
-
-    assert len(om) == 3
-
-    om.add(None, DataJsonToDictProcessor(), unique=True)
-
-    assert len(om) == 1
-
-    om.add_list([DataJsonToDictProcessor(), DataJsonToDictProcessor()])
-
-    assert len(om) == 3
-
-    om.add(None, DataToPqProcessor())
-
-    om.add_list([DataToPqProcessor()])
-
-    assert len(om) == 5
-
-    om.add_list([DataToPqProcessor(), DataJsonToDictProcessor()], unique=True)
-
-    assert len(om) == 2
+    assert item_data["domain"] == "us.demo.com"

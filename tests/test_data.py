@@ -1,8 +1,15 @@
 from easydata.data import DataBag
+from easydata.managers import ModelManager
 from tests.factory import load_json
 from tests.factory.parsers import SimpleJsonItemModel
 
 jd = load_json("product")
+
+
+def load_data_bag_with_model():
+    model_manager = ModelManager(SimpleJsonItemModel())
+
+    return DataBag(model_manager, data=jd)
 
 
 def test_item_parser():
@@ -16,7 +23,7 @@ def test_item_parser():
 
 
 def test_data_bag_get():
-    data_bag = DataBag(SimpleJsonItemModel(), data=jd)
+    data_bag = load_data_bag_with_model()
 
     assert data_bag.get("name") == "Easybook Pro 13"
 
@@ -30,7 +37,7 @@ def test_data_bag_get():
 
 
 def test_data_bag_get_multi():
-    data_bag = DataBag(SimpleJsonItemModel(), data=jd)
+    data_bag = load_data_bag_with_model()
 
     req_params = ["brand", "currency", "name", "tags"]
     assert data_bag.get_multi(req_params) == {
@@ -45,7 +52,7 @@ def test_data_bag_get_multi():
 
 
 def test_data_bag_add():
-    data_bag = DataBag(SimpleJsonItemModel(), data=jd)
+    data_bag = load_data_bag_with_model()
 
     data_bag.add("brand_info", "Groove")
 

@@ -1,6 +1,6 @@
 import pytest
 
-from easydata.block import Block
+from easydata.models import ItemModel
 from easydata.parsers.data import Data
 from easydata.queries import jp, key
 from tests.factory import load_data_bag_with_json
@@ -21,11 +21,11 @@ def test_base_data_field_query():
 
 
 def test_base_data_from_item():
-    block = Block()
-    block.item_name = Data(query=jp("title"))
-    block.item_brand = Data(from_item="name")
+    item_model = ItemModel()
+    item_model.item_name = Data(query=jp("title"))
+    item_model.item_brand = Data(from_item="name")
 
-    result = block.parse_item(test_dict_data)
+    result = item_model.parse(test_dict_data)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
@@ -62,11 +62,11 @@ def test_base_data_default(query, default, test_data, result):
 
 
 def test_base_data_default_from_item():
-    block = Block()
-    block.item_name = Data(query=jp("title"))
-    block.item_brand = Data(query=jp("brandwrong"), default_from_item="name")
+    item_model = ItemModel()
+    item_model.item_name = Data(query=jp("title"))
+    item_model.item_brand = Data(query=jp("brandwrong"), default_from_item="name")
 
-    result = block.parse_item(test_dict_data)
+    result = item_model.parse(test_dict_data)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
