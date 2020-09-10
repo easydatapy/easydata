@@ -123,8 +123,11 @@ Another example with ``pq`` selector ignoring specific parts od html nodes.
     correctly because description parsers rely on html nodes when extracting
     and structuring sentences.
 
-language
---------
+
+Parameters
+----------
+
+.. option:: language
 
 If we are parsing text in other language than english then we need to
 specify language parameter in order to determine to which language our
@@ -139,8 +142,8 @@ text belongs to so that sentences are split properly around abbreviations.
 Please note that currently only ``en`` and ``es`` language parameter values
 are supported. *Support for more is under way*
 
-allow
------
+
+.. option:: allow
 
 We can control which sentences we want to get extracted by providing list of
 keywords into ``allow`` parameter. Provided keys are not case sensitive.
@@ -157,8 +160,8 @@ Regex pattern is also supported as parameter value:
 
     >>> parsers.Sentences(allow=[r'\bfirst']).parse(test_text)
 
-callow
-------
+
+.. option:: callow
 
 ``callow`` is similar to ``allow`` but with exception that provided keys
 are case sensitive. Regex pattern as a key is also supported.
@@ -169,8 +172,8 @@ are case sensitive. Regex pattern as a key is also supported.
     >>> parsers.Sentences(allow=['First', 'Third']).parse(test_text)
     ['Third sentence.']
 
-from_allow
-----------
+
+.. option:: from_allow
 
 We can skip sentences by providing keys in ``from_allow`` parameter.
 Keys are not case sensitive and regex pattern is also supported.
@@ -181,8 +184,8 @@ Keys are not case sensitive and regex pattern is also supported.
     >>> parsers.Sentences(from_allow=['second']).parse(test_text)
     ['Second txt.', 'Third Txt.', 'FOUR txt.']
 
-from_callow
------------
+
+.. option:: from_callow
 
 ``from_callow`` is similar to ``from_allow`` but with exception that
 provided keys are case sensitive. Regex pattern as a key is also supported.
@@ -201,8 +204,8 @@ Lets recreate same example as before but with lowercase key.
     >>> parsers.Sentences(from_allow=['second']).parse(test_text)
     []
 
-to_allow
---------
+
+.. option:: to_allow
 
 ``to_allow`` is similar to ``from_allow`` but in reverse order. Here
 are sentences skipped after provided key is found. Keys are not case
@@ -214,8 +217,8 @@ sensitive and regex pattern is also supported.
     >>> parsers.Sentences(to_allow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.']
 
-to_callow
----------
+
+.. option:: to_callow
 
 ``to_callow`` is similar to ``to_allow`` but with exception that
 provided keys are case sensitive. Regex pattern is also supported.
@@ -234,8 +237,8 @@ Lets recreate same example as before but with a lowercase key.
     >>> parsers.Sentences(to_callow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.', 'FOUR txt.']
 
-deny
-----
+
+.. option:: deny
 
 We can control which sentences we don't want to get extracted by providing
 list of keywords into ``deny`` parameter. Keys are not case sensitive and
@@ -247,8 +250,8 @@ regex pattern is also supported.
     >>> parsers.Sentences(deny=['first', 'third']).parse(test_text)
     ['Second sentence.']
 
-cdeny
------
+
+.. option:: cdeny
 
 ``cdeny`` is similar to ``deny`` but with exception that provided keys
 are case sensitive. Regex pattern as a key is also supported.
@@ -259,8 +262,8 @@ are case sensitive. Regex pattern as a key is also supported.
     >>> parsers.Sentences(cdeny=['First', 'Third']).parse(test_text)
     ['First sentence?', 'Second sentence.']
 
-normalize
----------
+
+.. option:: normalize
 
 By default parameter ``normalize`` is set to ``True``. This means that any
 bad encoding will be automatically fixed, stops added and line breaks
@@ -280,8 +283,8 @@ Lets try to set parameter ``normalize`` to ``False`` and see what happens.
     >>> parsers.Sentences(normalize=False).parse(test_text)
     ['First sentence...', 'Bad uÌˆnicode.', 'HTML entities &lt;3!']
 
-capitalize
-----------
+
+.. option:: capitalize
 
 By default all sentences will get capitalized as we can see bellow.
 
@@ -299,8 +302,8 @@ We can disable this behaviour by setting parameter ``capitalize`` to ``False``.
     >>> parsers.Sentences(capitalize=False).parse(test_text)
     ['first sentence?', 'Second sentence.', 'third sentence.']
 
-title
------
+
+.. option:: title
 
 We can set our text output to title by setting parameter ``title``
 to ``True``.
@@ -311,8 +314,8 @@ to ``True``.
     >>> parsers.Sentences(title=True).parse(test_text)
     'First Sentence? Second Sentence. Third Sentence'
 
-uppercase
----------
+
+.. option:: uppercase
 
 We can set our text output to uppercase by setting parameter ``uppercase``
 to ``True``.
@@ -323,8 +326,8 @@ to ``True``.
     >>> parsers.Sentences(uppercase=True).parse(test_text)
     ['FIRST SENTENCE?', 'SECOND SENTENCE.', 'THIRD SENTENCE.']
 
-lowercase
----------
+
+.. option:: lowercase
 
 We can set our text output to lowercase by setting parameter ``lowercase``
 to ``True``.
@@ -335,16 +338,16 @@ to ``True``.
     >>> parsers.Sentences(lowercase=True).parse(test_text)
     'first sentence? second sentence. third sentence'
 
-min_chars
----------
+
+.. option:: min_chars
 
 By default ``min_chars`` has a value of 5. This means that any sentence that has
 less than 5 chars, will be filtered out and not seen at the end result. This
 is done to remove ambiguous sentences, especially when extracting text from
 html. We can raise or decrease this limit by changing the value of ``min_chars``.
 
-replace_keys
-------------
+
+.. option:: replace_keys
 
 We can replace all chars in a sentences by providing tuple of search key and
 replacement char in a ``replace_keys`` parameter. Regex pattern as key is
@@ -356,8 +359,8 @@ also supported and search keys are not case sensitive.
     >>> parsers.Sentences(replace_keys=[('third', 'Last'), ('nce!', 'nce?')]).parse(test_text)
     ['First sentence?', 'Second sentence.', 'Last.']
 
-remove_keys
------------
+
+.. option:: remove_keys
 
 We can remove all chars in sentences by providing list of search keys in a
 ``replace_keys`` parameter. Regex pattern as key is also supported and keys
@@ -369,8 +372,8 @@ are not case sensitive.
     >>> parsers.Sentences(remove_keys=['sentence', '!']).parse(test_text)
     ['First.', 'Second.', 'Third.']
 
-replace_keys_raw_text
----------------------
+
+.. option:: replace_keys_raw_text
 
 We can replace char values before text is split into sentences. This is
 especially useful if we want to fix text before it's parsed and so that
@@ -399,8 +402,8 @@ happens.
     >>> parsers.Sentences(replace_keys_raw_text=replace_keys).parse(test_text)
     ['Easybook pro 15.', 'Color: Gray.', 'Material: Aluminium.']
 
-remove_keys_raw_text
---------------------
+
+.. option:: remove_keys_raw_text
 
 Works similar as ``replace_keys_raw_text``, but instead of providing list
 of tuples in order to replace chars, here we provide list of chars to remove
@@ -422,8 +425,8 @@ by removing color and stop key at the same time and get one sentence instead.
     >>> parsers.Sentences(remove_keys_raw_text=['. color:']).parse(test_text)
     ['Easybook pro 15 Gray.']
 
-split_inline_breaks
--------------------
+
+.. option:: split_inline_breaks
 
 By default text with chars like ``*``, `` - `` and bullet points would get split
 into sentences.
@@ -448,8 +451,8 @@ In cases when we want to disable this behaviour, we can set parameter
 Please note that chars like ``.``, ``:``, ``?``, ``!`` are not considered
 as inline breaks.
 
-inline_breaks
--------------
+
+.. option:: inline_breaks
 
 In above example we saw how default char breaks work. In cases when we want to
 split sentences by different char than default one, we can do so by providing list
@@ -467,8 +470,8 @@ Regex pattern is also supported as a parameter value:
 
     >>> parsers.Sentences(inline_breaks=[r'\b>']).parse(test_text)
 
-stop_key
---------
+
+.. option:: stop_key
 
 If a sentence is without a stop key at the end, then by default it
 will automatically be appended ``.``. Let see this in bellow example:
@@ -488,8 +491,8 @@ desired char in a ``stop_key`` parameter.
     >>> parsers.Sentences(stop_key='!').parse(test_text)
     ['First feature!', 'Second feature?']
 
-text_num_to_numeric
--------------------
+
+.. option:: text_num_to_numeric
 
 We can convert all alpha chars that describe numeric values to actual
 numbers by setting ``text_num_to_numeric`` parameter to ``True``.
@@ -504,6 +507,7 @@ If our text is in different language we need to change language value in
 our ``language`` parameter. Currently supported languages regarding
 ``text_num_to_numeric`` are only ``en, es, hi and ru``.
 
+
 Description
 ===========
 
@@ -513,8 +517,11 @@ Description
 exact same way with only difference, that returned value is ``string`` rather
 than a ``list`` of sentences.
 
-sentence_separator
-------------------
+
+Parameters
+----------
+
+.. option:: sentence_separator
 
 Behind the scenes sentences are from a text always broken into list and
 later on a final output joined together by a separator with a default

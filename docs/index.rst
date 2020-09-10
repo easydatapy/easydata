@@ -1,8 +1,3 @@
-.. easydata documentation master file, created by
-   sphinx-quickstart on Sun Aug 16 11:46:09 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to easydata's documentation!
 ====================================
 .. warning::
@@ -12,9 +7,9 @@ Welcome to easydata's documentation!
     is reached and therefore is not suitable to be used in production or
     on a larger scale.
 
+
 What is EasyData
 ================
-
 ``EasyData`` is data object pattern that provides transformation of item data
 from various sources (text, html, xml, json, dictionaries, lists and others) to a
 python dictionary with option to even combine different types of sources in order
@@ -58,15 +53,22 @@ models.
 * read feed files or process multiple items at the same time since it's architecture
   is designed to process each row/item at the time.*
 
+
+How to read documentation?
+==========================
+Documentation is divided into chapters which are marked with numbers and is best to
+follow it in that order, if you are familiarizing with the package for the first time.
+
+
 Where next?
-=================
+===========
 If you are new to EasyData, please refer to :ref:`getting-started` section where you
 will get to know basics, and if you are already familiar with basics, then jump to
 :ref:`advanced` section.
 
+
 Contributing
 ============
-
 **Yes please!**  We are always looking for contributions, additions and improvements.
 
 The source is available on `GitHub <http://github.com/sitegroove/easydata>`_
@@ -82,12 +84,11 @@ minor tweaks to this documentation or the core.
     getting_started
     architecture
     advanced
+    config
     parsers/index
     processors/index
     queries/index
     extending/index
-    config
     scrapy
     faq
-    tutorials/index
     contributing

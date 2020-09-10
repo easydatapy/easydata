@@ -37,8 +37,11 @@ Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 In this case we see that url in a test_dict is partial. ``Url`` parser will try
 to construct and output always full urls.
 
-qs
---
+
+Parameters
+----------
+
+.. option:: qs
 
 With ``qs`` parameter we can manipulate urls query strings. We can change existing
 ones or add new ones.
@@ -61,8 +64,7 @@ string value.
     'https://demo.com/?home=false&country=SI'
 
 
-remove_qs
----------
+.. option:: remove_qs
 
 With ``remove_qs`` we can remove query string keys and it's values.
 
@@ -93,8 +95,8 @@ will be removed.
     >>> parsers.Url(remove_qs=True).parse(test_url)
     'https://demo.com/'
 
-from_text
----------
+
+.. option:: from_text
 
 ``Url`` parser has ability to extract url from a text as we can see in example
 bellow.
@@ -105,8 +107,8 @@ bellow.
     >>> parsers.Url(from_text=True).parse(test_text)
     'https://demo.com/home'
 
-domain
-------
+
+.. option:: domain
 
 In some cases we can get only partial url links without a domain, especially
 when we are scraping websites and for cases like this setting ``domain`` parameter
@@ -128,8 +130,8 @@ order to construct full url.
     >>> parsers.Url(domain='demo.com').parse(test_url)
     'https://demo.com/product/1122'
 
-protocol
---------
+
+.. option:: protocol
 
 As we saw in example above, default protocol ``https`` is used when provided domain
 name in ``domain`` parameter has a missing protocol. We can change our default

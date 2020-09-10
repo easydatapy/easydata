@@ -9,15 +9,15 @@ Guide Assumptions
 This guide is designed for those that already went through :ref:`getting-started`
 and :ref:`architecture` sections.
 
-Creating blocks
-===============
-``Block`` is similar to ``ItemModel`` but with a difference that its purpose is
-to be used as a reusable extension that contains predefined item parsers and
-processors. To explain this functionality in more details is best to show it
-through examples bellow.
+Creating block models
+=====================
+*Item block models* are ``ItemModel`` objects but with a difference that its
+purpose is to be used as a reusable extension that contains predefined item
+parsers and processors. To explain this functionality in more details is best
+to show it through examples bellow.
 
-Basic block
------------
+Basic model block
+-----------------
 .. code-block:: python
 
     test_html = """
@@ -34,17 +34,16 @@ Basic block
         </html>
     """
 
-Now let's create our ``Block`` class which will be responsible for extracting price
+Now let's create our model block class which will be responsible for extracting price
 data from the HTML above.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.block import Block
+    from easydata import ItemModel, parsers
     from easydata.queries import pq
 
 
-    class PricingBlock(Block):
+    class PricingBlockModel(ItemModel):
         item_price = parsers.PriceFloat(
             pq('#price::text')
         )
@@ -57,30 +56,29 @@ data from the HTML above.
             ('discount', ItemDiscountProcessor())
         ]
 
-As mentioned before ``Block`` classes are meant to be used withing ``ItemModel`` so
+As mentioned before, classes as above are meant to be used withing ``ItemModel`` so
 lets create our ``ItemModel`` bellow.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
+    from easydata import ItemModel, parsers
     from easydata.queries import pq
 
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
-        item_name = parsers.TextParser(
+        item_name = parsers.Text(
             pq('.name::text'),
         )
 
-        item_brand = parsers.TextParser(
+        item_brand = parsers.Text(
             pq('.brand::text')
         )
 
-        item_stock = parsers.BoolParser(
+        item_stock = parsers.Bool(
             pq('.stock::attr(available)'),
             contains=['yes']
         )
@@ -107,15 +105,15 @@ Output:
     }
 
 As we can see from the result, ``discount`` was made through a ``ItemDiscountProcessor``
-which was added in a ``PricingBlock``.
+which was added in a ``PricingBlockModel``.
 
 If needed, we can easily disable ``ItemDiscountProcessor`` in our ``ProductItemModel``.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
         items_processors = [
@@ -124,13 +122,13 @@ If needed, we can easily disable ``ItemDiscountProcessor`` in our ``ProductItemM
 
         ...
 
-We can also override ``item_price`` from the ``PricingBlock`` in our ``ProductItemModel``.
+We can also override ``item_price`` from the ``PricingBlockModel`` in our ``ProductItemModel``.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
         item_price = parsers.PriceFloat(
@@ -139,22 +137,21 @@ We can also override ``item_price`` from the ``PricingBlock`` in our ``ProductIt
 
         ...
 
-Block with custom parameters
-----------------------------
-We can also create reusable block with ``__init__`` parameters which will
-modify or create parsers based on our input parameters. This is also
-preferred way how ``blocks`` should be created and used in most cases.
+Block ItemModel with custom parameters
+--------------------------------------
+We can also create reusable block item models with ``__init__`` parameters
+which will modify or create parsers based on our input parameters. This is also
+preferred way how block item models should be created and used in most cases.
 
 Example:
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.block import Block
+    from easydata import ItemModel, parsers
     from easydata.queries import pq
 
 
-    class PricingCssBlock(Block):
+    class PricingCssBlockModel(ItemModel):
         def __init__(self,
             price_css,
             sale_price_css,
@@ -174,13 +171,13 @@ Example:
                     ('discount', ItemDiscountProcessor())
                 )
 
-Now lets use ``PricingCssBlock`` in our ``ProductItemModel``.
+Now lets use ``PricingCssBlockModel`` in our ``ProductItemModel``.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingCssBlock(
+        block_models = [
+            PricingCssBlockModel(
                 price_css='#price::text',
                 sale_price_css='#sale-price::text'
             )
@@ -198,11 +195,11 @@ We already got to know item and data processors in the :ref:`getting-started`
 section and here we will explain how to use named item and data processors from
 blocks or models that were dynamically added in a custom model initialization.
 
-For starters lets create ``Block`` without named item processors.
+For starters lets create *block models* without named item processors.
 
 .. code-block:: python
 
-    class PricingBlock(Block):
+    class PricingBlockModel(ItemModel):
         item_price = parsers.PriceFloat(
             pq('#price::text')
         )
@@ -222,8 +219,8 @@ with custom parameters in our model.
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
         items_processors = [
@@ -233,7 +230,7 @@ with custom parameters in our model.
         ...
 
 In this case ``ItemDiscountProcessor`` from our ``ProductItemModel`` would be joined
-together with the same processor from the ``PricingBlock``. For better understanding
+together with the same processor from the ``PricingBlockModel``. For better understanding
 lets just show a list how ``items_processors`` behind the scene look like now.
 
 .. code-block:: python
@@ -244,14 +241,14 @@ lets just show a list how ``items_processors`` behind the scene look like now.
     ]
 
 As we see there are two ``ItemDiscountProcessor`` while we want only
-``ItemDiscountProcessor`` from our model and ignore one from ``PricingBlock``.
+``ItemDiscountProcessor`` from our model and ignore one from ``PricingBlockModel``.
 
 To solve this issue, named processors are the solution. Lets recreate our
-``PricingBlock`` but now we will add name to ``ItemDiscountProcessor``.
+``PricingBlockModel`` but now we will add name to ``ItemDiscountProcessor``.
 
 .. code-block:: python
 
-    class PricingBlock(Block):
+    class PricingBlockModel(ItemModel):
         item_price = parsers.PriceFloat(
             pq('#price::text')
         )
@@ -264,14 +261,14 @@ To solve this issue, named processors are the solution. Lets recreate our
             ('discount', ItemDiscountProcessor())
         ]
 
-Now if we want to override in our model, discount item processor from the ``PricingBlock``,
-we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingBlock``.
+Now if we want to override in our model, discount item processor from the ``PricingBlockModel``,
+we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingBlockModel``.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
         items_processors = [
@@ -282,14 +279,14 @@ we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingB
 
 Now only ``ItemDiscountProcessor`` from our model would get processed.
 
-We can even remove ``ItemDiscountProcessor`` from from the ``PricingBlock`` by
+We can even remove ``ItemDiscountProcessor`` from from the ``PricingBlockModel`` by
 adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        blocks = [
-            PricingBlock()
+        block_models = [
+            PricingBlockModel()
         ]
 
         items_processors = [

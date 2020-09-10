@@ -131,43 +131,42 @@ item *dict*.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
+    from easydata import ItemModel, parsers
     from easydata.queries import pq
 
 
     class ProductItemModel(ItemModel):
-        item_name = parsers.TextParser(
+        item_name = parsers.Text(
             pq('.name::text'),
         )
 
-        item_brand = parsers.TextParser(
+        item_brand = parsers.Text(
             pq('.brand::text')
         )
 
-        item_description = parsers.DescriptionParser(
+        item_description = parsers.Description(
             pq('#description::text')
         )
 
-        item_price = parsers.PriceFloatParser(
+        item_price = parsers.PriceFloat(
             pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloatParser(
+        item_sale_price = parsers.PriceFloat(
             pq('#sale-price::text')
         )
 
-        item_color = parsers.FeatureParser(
+        item_color = parsers.Feature(
             pq('#description::text'),
             key='color'
         )
 
-        item_stock = parsers.BoolParser(
+        item_stock = parsers.Bool(
             pq('.stock::attr(available)'),
             contains=['yes']
         )
 
-        item_images = parsers.ListParser(
+        item_images = parsers.List(
             pq('.images img::items'),
             parser=parsers.UrlParser(
                 pq('::src')

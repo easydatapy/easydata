@@ -65,43 +65,42 @@ on a PyQuery library and also adds custom pseudo element support like ``::text``
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
+    from easydata import ItemModel, parsers
     from easydata.queries import pq
 
 
     class ProductItemModel(ItemModel):
-        item_name = parsers.TextParser(
+        item_name = parsers.Text(
             pq('.name::text'),
         )
 
-        item_brand = parsers.TextParser(
+        item_brand = parsers.Text(
             pq('.brand::text')
         )
 
-        item_description = parsers.DescriptionParser(
+        item_description = parsers.Description(
             pq('#description::text')
         )
 
-        item_price = parsers.PriceFloatParser(
+        item_price = parsers.PriceFloat(
             pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloatParser(
+        item_sale_price = parsers.PriceFloat(
             pq('#sale-price::text')
         )
 
-        item_color = parsers.FeatureParser(
+        item_color = parsers.Feature(
             pq('#description::text'),
             key='color'
         )
 
-        item_stock = parsers.BoolParser(
+        item_stock = parsers.Bool(
             pq('.stock::attr(available)'),
             contains=['yes']
         )
 
-        item_images = parsers.ListParser(
+        item_images = parsers.List(
             pq('.images img::items'),
             parser=parsers.UrlParser(
                 pq('::src')
@@ -230,8 +229,7 @@ Lets create our item model with ``data_processors`` included.
 .. code-block:: python
 
 
-    from easydata import parsers
-    from easydata.models import ItemModel
+    from easydata import ItemModel, parsers
     from easydata.processors import DataJsonFromReToDictProcessor
     from easydata.queries import pq, key
 
@@ -244,17 +242,17 @@ Lets create our item model with ``data_processors`` included.
             )
         ]
 
-        item_name = parsers.TextParser(
+        item_name = parsers.Text(
             key('name'),
             source='json_info'
         )
 
-        item_brand = parsers.TextParser(
+        item_brand = parsers.Text(
             key('brand'),
             source='json_info'
         )
 
-        item_css_name = parsers.TextParser(
+        item_css_name = parsers.Text(
             pq('.name::text'),
         )
 
@@ -372,8 +370,7 @@ Lets create our item model with ``items_processors``
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
+    from easydata import ItemModel, parsers
     from easydata.processors import ItemDiscountProcessor
     from easydata.queries import pq
 
@@ -383,15 +380,15 @@ Lets create our item model with ``items_processors``
             pq('#name::text', rm='.brand')
         )
 
-        item_brand = parsers.TextParser(
+        item_brand = parsers.Text(
             pq('.brand::text')
         )
 
-        item_price = parsers.PriceFloatParser(
+        item_price = parsers.PriceFloat(
             pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloatParser(
+        item_sale_price = parsers.PriceFloat(
             pq('#sale-price::text')
         )
 
@@ -477,8 +474,8 @@ EasyData ships with multiple items processors to handle different case scenarios
 * :ref:`processors-item-remove-keys-processor`
 * :ref:`processors-item-discount-processor`
 
-Where next?
-=================
+Where go next?
+==============
 It's great to have an understanding how is data shared between components, especially
 if you are planing to build custom parsers or processors. For a brief explanation
 to see how everything works underneath, please refer to :ref:`architecture` section.
