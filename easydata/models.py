@@ -10,7 +10,7 @@ __all__ = ("ItemModel",)
 
 
 class BaseModel(ABC):
-    model_blocks: List[Any] = []
+    block_models: List[Any] = []
 
     data_processors: List[DataBaseProcessor] = []
 
@@ -30,16 +30,20 @@ class BaseModel(ABC):
     def process_item(self, item: dict):
         return item
 
+    @property
+    def model_manager(self):
+        if not self._model_manager:
+            self._model_manager = ModelManager(self)
+
+        return self._model_manager
+
     def _parse_items(
         self,
         data=None,
         **kwargs,
     ):
 
-        if not self._model_manager:
-            self._model_manager = ModelManager(self)
-
-        return self._model_manager.parse_data_to_items(data, **kwargs)
+        return self.model_manager.parse_data_to_items(data, **kwargs)
 
 
 class ItemModel(BaseModel):
