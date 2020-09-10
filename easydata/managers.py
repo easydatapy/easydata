@@ -1,10 +1,13 @@
 from typing import List
 
+from easydata import models
 from easydata.data import DataBag
 from easydata.loaders import ObjectLoader
 from easydata.mixins import ConfigMixin
 from easydata.parsers import Base as BaseParser
 from easydata.utils import mix
+
+__all__ = ("ModelManager",)
 
 
 class ModelManager(ConfigMixin):
@@ -52,6 +55,10 @@ class ModelManager(ConfigMixin):
 
         if isinstance(item_parser, (str, float, int, list, dict)):
             return item_parser
+        elif isinstance(item_parser, models.ItemModel):
+            data = data.copy(item_parser.model_manager)
+
+            return item_parser.parse(data)
         elif isinstance(item_parser, BaseParser):
             return item_parser.parse(data)
 
@@ -63,10 +70,11 @@ class ModelManager(ConfigMixin):
         **kwargs,
     ):
 
-        if data:
-            kwargs["data"] = data
+        if not isinstance(data, DataBag):
+            if data:
+                kwargs["data"] = data
 
-        data = DataBag(self, **kwargs)
+            data = DataBag(self, **kwargs)
 
         data = self._apply_data_processors(data)
 
@@ -123,8 +131,8 @@ class ModelManager(ConfigMixin):
         return item
 
     def _process_model_obj(self, model):
-        if model.model_blocks:
-            for model_block in model.model_blocks:
+        if model.block_models:
+            for model_block in model.block_models:
                 self._process_model_obj(model_block)
 
         self._load_item_parsers_from_model(model)
