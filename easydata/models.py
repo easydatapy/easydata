@@ -6,8 +6,6 @@ from easydata.managers import ModelManager
 from easydata.processors.base import BaseProcessor
 from easydata.processors.data import DataBaseProcessor
 
-__all__ = ("ItemModel",)
-
 
 class BaseModel(ABC):
     block_models: List[Any] = []
