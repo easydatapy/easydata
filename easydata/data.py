@@ -53,11 +53,17 @@ class DataBag(ConfigMixin):
 
         return results
 
-    def copy(self):
+    def copy(self, model_manager=None):
         data_copy = self.__dict__.copy()
 
         del data_copy["_model_manager"]
         del data_copy["_cached_results"]
+
+        if model_manager:
+            return DataBag(
+                model_manager=model_manager,
+                **data_copy,
+            )
 
         return DataBag(
             model_manager=self._model_manager,
