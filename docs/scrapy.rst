@@ -3,4 +3,5 @@
 ======
 Scrapy
 ======
-...
+
+*Examples coming soon*

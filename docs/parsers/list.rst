@@ -138,8 +138,11 @@ Now lets parse ``test_html_text`` data and print our result.
         'https://demo.com/imgs/3.jpg'
     ]
 
-unique
-------
+
+Parameters
+----------
+
+.. option:: unique
 
 By default ``List`` parser will ensure that all values in a returned ``list``
 are unique and that there are no duplicate values.
@@ -209,7 +212,8 @@ Now lets parse ``test_json_text`` data and print our result.
 
 As we can see our list contains now two ``https://demo.com/imgs/3.jpg`` values.
 
-**max_num**
+
+.. option:: max_num
 
 Setting a ``int`` value to ``max_num`` parameter will basically ensure how many
 values we want in our end ``list`` result.
@@ -244,7 +248,8 @@ As we can see, our original ``list`` had 3 image urls in it, and now because we 
 set to our parameter ``max_num`` value of 2, we get only ``list`` consisted of 2
 image urls.
 
-**split_key**
+
+.. option:: split_key
 
 Through ``split_key`` we can break a text into list which be processed by ``List``
 parser.
@@ -282,8 +287,11 @@ TextList
 ``TextList`` extends ``List`` parsers and therefore all parameters from it, are also
 available in ``TextList``. ``TextList`` output is a ``list`` of ``str``.
 
-allow
------
+
+Parameters
+----------
+
+.. option:: allow
 
 We can control which list values we want to get extracted by providing list of
 keywords into ``allow`` parameter. Provided keys are not case sensitive and regex
@@ -311,8 +319,8 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.eu'
     ]
 
-callow
-------
+
+.. option:: callow
 
 ``callow`` is similar to ``allow`` but with exception that provided keys
 are case sensitive. Regex pattern as a key is also supported.
@@ -338,8 +346,8 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.eu'
     ]
 
-from_allow
-----------
+
+.. option:: from_allow
 
 We can skip list values by providing keys in ``from_allow`` parameter.
 Keys are not case sensitive and regex pattern is also supported.
@@ -367,8 +375,7 @@ Now lets parse ``test_list`` data and print our result.
     ]
 
 
-from_callow
------------
+.. option:: from_callow
 
 ``from_callow`` is similar to ``from_allow`` but with exception that
 provided keys are case sensitive. Regex pattern as a key is also supported.
@@ -417,8 +424,7 @@ Now lets parse ``test_list`` data and print our result.
     []
 
 
-to_allow
---------
+.. option:: to_allow
 
 ``to_allow`` is similar to ``from_allow`` but in reverse order. Here
 are list values skipped after provided key is found. Keys are not case
@@ -447,8 +453,7 @@ Now lets parse ``test_list`` data and print our result.
     ]
 
 
-to_callow
----------
+.. option:: to_callow
 
 ``to_callow`` is similar to ``to_allow`` but with exception that
 provided keys are case sensitive. Regex pattern is also supported.
@@ -501,8 +506,8 @@ Now lets parse ``test_list`` data and print our result.
     ]
 
 
-multiply_keys
--------------
+.. option:: multiply_keys
+
 Setting values into ``multiply_keys`` enables you to parse ``str`` or a first
 value from a ``list`` into multiple values. Lets check bellow example for a
 better understanding.

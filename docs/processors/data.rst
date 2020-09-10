@@ -22,15 +22,18 @@ from a ``DataBaseProcessor``.
     Also ``DataBaseProcessor`` cannot be used in a model, since it's an abstract
     class.
 
-source
-______
+Parameters
+----------
+
+.. option:: source
+
 Default value of ``source`` parameter is ``data``. This means that by default
 ``DataProcessor`` will always look into ``DataBag`` for a ``data`` key and
 it's content. If we need to modify content from a different ``source``
 in a ``DataBag``, then we just need to change ``source`` value.
 
-new_source
-__________
+.. option:: new_source
+
 By default content that is getting processed from the ``source`` value, will be
 overwritten in a ``DataBag`` under key that is specified by ``source`` parameter.
 
@@ -43,6 +46,9 @@ name under a ``new_source`` parameter.
     default will look into a **data** key source and we need to specify that
     under a parsers parameter **source**, which name is same as key from a
     ``new_source`` in a data processor property.
+
+.. option:: process_source_data
+
 
 .. _processors-data-to-pq-processor:
 
@@ -57,6 +63,13 @@ DataJsonToDictProcessor
 =======================
 
 .. autoclass:: easydata.processors.data::DataJsonToDictProcessor
+
+.. _processors-data-yaml-to-dict-processor:
+
+DataYamlToDictProcessor
+=======================
+
+.. autoclass:: easydata.processors.data::DataYamlToDictProcessor
 
 .. _processors-data-json-from-query-to-dict-processor:
 

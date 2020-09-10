@@ -43,6 +43,8 @@ attribute:
         ED_DATETIME_FORMAT = ''%d.%m.%Y %H:%M:%S'
         ...
 
+.. _config-project-config-module:
+
 Project config module
 ---------------------
 Global config can be overridden by creating your own config module. Then you need to
@@ -60,7 +62,7 @@ Note that the config module should be on the Python
 
 Default global config
 ---------------------
-The global defaults are located in the ``easydata.default.config`` module and
+The global defaults are located in the ``easydata.config.default`` module and
 documented in the :ref:`config-reference` section.
 
 
@@ -70,6 +72,27 @@ Config names are usually prefixed with the component that they configure. For
 example, proper config names for a date time parsers would be ``ED_URL_DOMAIN``,
 ``ED_URL_PROTOCOL``, etc.
 
+
+Accessing config
+================
+
+Via ``easydata.utils.config``:
+
+.. code-block:: python
+
+    from easydata.utils import config
+
+.. code-block:: python
+
+    >>> config.get('ED_LANGUAGE')
+    'en'
+
+Examples above will return default config values or if they are overwritten or newly added
+via :ref:`config-project-config-module`
+
+Or via ``config`` property in a ``parser``, ``model`` or ``processor`` components.
+Through ``config`` property in a component, we will get any config value that was defined or
+overwritten in a ``model``.
 
 .. _config-reference:
 

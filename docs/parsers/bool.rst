@@ -41,8 +41,11 @@ Use of query selectors is not required, as we can see bellow.
     >>> parsers.Bool().parse(test_data)
     True
 
-contains
---------
+
+Parameters
+----------
+
+.. option:: contains
 
 ``contains`` property can accept list of keys which will be used for a
 match in a lookup text. If match is found then ``True`` is returned. Please
@@ -56,8 +59,7 @@ also accepted.
     True
 
 
-ccontains
----------
+.. option:: ccontains
 
 ``ccontains`` works in a same way as ``contains`` parameter, with an exception
 that keys are case sensitive.
@@ -76,8 +78,8 @@ Lets try with lowercase keys.
     >>> parsers.Bool(contains=['Pro 13']).parse(text)
     False
 
-contains_query
---------------
+
+.. option:: contains_query
 
 ``contains_query`` is a powerful feature that enables you to specify dynamic
 search keys by using query selectors. In example bellow we will use ``jp``
@@ -89,8 +91,8 @@ query selector to get our contains keys.
     >>> parsers.Bool(jp('title'), contains_query=jp('info.brand')).parse(text)
     True
 
-contains_query_source
----------------------
+
+.. option:: contains_query_source
 
 ``contains_query_source`` will work only when our bool parser is used inside
 ``model`` in order to select different source from ``data`` object.
@@ -117,8 +119,8 @@ Now lets test our newly created ``model`` with adding multiple data sources to i
     >>> item_model = ProductItemModel().parse_item(test_dict, brand_data=test_brand_dict)
     {'stock': True}
 
-empty_as_false
---------------
+
+.. option:: empty_as_false
 
 By default bool parser will always return ``False`` if there is no match or if
 given lookup data is empty or contains value of ``None``.

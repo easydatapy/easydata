@@ -7,7 +7,6 @@ Architecture
 ``easydata`` consist of several components:
 
 * model
-* block
 * parsers
 * queries
 * data processors
@@ -31,8 +30,6 @@ pass to ``parse_item`` method later on in this tutorial.
 
     >> json_text = '{"price": 999.90}'
     >> html_text = '<p class="sale_price">499.9<p>'
-
-    >> product_model.parse_item(main_data_dict, )
 
 Now we will create a simple ``ItemModel`` and explain how data is passed and processed
 through other components.
@@ -95,13 +92,13 @@ Similar principles apply also for data processors.
     a model. All other components (except ``items_processor``) have access to it in
     order to extract, create, modify or delete data in a ``DataBag`` dictionary.
 
-When ``DataBag`` was created under the hood in on a ``parse_item`` call, it will be passed
+When ``DataBag`` is created under the hood on a ``parse_item`` call, it will be passed
 first through **data processors**, where it will be modified or transformed and in next
 step will be passed further to item parsers. In item parsers, data will be extracted from
 a ``DataBag`` and it's values stored in a item dictionary.
 
-Before final output, item dictionary will get passed through ``items_processor`` if there is
-a need for keys or values modifications.
+Before final output, item dictionary will get passed through ``items_processor``, if there is
+a need for item dictionary keys or values to be modified.
 
-To get better understanding regarding processors and many other components please
+To get better understanding regarding processors and many other components, please
 proceed further to :ref:`advanced` section.

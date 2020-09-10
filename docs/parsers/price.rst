@@ -45,8 +45,11 @@ Another example with a ``float`` data source.
     >>> parsers.PriceFloat(jp('price')).parse(test_dict)
     3330.9
 
-decimals
---------
+
+Parameters
+----------
+
+.. option:: decimals
 
 We can manipulate how many ``decimals`` parsed value will be have. By default
 this limit is ``2``, but we can change this value with a ``decimals`` parameter.

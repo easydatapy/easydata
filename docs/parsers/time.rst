@@ -45,8 +45,11 @@ Any invalid string without datetime will cause ``DateTime`` parser to return Non
     >>> parsers.DateTime(jp('datetime')).parse(test_dict)
     None
 
-datetime_format
----------------
+
+Parameters
+----------
+
+.. option:: datetime_format
 
 We can change our date time output in any valid str format that we want through a
 ``datetime_format`` parameter.
@@ -57,8 +60,8 @@ We can change our date time output in any valid str format that we want through 
     >>> parsers.DateTime(datetime_format='%d.%m.%Y %H:%M:%S').parse(test_date_text)
     '10.12.2018 10:55:50'
 
-min_year
---------
+
+.. option:: min_year
 
 If we set value in a ``min_year`` parameter and year of our date time in a string is
 bellow our min year limit, then the output will be ``None``.
@@ -79,8 +82,8 @@ Now with a year that it's bellow our ``min_year`` limit.
     >>> parsers.DateTime(min_year='2015').parse(test_date_text)
     None
 
-max_year
---------
+
+.. option:: max_year
 
 If we set value in a ``max_year`` parameter and year of our date time in a string is
 over our max year limit, then the output will be ``None``.
@@ -158,8 +161,11 @@ Any invalid string without a date will cause ``Date`` parser to return None.
     >>> parsers.DateTime(jp('date')).parse(test_dict)
     None
 
-date_format
------------
+
+Parameters
+----------
+
+.. option:: date_format
 
 We can change our date time output in any valid str format that we want through a
 ``date_format`` parameter.
@@ -226,8 +232,11 @@ Any invalid string without a date will cause ``Time`` parser to return None.
     >>> parsers.Time(jp('time')).parse(test_dict)
     None
 
-time_format
------------
+
+Parameters
+----------
+
+.. option:: time_format
 
 We can change our date time output in any valid str format that we want through a
 ``time_format`` parameter.
