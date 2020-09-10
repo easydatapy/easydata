@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
 import xmltodict
+import yaml
 from pyquery import PyQuery
 
 from easydata.data import DataBag
@@ -81,13 +82,33 @@ class DataToPqProcessor(DataBaseProcessor):
 
 
 class DataJsonToDictProcessor(DataBaseProcessor):
-    def _process_data(self, source_data: str) -> PyQuery:
+    def _process_data(self, source_data: str) -> dict:
         return json.loads(source_data)
+
+
+class DataYamlToDictProcessor(DataBaseProcessor):
+    def __init__(
+        self,
+        *args,
+        safe_load: bool = True,
+        **kwargs,
+    ):
+
+        self._safe_load = safe_load
+
+        super().__init__(*args, **kwargs)
+
+    def _process_data(self, source_data: str) -> dict:
+        if self._safe_load:
+            return yaml.safe_load(source_data)
+
+        return yaml.load(source_data)
 
 
 class DataXmlToDictProcessor(DataBaseProcessor):
     def __init__(
         self,
+        *args,
         process_namespaces: bool = False,
         namespace_separator: str = ":",
         namespaces: Optional[dict] = None,
@@ -121,7 +142,7 @@ class DataXmlToDictProcessor(DataBaseProcessor):
 
         self.__item_depth = item_depth
 
-        super(DataXmlToDictProcessor, self).__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def _item_depth(self):
@@ -155,7 +176,7 @@ class DataFromQueryProcessor(DataBaseProcessor):
         if isinstance(query, QuerySearch):
             self._query = [query]
 
-        super(DataFromQueryProcessor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _process_data(self, data: Any) -> Any:
         return parse.query_search(self._query, data)
@@ -163,7 +184,7 @@ class DataFromQueryProcessor(DataBaseProcessor):
 
 class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
     def process_data(self, data: Any) -> Any:
-        jt = super(DataJsonFromQueryToDictProcessor, self)._process_data(data)
+        jt = super()._process_data(data)
 
         return json.loads(jt)
 
@@ -171,6 +192,7 @@ class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
 class DataTextFromReProcessor(DataBaseProcessor):
     def __init__(
         self,
+        *args,
         re_query,
         multi=False,
         dotall=True,
@@ -185,7 +207,7 @@ class DataTextFromReProcessor(DataBaseProcessor):
         self._none_if_empty = none_if_empty
         self._process_value = process_value
 
-        super(DataTextFromReProcessor, self).__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
     def _process_data(self, source_data: str) -> Any:
         results = re.findall(self._re_query, source_data, re.DOTALL)
@@ -205,7 +227,7 @@ class DataTextFromReProcessor(DataBaseProcessor):
 
 class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
     def _process_data(self, source_data: str) -> Any:
-        res = super(DataJsonFromReToDictProcessor, self)._process_data(source_data)
+        res = super()._process_data(source_data)
 
         if not res:
             return None
@@ -250,7 +272,7 @@ class DataVariantProcessor(DataBaseProcessor):
         self._with_variant_values = with_variant_values
         self._variant_values_lower = variant_values_lower
 
-        super(DataVariantProcessor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _process_data(self, data: Any) -> Any:
         if self._parser:

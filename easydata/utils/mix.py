@@ -92,22 +92,30 @@ def apply_processors(
     return value
 
 
-def extract_item_attr_names_from_cls(cls, preserve_item_prefix=False):
+def extract_attr_names_from_obj(obj: object, attr_prefix: str):
+
     attr_names = []
 
-    for attr_name in dir(cls):
-        if attr_name.startswith("item_"):
-            if preserve_item_prefix:
-                attr_names.append(attr_name)
-            else:
-                attr_names.append(attr_name.lstrip("item").lstrip("_"))
+    for attr_name in dir(obj):
+        if attr_name.startswith(attr_prefix + "_"):
+            attr_names.append(attr_name)
 
     return attr_names
 
 
-def iter_item_attr_data_from_cls(cls):
-    for attr_name in extract_item_attr_names_from_cls(cls, True):
-        yield attr_name, getattr(cls, attr_name)
+def iter_attr_data_from_obj(
+    obj: object, attr_prefix: str, preserve_prefix: bool = False
+):
+
+    attr_name = extract_attr_names_from_obj(obj=obj, attr_prefix=attr_prefix)
+
+    for attr_name in attr_name:
+        attr_value = getattr(obj, attr_name)
+
+        if not preserve_prefix:
+            attr_name = attr_name.lstrip(attr_prefix).lstrip("_")
+
+        yield attr_name, attr_value
 
 
 def make_variant_data_copy(
