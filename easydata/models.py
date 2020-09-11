@@ -12,7 +12,7 @@ class BaseModel(ABC):
 
     data_processors: List[DataBaseProcessor] = []
 
-    items_processors: List[BaseProcessor] = []
+    item_processors: List[BaseProcessor] = []
 
     _model_manager: Optional[ModelManager] = None
 
@@ -27,6 +27,12 @@ class BaseModel(ABC):
 
     def process_item(self, item: dict):
         return item
+
+    def init_model(self):
+        pass
+
+    def initialized_model(self):
+        pass
 
     @property
     def model_manager(self):

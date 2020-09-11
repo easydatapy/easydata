@@ -48,7 +48,7 @@ through other components.
             source='html'
         )
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
