@@ -11,7 +11,7 @@ __all__ = ("ModelManager",)
 
 
 class ModelManager(ConfigMixin):
-    _ignore_item_attr_prefix = ['item_processors']
+    _ignore_item_attr_prefix = ["item_processors"]
 
     def __init__(self, model):
         self._model = model
@@ -30,7 +30,7 @@ class ModelManager(ConfigMixin):
         self._init_model(model)
 
         self._init_config()
-        
+
         self._init_parsers_config()
 
     @property
@@ -146,7 +146,7 @@ class ModelManager(ConfigMixin):
         if model.block_models:
             for model_block in model.block_models:
                 self._init_model(model_block)
-                
+
         model.init_model()
 
         self._load_item_parsers_from_model(model)
@@ -165,7 +165,7 @@ class ModelManager(ConfigMixin):
 
     def _init_config(self):
         self.init_config(self._config_properties)
-    
+
     def _init_parsers_config(self):
         for parser_instance in self._item_parsers.values():
             if isinstance(parser_instance, BaseParser):
