@@ -52,7 +52,7 @@ data from the HTML above.
             pq('#sale-price::text')
         )
 
-        items_processors = [
+        item_processors = [
             ('discount', ItemDiscountProcessor())
         ]
 
@@ -116,7 +116,7 @@ If needed, we can easily disable ``ItemDiscountProcessor`` in our ``ProductItemM
             PricingBlockModel()
         ]
 
-        items_processors = [
+        item_processors = [
             ('discount', None)
         ]
 
@@ -208,7 +208,7 @@ For starters lets create *block models* without named item processors.
             pq('#sale-price::text')
         )
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
@@ -223,7 +223,7 @@ with custom parameters in our model.
             PricingBlockModel()
         ]
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor(no_decimals=True)
         ]
 
@@ -231,7 +231,7 @@ with custom parameters in our model.
 
 In this case ``ItemDiscountProcessor`` from our ``ProductItemModel`` would be joined
 together with the same processor from the ``PricingBlockModel``. For better understanding
-lets just show a list how ``items_processors`` behind the scene look like now.
+lets just show a list how ``item_processors`` behind the scene look like now.
 
 .. code-block:: python
 
@@ -257,7 +257,7 @@ To solve this issue, named processors are the solution. Lets recreate our
             pq('#sale-price::text')
         )
 
-        items_processors = [
+        item_processors = [
             ('discount', ItemDiscountProcessor())
         ]
 
@@ -271,7 +271,7 @@ we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingB
             PricingBlockModel()
         ]
 
-        items_processors = [
+        item_processors = [
             ('discount', ItemDiscountProcessor(no_decimals=True))
         ]
 
@@ -289,7 +289,7 @@ adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
             PricingBlockModel()
         ]
 
-        items_processors = [
+        item_processors = [
             ('discount', None)
         ]
 
@@ -316,7 +316,7 @@ Lets show this in example below.
             pq('#sale-price::text')
         )
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
@@ -447,8 +447,8 @@ Follow example bellow to get more info regarding these two methods.
     }
 
 Now lets create our model which will process our ``test_dict``. With a ``preprocess_item``
-we will modify item dictionary before ``items_processors`` are fired so that we can prepare
-item in order to be used in  ``items_processors``. In example bellow we will fix wrong sale
+we will modify item dictionary before ``item_processors`` are fired so that we can prepare
+item in order to be used in  ``item_processors``. In example bellow we will fix wrong sale
 price, so that ``ItemDiscountProcessor`` can properly calculate discount and later we will
 utilize ``process_item`` method, where new dictionary item ``final_sale`` will be created
 with bool value, which is determined if price is discounted or not.
@@ -460,7 +460,7 @@ with bool value, which is determined if price is discounted or not.
 
         item_temp_sale_price = parsers.PriceFloat(jp('sale_price'))
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
@@ -497,7 +497,7 @@ Output:
 .. note::
     *Please note that sale_price is missing in final output because we declared in
     a model our sale price property as a temporary and those get deleted at the end,
-    but they are still accessible in ``preprocess_item``, ``items_processors`` and
+    but they are still accessible in ``preprocess_item``, ``item_processors`` and
     ``process_item``.*
 
 Variants

@@ -366,7 +366,7 @@ In this example we will use following html:
         </html>
     """
 
-Lets create our item model with ``items_processors``
+Lets create our item model with ``item_processors``
 
 .. code-block:: python
 
@@ -392,7 +392,7 @@ Lets create our item model with ``items_processors``
             pq('#sale-price::text')
         )
 
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
@@ -422,7 +422,7 @@ Lets see how ``ItemDiscountProcessor`` works in more detail.
 .. code-block:: python
 
         ...
-        items_processors = [
+        item_processors = [
             ItemDiscountProcessor()
         ]
 
@@ -439,7 +439,7 @@ We can also specify multiple items processors if needed:
 
 .. code-block:: python
 
-    items_processors = [
+    item_processors = [
         ItemDiscountProcessor(),
         ItemKeysMergeIntoDictProcessor(
             new_item_key='price_info',
@@ -448,7 +448,7 @@ We can also specify multiple items processors if needed:
         )
     ]
 
-``items_processors`` in above example would produce following output:
+``item_processors`` in above example would produce following output:
 
 .. code-block:: python
 

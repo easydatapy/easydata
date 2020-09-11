@@ -43,7 +43,7 @@ class ProductSimpleWithProcessItemModel(ItemModel):
 
     item_temp_sale_price = parsers.PriceFloat(jp("sale_price"))
 
-    items_processors = [ItemDiscountProcessor()]
+    item_processors = [ItemDiscountProcessor()]
 
     def preprocess_item(self, item):
         if item["sale_price"] <= 1:
@@ -62,7 +62,7 @@ class PricingBlockModel(ItemModel):
 
     item_sale_price = parsers.PriceFloat(pq("#sale-price::text"))
 
-    items_processors = [("discount", ItemDiscountProcessor())]
+    item_processors = [("discount", ItemDiscountProcessor())]
 
 
 class SettingsBlockModel(ItemModel):
