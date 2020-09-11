@@ -11,6 +11,8 @@ __all__ = ("ModelManager",)
 
 
 class ModelManager(ConfigMixin):
+    _ignore_item_attr_prefix = ['item_processors']
+
     def __init__(self, model):
         self._model = model
 
@@ -25,9 +27,11 @@ class ModelManager(ConfigMixin):
         self._data_processors_loader = ObjectLoader()
         self._item_processors_loader = ObjectLoader()
 
-        self._process_model_obj(model)
+        self._init_model(model)
 
         self._init_config()
+        
+        self._init_parsers_config()
 
     @property
     def data_variants_name(self):
@@ -40,6 +44,14 @@ class ModelManager(ConfigMixin):
     @property
     def data_variant_name(self):
         return self.config["ED_DATA_VARIANT_NAME"]
+
+    @property
+    def data_processors(self) -> ObjectLoader:
+        return self._data_processors_loader
+
+    @property
+    def item_processors(self) -> ObjectLoader:
+        return self._item_processors_loader
 
     def item_keys(self):
         return list(self._item_parsers.keys())
@@ -82,13 +94,13 @@ class ModelManager(ConfigMixin):
             for variant_data in self._parse_variants_data(data):
                 item = variant_data.get_all()
 
-                item = self._apply_items_processors(item)
+                item = self._apply_item_processors(item)
 
                 yield self._remove_temp_item_keys(item)
         else:
             item = data.get_all()
 
-            item = self._apply_items_processors(item)
+            item = self._apply_item_processors(item)
 
             yield self._remove_temp_item_keys(item)
 
@@ -106,7 +118,7 @@ class ModelManager(ConfigMixin):
 
         return data
 
-    def _apply_items_processors(self, item: dict) -> dict:
+    def _apply_item_processors(self, item: dict) -> dict:
         for model in self._models:
             item = model.preprocess_item(item)
 
@@ -130,10 +142,12 @@ class ModelManager(ConfigMixin):
 
         return item
 
-    def _process_model_obj(self, model):
+    def _init_model(self, model):
         if model.block_models:
             for model_block in model.block_models:
-                self._process_model_obj(model_block)
+                self._init_model(model_block)
+                
+        model.init_model()
 
         self._load_item_parsers_from_model(model)
 
@@ -142,22 +156,29 @@ class ModelManager(ConfigMixin):
         if model.data_processors:
             self._data_processors_loader.add_list(model.data_processors)
 
-        if model.items_processors:
-            self._item_processors_loader.add_list(model.items_processors)
+        if model.item_processors:
+            self._item_processors_loader.add_list(model.item_processors)
+
+        model.initialized_model()
 
         self._models.append(model)
 
     def _init_config(self):
-        # Init config key and values from models
         self.init_config(self._config_properties)
-
-        # Init parsers config
+    
+    def _init_parsers_config(self):
         for parser_instance in self._item_parsers.values():
             if isinstance(parser_instance, BaseParser):
                 parser_instance.init_config(self.config)
 
     def _load_item_parsers_from_model(self, model):
-        for item_name, parser_method in mix.iter_attr_data_from_obj(model, "item"):
+        item_attr_items = mix.iter_attr_data_from_obj(
+            obj=model,
+            attr_prefix="item",
+            ignore_attr_prefix=self._ignore_item_attr_prefix,
+        )
+
+        for item_name, parser_method in item_attr_items:
             if item_name.startswith("temp_"):
                 item_name = item_name.replace("temp_", "")
 
@@ -174,7 +195,9 @@ class ModelManager(ConfigMixin):
 
     def _load_config_properties_from_model(self, model):
         config_data = mix.iter_attr_data_from_obj(
-            obj=model, attr_prefix="ED", preserve_prefix=True
+            obj=model,
+            attr_prefix="ED",
+            preserve_prefix=True,
         )
 
         for config_name, config_value in config_data:
