@@ -25,18 +25,3 @@ def test_query_search_queries_list():
         )
         == 899.99
     )
-
-
-def test_query_search_iter():
-    test_data = {"brand": ["Groove", "Peach"]}
-
-    assert parse.query_search_iter(query=jp("brand"), data=test_data) == [
-        "Groove",
-        "Peach",
-    ]
-
-
-def test_query_search_iter_data_bag():
-    assert parse.query_search_iter(
-        query=jp("prices").values(), data=dict_db, source="data"
-    ) == [899.99, 799.99]

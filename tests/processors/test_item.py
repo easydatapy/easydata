@@ -3,7 +3,7 @@ import pytest
 from easydata import processors
 
 
-def test_item_merge_into_list_processor() -> None:
+def test_item_merge_into_list_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeIntoListProcessor(
@@ -16,7 +16,7 @@ def test_item_merge_into_list_processor() -> None:
     assert all(k not in item for k in ["category", "subcategory"])
 
 
-def test_item_merge_into_list_processor_preserve_original() -> None:
+def test_item_merge_into_list_processor_preserve_original():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeIntoListProcessor(
@@ -31,7 +31,7 @@ def test_item_merge_into_list_processor_preserve_original() -> None:
     assert all(k in item for k in ["category", "subcategory"])
 
 
-def test_item_merge_into_list_processor_ignore_none() -> None:
+def test_item_merge_into_list_processor_ignore_none():
     test_item = {"category": "electronics", "subcategory": "phones", "type": None}
 
     item = processors.ItemKeysMergeIntoListProcessor(
@@ -41,7 +41,7 @@ def test_item_merge_into_list_processor_ignore_none() -> None:
     assert item["breadcrumbs"] == ["electronics", "phones"]
 
 
-def test_item_merge_into_list_processor_ignore_none_false() -> None:
+def test_item_merge_into_list_processor_ignore_none_false():
     test_item = {"category": "electronics", "subcategory": "phones", "type": None}
 
     item = processors.ItemKeysMergeIntoListProcessor(
@@ -53,7 +53,7 @@ def test_item_merge_into_list_processor_ignore_none_false() -> None:
     assert item["breadcrumbs"] == ["electronics", "phones", None]
 
 
-def test_item_merge_into_list_processor_wrong_field_exception() -> None:
+def test_item_merge_into_list_processor_wrong_field_exception():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     with pytest.raises(KeyError):
@@ -62,7 +62,7 @@ def test_item_merge_into_list_processor_wrong_field_exception() -> None:
         ).parse(test_item)
 
 
-def test_item_merge_into_dict_processor() -> None:
+def test_item_merge_into_dict_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeIntoDictProcessor(
@@ -72,7 +72,7 @@ def test_item_merge_into_dict_processor() -> None:
     assert item["breadcrumbs"] == {"category": "electronics", "subcategory": "phones"}
 
 
-def test_item_merge_processor() -> None:
+def test_item_merge_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeProcessor(
@@ -82,7 +82,7 @@ def test_item_merge_processor() -> None:
     assert item["breadcrumbs"] == "electronics phones"
 
 
-def test_item_merge_processor_custom_separator() -> None:
+def test_item_merge_processor_custom_separator():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeProcessor(
@@ -94,7 +94,7 @@ def test_item_merge_processor_custom_separator() -> None:
     assert item["breadcrumbs"] == "electronics > phones"
 
 
-def test_item_merge_processor_preserve_original() -> None:
+def test_item_merge_processor_preserve_original():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     item = processors.ItemKeysMergeProcessor(
@@ -110,7 +110,7 @@ def test_item_merge_processor_preserve_original() -> None:
     assert all(k in item for k in ["category", "subcategory"])
 
 
-def test_item_to_str_processor() -> None:
+def test_item_to_str_processor():
     test_item = {"price": 19.99, "price_int": 22, "price_none": None}
 
     item = processors.ItemValueToStrProcessor(
@@ -120,7 +120,7 @@ def test_item_to_str_processor() -> None:
     assert item == {"price": "19.99", "price_int": "22", "price_none": ""}
 
 
-def test_item_to_str_processor_none_as_empty_string_false() -> None:
+def test_item_to_str_processor_none_as_empty_string_false():
     test_item = {"price_none": None}
 
     item = processors.ItemValueToStrProcessor(
@@ -130,7 +130,7 @@ def test_item_to_str_processor_none_as_empty_string_false() -> None:
     assert item == {"price_none": None}
 
 
-def test_item_remove_processor() -> None:
+def test_item_remove_processor():
     test_item = {"price": 19.99, "price_int": 22, "price_none": None}
 
     item = processors.ItemRemoveKeysProcessor(item_keys=["price", "price_none"]).parse(
@@ -148,7 +148,7 @@ def test_item_remove_processor() -> None:
         ("29.99", 22, 26.64),
     ],
 )
-def test_item_discount_processor(price, sale_price, result) -> None:
+def test_item_discount_processor(price, sale_price, result):
 
     test_item = {"price": price, "sale_price": sale_price}
 
@@ -157,7 +157,7 @@ def test_item_discount_processor(price, sale_price, result) -> None:
     assert item["discount"] == result
 
 
-def test_item_discount_processor_custom_keys() -> None:
+def test_item_discount_processor_custom_keys():
     test_item = {"old_price": "29.99", "price": 22}
 
     item = processors.ItemDiscountProcessor(
@@ -170,7 +170,7 @@ def test_item_discount_processor_custom_keys() -> None:
     assert item == expected_result
 
 
-def test_item_discount_processor_custom_keys_config() -> None:
+def test_item_discount_processor_custom_keys_config():
     test_item = {"old_price": "29.99", "price": 22}
 
     # Test config setting
@@ -196,7 +196,7 @@ def test_item_discount_processor_custom_keys_config() -> None:
         (29.99, 21.99, 4, 26.6756),
     ],
 )
-def test_item_discount_processor_decimals(price, sale_price, decimals, result) -> None:
+def test_item_discount_processor_decimals(price, sale_price, decimals, result):
 
     test_item = {"price": price, "sale_price": sale_price}
 
@@ -205,7 +205,7 @@ def test_item_discount_processor_decimals(price, sale_price, decimals, result) -
     assert item["discount"] == result
 
 
-def test_item_discount_processor_decimals_config() -> None:
+def test_item_discount_processor_decimals_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
     discount_processor = processors.ItemDiscountProcessor()
@@ -216,7 +216,7 @@ def test_item_discount_processor_decimals_config() -> None:
     assert item["discount"] == 26.6756
 
 
-def test_item_discount_processor_no_decimals() -> None:
+def test_item_discount_processor_no_decimals():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
     item = processors.ItemDiscountProcessor(no_decimals=True).parse(test_item)
@@ -224,7 +224,7 @@ def test_item_discount_processor_no_decimals() -> None:
     assert item["discount"] == 27
 
 
-def test_item_discount_processor_no_decimals_config() -> None:
+def test_item_discount_processor_no_decimals_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
     discount_processor = processors.ItemDiscountProcessor()
@@ -235,22 +235,22 @@ def test_item_discount_processor_no_decimals_config() -> None:
     assert item["discount"] == 27
 
 
-def test_item_discount_processor_rm_item_sale_price_key() -> None:
+def test_item_discount_processor_remove_item_sale_price_key():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    item = processors.ItemDiscountProcessor(rm_item_sale_price_key=True).parse(
+    item = processors.ItemDiscountProcessor(remove_item_sale_price_key=True).parse(
         test_item
     )
 
     assert item == {"price": 29.99, "discount": 26.68}
 
 
-def test_item_discount_processor_rm_item_sale_price_key_config() -> None:
+def test_item_discount_processor_remove_item_sale_price_key_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
     discount_processor = processors.ItemDiscountProcessor()
 
-    custom_config = {"ED_ITEM_DISCOUNT_RM_ITEM_SALE_PRICE_KEY": True}
+    custom_config = {"ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY": True}
     discount_processor.init_config(custom_config)
 
     item = discount_processor.parse(test_item)

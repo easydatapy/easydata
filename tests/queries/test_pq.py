@@ -1,3 +1,5 @@
+import pytest
+
 from easydata.queries import pq
 
 test_html = """
@@ -34,18 +36,35 @@ def test_pq_query_text():
     assert pq(".brand::text").get(test_html) == "EasyData"
 
 
-def test_pq_query_all():
-    # Test default
-    assert pq(".breadcrumbs .breadcrumb::text").get(test_html) == "Home"
+@pytest.mark.parametrize(
+    "query, result",
+    [
+        (".breadcrumbs .breadcrumb::text", "Home"),
+        (".breadcrumbs .breadcrumb::text-all", "Home Phone Smartphone"),
+    ],
+)
+def test_pq_query_all(query, result):
+    assert pq(query).get(test_html) == result
 
-    # Test all
-    result = "Home Phone Smartphone"
-    assert pq(".breadcrumbs .breadcrumb::text-all").get(test_html) == result
+    assert pq(query=query).get(test_html) == result
+
+
+@pytest.mark.parametrize(
+    "query",
+    [".images img::attr(src)-items", ".images img::src-items"],
+)
+def test_pq_query_items(query):
+    assert pq(query).get(test_html) == exp_result_images
 
 
 def test_pq_query_attr():
     exp_result = "smartphone"
     assert pq('[name="category"]::attr(value)').get(test_html) == exp_result
+
+
+def test_pq_query_attr_all():
+    test_all_html = '<input some-strange-value="EasyData">'
+    assert pq("input::attr(some-strange-value)-all").get(test_all_html) == "EasyData"
 
 
 def test_pq_query_attr_val():
@@ -73,24 +92,11 @@ def test_pq_query_attr_href():
     assert result == "http://demo.com/product/123"
 
 
-def test_pq_query_rm():
+def test_pq_query_remove_query():
     exp_result = "Test Product Item"
-    assert pq(".name::text", rm=".brand").get(test_html) == exp_result
-
-
-def test_pq_query_rm_method():
-    exp_result = "Test Product Item"
-    assert pq(".name::text").rm(".brand").get(test_html) == exp_result
+    assert pq(".name::text", remove_query=".brand").get(test_html) == exp_result
 
 
 def test_pq_query_html():
     exp_result = '<div class="brand">EasyData</div>\nTest Product Item'
     assert pq(".name::html").get(test_html).strip().replace("  ", "") == exp_result
-
-
-def test_pq_query_src_get_all():
-    assert pq(".images img::src").get_all(test_html) == exp_result_images
-
-
-def test_pq_query_src_get_iter():
-    assert list(pq(".images img::src").get_iter(test_html)) == exp_result_images
