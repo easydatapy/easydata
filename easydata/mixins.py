@@ -7,6 +7,9 @@ from easydata.utils import config
 class ConfigMixin:
     _config: Optional[ConfigLoader] = None
 
+    def has_config_initialized(self):
+        return bool(self._config)
+
     @property
     def config(self):
         if not self._config:

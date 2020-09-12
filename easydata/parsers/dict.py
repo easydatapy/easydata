@@ -65,19 +65,6 @@ class Dict(BaseData):
 
         self._key_query = key_query
         self._value_query = val_query
-
-        if not key_parser:
-            key_parser = self._default_key_parser_obj
-        else:
-            mix.validate_parser(key_parser)
-
-        if not val_parser:
-            val_parser = self._default_value_parser_obj
-        else:
-            mix.validate_parser(val_parser)
-
-        self._key_parser = key_parser
-        self._value_parser = val_parser
         self._ignore_non_values = ignore_non_values
         self._ignore_non_keys = ignore_non_keys
         self._key_allow = key_allow
@@ -85,10 +72,52 @@ class Dict(BaseData):
         self._key_deny = key_deny
         self._key_cdeny = key_cdeny
 
+        self.__key_parser = key_parser
+        self.__key_parser_obj = None
+
+        self.__value_parser = val_parser
+        self.__value_parser_obj = None
+
         super().__init__(
             query=query,
             **kwargs,
         )
+
+    @property
+    def _key_parser(self):
+        if self.__key_parser_obj:
+            # Key parser already initialized
+            return self.__key_parser_obj
+
+        # Initialize and validate key parser
+        if self.__key_parser:
+            self.__key_parser_obj = self.__key_parser
+        else:
+            self.__key_parser_obj = self._default_key_parser_obj
+
+        mix.validate_parser(self.__key_parser_obj)
+
+        self.__key_parser_obj.init_config(self.config)
+
+        return self.__key_parser_obj
+
+    @property
+    def _value_parser(self):
+        if self.__value_parser_obj:
+            # Value parser already initialized
+            return self.__value_parser_obj
+
+        # Initialize and validate value parser
+        if self.__value_parser:
+            self.__value_parser_obj = self.__value_parser
+        else:
+            self.__value_parser_obj = self._default_value_parser_obj
+
+        mix.validate_parser(self.__value_parser_obj)
+
+        self.__value_parser_obj.init_config(self.config)
+
+        return self.__value_parser_obj
 
     @property
     def _default_key_parser_obj(self):
