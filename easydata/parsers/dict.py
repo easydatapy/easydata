@@ -17,6 +17,7 @@ __all__ = (
     "TextDict",
     "BoolDict",
     "PriceFloatDict",
+    "PriceTextDict",
 )
 
 
@@ -67,13 +68,13 @@ class Dict(BaseData):
 
         if not key_parser:
             key_parser = self._default_key_parser_obj
-
-        mix.validate_parser(key_parser)
+        else:
+            mix.validate_parser(key_parser)
 
         if not val_parser:
             val_parser = self._default_value_parser_obj
-
-        mix.validate_parser(val_parser)
+        else:
+            mix.validate_parser(val_parser)
 
         self._key_parser = key_parser
         self._value_parser = val_parser
@@ -90,11 +91,11 @@ class Dict(BaseData):
         )
 
     @property
-    def _default_key_parser_obj(self) -> Text:
+    def _default_key_parser_obj(self):
         return Text(query=self._key_query, **self._key_text_parser_properties)
 
     @property
-    def _default_value_parser_obj(self) -> Base:
+    def _default_value_parser_obj(self):
         return Data(self._value_query)
 
     def _parse_value(
@@ -110,14 +111,18 @@ class Dict(BaseData):
 
         if isinstance(value, dict):
             for s_key, s_value in value.items():
-                parsed_key = self._key_parser.parse(data, s_key, True)
-                parsed_value = self._value_parser.parse(data, s_value, True)
+                parsed_key = self._key_parser.parse(data, s_key, True)  # type: ignore
+                parsed_value = self._value_parser.parse(  # type: ignore
+                    data, s_value, True
+                )
 
                 values[parsed_key] = parsed_value
         else:
             for s_value in value:
-                parsed_key = self._key_parser.parse(data, s_value, True)
-                parsed_value = self._value_parser.parse(data, s_value, True)
+                parsed_key = self._key_parser.parse(data, s_value, True)  # type: ignore
+                parsed_value = self._value_parser.parse(  # type: ignore
+                    data, s_value, True
+                )
 
                 values[parsed_key] = parsed_value
 
@@ -204,8 +209,11 @@ class TextDict(Dict):
         )
 
     @property
-    def _default_value_parser_obj(self) -> Text:
-        return Text(query=self._value_query, **self._value_text_parser_properties)
+    def _default_value_parser_obj(self):
+        return Text(
+            query=self._value_query,
+            **self._value_text_parser_properties,
+        )
 
     def _filter_dict_items(self, values: dict) -> dict:
         values = super()._filter_dict_items(values)
@@ -261,7 +269,7 @@ class BoolDict(TextDict):
         )
 
     @property
-    def _default_value_parser_obj(self) -> Text:
+    def _default_value_parser_obj(self):
         return Bool(
             query=self._value_query,
             **self._value_bool_parser_properties,
@@ -291,7 +299,7 @@ class PriceFloatDict(TextDict):
         )
 
     @property
-    def _default_value_parser_obj(self) -> Text:
+    def _default_value_parser_obj(self):
         return PriceFloat(
             query=self._value_query,
             **self._value_price_parser_properties,
@@ -301,7 +309,7 @@ class PriceFloatDict(TextDict):
 
 class PriceTextDict(PriceFloatDict):
     @property
-    def _default_value_parser_obj(self) -> Text:
+    def _default_value_parser_obj(self):
         return PriceText(
             query=self._value_query,
             **self._value_price_parser_properties,

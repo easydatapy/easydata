@@ -35,8 +35,8 @@ class List(BaseData):
 
         if not parser:
             parser = self._default_parser_obj
-
-        mix.validate_parser(parser)
+        else:
+            mix.validate_parser(parser)
 
         self._parser = parser
         self._unique = unique
@@ -48,7 +48,7 @@ class List(BaseData):
         super().__init__(**kwargs)
 
     @property
-    def _default_parser_obj(self) -> Base:
+    def _default_parser_obj(self):
         return Data()
 
     def _parse_value(self, value: Any, data: Any) -> list:
@@ -66,7 +66,7 @@ class List(BaseData):
             )
 
         parsed_list_values = [
-            self._parser.parse(data, lvalue, True) for lvalue in list_values
+            self._parser.parse(data, lv, True) for lv in list_values  # type: ignore
         ]
 
         processed_list_values = self._process_list_values(parsed_list_values)
@@ -178,7 +178,7 @@ class TextList(List):
         )
 
     @property
-    def _default_parser_obj(self) -> Text:
+    def _default_parser_obj(self):
         return Text(**self._text_parser_properties)
 
     def _process_list_values(
@@ -264,7 +264,7 @@ class UrlList(TextList):
         )
 
     @property
-    def _default_parser_obj(self) -> Url:
+    def _default_parser_obj(self):
         return Url(
             **self._url_parser_properties,
             **self._text_parser_properties,
