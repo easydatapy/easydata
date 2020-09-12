@@ -76,6 +76,22 @@ def test_dict():
     assert dict_parser.parse(test_dict_sizes) == expected_result
 
 
+def test_dict_config():
+    dict_parser = parsers.Dict(val_parser=parsers.PriceFloat())
+
+    dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
+
+    assert dict_parser.parse({"price": "123.4537"}) == {"price": 123.454}
+
+
+def test_dict_config_override():
+    dict_parser = parsers.Dict(val_parser=parsers.PriceFloat(decimals=4))
+
+    dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
+
+    assert dict_parser.parse({"price": "123.4537"}) == {"price": 123.4537}
+
+
 @pytest.mark.parametrize(
     "test_data, result, properties",
     [
@@ -114,7 +130,11 @@ def test_dict():
             {"sm": "true", "md": "false"},
             {"ignore_non_values": True},
         ),
-        ({"sm": "true", None: "false", "lg": "true"}, {"sm": "true", "lg": "true"}, {}),
+        (
+            {"sm": "true", None: "false", "lg": "true"},
+            {"sm": "true", "lg": "true"},
+            {},
+        ),
         (
             {"sm": "true", None: "false", "lg": "true"},
             {"sm": "true", None: "false", "lg": "true"},
@@ -175,3 +195,69 @@ def test_bool_dict():
 def test_bool_dict_variations(test_data, result, properties):
     bool_dict_parser = parsers.BoolDict(**properties)
     assert bool_dict_parser.parse(test_data) == result
+
+
+@pytest.mark.parametrize(
+    "test_data, result, properties",
+    [
+        (
+            {"price": "123.4537", "sale_price": "55.2145"},
+            {"price": 123.45, "sale_price": 55.21},
+            {},
+        ),
+        (
+            {"price": "123.4537", "sale_price": "55.2145"},
+            {"price": 123.454, "sale_price": 55.215},
+            {"val_decimals": 3},
+        ),
+        (
+            {"price": "123.4537", "sale_price": 1.99},
+            {"price": 123.45, "sale_price": None},
+            {"val_min_value": 3},
+        ),
+        (
+            {"price": "123.4537", "sale_price": 1.99},
+            {"price": 123.45},
+            {"val_min_value": 3, "ignore_non_values": True},
+        ),
+    ],
+)
+def test_price_float_dict_variations(test_data, result, properties):
+    price_dict_parser = parsers.PriceFloatDict(**properties)
+    assert price_dict_parser.parse(test_data) == result
+
+
+def test_price_float_dict_config():
+    price_dict_parser = parsers.PriceFloatDict()
+
+    price_dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
+
+    assert price_dict_parser.parse({"price": "123.4537"}) == {"price": 123.454}
+
+
+def test_price_float_dict_config_override():
+    price_dict_parser = parsers.PriceFloatDict(val_decimals=4)
+
+    price_dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
+
+    assert price_dict_parser.parse({"price": "123.4537"}) == {"price": 123.4537}
+
+
+@pytest.mark.parametrize(
+    "test_data, result, properties",
+    [
+        (
+            {"price": "123.4537", "sale_price": "55.2145"},
+            {"price": "123.45", "sale_price": "55.21"},
+            {},
+        ),
+        (
+            {"price": "123.4537", "sale_price": "1.99"},
+            {"price": "123.45"},
+            {"val_min_value": 3, "ignore_non_values": True},
+        ),
+    ],
+)
+def test_price_text_dict_variations(test_data, result, properties):
+    price_dict_parser = parsers.PriceTextDict(**properties)
+    assert price_dict_parser.parse(test_data) == result

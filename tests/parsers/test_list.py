@@ -66,6 +66,22 @@ def test_list(query, parser, test_data, result):
     assert list_parser.parse(test_data) == result
 
 
+def test_list_config():
+    # Lets test if config settings are correctly passed to a child Url parser!
+    list_parser = parsers.List(parser=parsers.Url())
+    list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
+
+    assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.com/imgs/1.jpg"]
+
+
+def test_list_config_override():
+    # Lets test if config settings can get overriden
+    list_parser = parsers.List(parser=parsers.Url(domain="http://demo.net"))
+    list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
+
+    assert list_parser.parse(["/imgs/1.jpg"]) == ["http://demo.net/imgs/1.jpg"]
+
+
 def test_list_unique_true():
     list_parser = parsers.List(
         pq("#image-container img::items"), parsers.Url(pq("::src")), unique=True
@@ -267,3 +283,19 @@ def test_url_list():
     ]
 
     assert parsers.UrlList().parse(bad_img_urls) == expected_fixed_img_urls
+
+
+def test_url_list_config():
+    # Lets test if config settings are correctly passed to a child Url parser!
+    url_list_parser = parsers.UrlList()
+    url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
+
+    assert url_list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.com/imgs/1.jpg"]
+
+
+def test_url_list_config_override():
+    # Lets test if config settings can get overriden
+    url_list_parser = parsers.UrlList(domain="http://demo.net")
+    url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
+
+    assert url_list_parser.parse(["/imgs/1.jpg"]) == ["http://demo.net/imgs/1.jpg"]
