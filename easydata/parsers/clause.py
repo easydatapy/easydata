@@ -22,8 +22,11 @@ class Union(Base):
     ):
 
         self.parsers = kwargs
-
         self._validate_fields()
+
+    def _config_initialize(self, parser: Base):
+        if not parser.has_config_initialized():
+            parser.init_config(self.config)
 
     def parse(
         self,
@@ -33,6 +36,8 @@ class Union(Base):
     ) -> Any:
 
         for parser in self.parsers:
+            self._config_initialize(parser)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,
@@ -57,6 +62,9 @@ class With(Union):
     ) -> Any:
 
         parsers = list(self.parsers)
+
+        for parser in parsers:
+            self._config_initialize(parser)
 
         value = parsers.pop(0).parse(
             data=data,
@@ -91,6 +99,8 @@ class JoinText(Union):
         values = []
 
         for parser in self.parsers:
+            self._config_initialize(parser)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,
@@ -120,6 +130,8 @@ class JoinList(Union):
         values = []
 
         for parser in self.parsers:
+            self._config_initialize(parser)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,
@@ -149,6 +161,8 @@ class JoinDict(Union):
         joined_dictionary: Dict[Any, Any] = {}
 
         for parser in self.parsers:
+            self._config_initialize(parser)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,
@@ -187,6 +201,9 @@ class ItemDict(Base):
         parser_dict = {}
 
         for name, parser in self._parser_dict.items():
+            if not parser.has_config_initialized():
+                parser.init_config(self.config)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,
@@ -221,6 +238,9 @@ class ItemList(Base):
         parser_list = []
 
         for parser in self._parser_list:
+            if not parser.has_config_initialized():
+                parser.init_config(self.config)
+
             value = parser.parse(
                 data=data,
                 parent_data=parent_data,

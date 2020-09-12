@@ -33,19 +33,34 @@ class List(BaseData):
 
         kwargs["query"] = query
 
-        if not parser:
-            parser = self._default_parser_obj
-        else:
-            mix.validate_parser(parser)
-
-        self._parser = parser
         self._unique = unique
         self._max_num = max_num
         self._split_key = split_key
         self._preprocess_allow = preprocess_allow
         self._process_allow = process_allow
 
+        self.__parser = parser
+        self.__parser_obj = None
+
         super().__init__(**kwargs)
+
+    @property
+    def _parser(self):
+        if self.__parser_obj:
+            # Value parser already initialized
+            return self.__parser_obj
+
+        # Initialize and validate value parser
+        if self.__parser:
+            self.__parser_obj = self.__parser
+        else:
+            self.__parser_obj = self._default_parser_obj
+
+        mix.validate_parser(self.__parser_obj)
+
+        self.__parser_obj.init_config(self.config)
+
+        return self.__parser_obj
 
     @property
     def _default_parser_obj(self):
