@@ -119,11 +119,9 @@ def test_join_dict():
 
     join_dict_parser = parsers.JoinDict(
         parsers.Dict(
-            jp("features"), key_parser=parsers.Text(), value_parser=parsers.Text()
+            jp("features"), key_parser=parsers.Text(), val_parser=parsers.Text()
         ),
-        parsers.Dict(
-            jp("specs"), key_parser=parsers.Text(), value_parser=parsers.Text()
-        ),
+        parsers.Dict(jp("specs"), key_parser=parsers.Text(), val_parser=parsers.Text()),
     )
 
     expected_result = {
