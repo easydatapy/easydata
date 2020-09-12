@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from pyquery import PyQuery
 
 from easydata import processors
@@ -41,33 +42,48 @@ test_variants_html_data = """
 """
 
 
-def test_data_processor() -> None:
+@pytest.mark.parametrize(
+    "source, data_type",
+    [
+        ("data", PyQuery),
+        ("data_raw", str),
+    ],
+)
+def test_data_processor(source, data_type):
     db = processors.DataProcessor(
         process_source_data=lambda source_data: PyQuery(source_data)
     ).parse_data(test_html_text)
 
-    assert isinstance(db["data"], PyQuery)
-
-    assert isinstance(db["data_raw"], str)
+    assert isinstance(db[source], data_type)
 
 
-def test_data_to_pq_processor() -> None:
+@pytest.mark.parametrize(
+    "source, data_type",
+    [
+        ("data", PyQuery),
+        ("data_raw", str),
+    ],
+)
+def test_data_to_pq_processor(source, data_type):
     db = processors.DataToPqProcessor().parse_data(test_html_text)
 
-    assert isinstance(db["data"], PyQuery)
-
-    assert isinstance(db["data_raw"], str)
+    assert isinstance(db[source], data_type)
 
 
-def test_data_to_pq_processor_new_source() -> None:
-    db = processors.DataToPqProcessor(new_source="data_pq").parse_data(test_html_text)
+@pytest.mark.parametrize(
+    "new_source, source, data_type",
+    [
+        ("data_pq", "data_pq", PyQuery),
+        ("data_pq", "data", str),
+    ],
+)
+def test_data_to_pq_processor_new_source(new_source, source, data_type):
+    db = processors.DataToPqProcessor(new_source=new_source).parse_data(test_html_text)
 
-    assert isinstance(db["data_pq"], PyQuery)
-
-    assert isinstance(db["data"], str)
+    assert isinstance(db[source], data_type)
 
 
-def test_data_from_query_processor() -> None:
+def test_data_from_query_processor():
     test_dict = {"info": {"title": "EasyBook"}}
 
     db = processors.DataFromQueryProcessor(jp("info")).parse_data(test_dict)
@@ -75,55 +91,85 @@ def test_data_from_query_processor() -> None:
     assert db["data"]["title"] == "EasyBook"
 
 
-def test_data_from_re_processor() -> None:
+def test_data_from_re_processor():
     test_text = 'var config = {"title": "EasyBook"};'
 
     data_processor = processors.DataTextFromReProcessor(
-        re_query=r"var config = (.*?);", new_source="config_json"
+        query=r"var config = (.*?);",
+        new_source="config_json",
     )
 
     db = data_processor.parse_data(test_text)
 
     assert json.loads(db["config_json"])["title"] == "EasyBook"
 
-    test_text_multiline = """
-        var config = {
-            "title": "EasyBook"
-        };
+
+@pytest.mark.parametrize(
+    "query, dotall, ignore_case, result",
+    [
+        ("spConfig = (.*?);", True, False, "149.95"),
+        ("spConfig = (.*?);", False, False, None),
+        ("spconfig = (.*?);", True, True, "149.95"),
+    ],
+)
+def test_data_from_re_processor_dotall_ignore_case(
+    query,
+    dotall,
+    ignore_case,
+    result,
+):
+
+    json_text = """
+    let spConfig = {
+        "basePrice": "149.95"
+    };
     """
 
-    db = data_processor.parse_data(test_text_multiline)
+    data_processor = processors.DataTextFromReProcessor(
+        query=query,
+        dotall=dotall,
+        ignore_case=ignore_case,
+        none_if_empty=True,
+    )
 
-    assert json.loads(db["config_json"])["title"] == "EasyBook"
+    db = data_processor.parse_data(json_text)
+
+    if db["data"]:
+        json_data = json.loads(db["data"])
+
+        assert json_data["basePrice"] == result
+    else:
+        assert db["data"] == result
 
 
-def test_data_from_re_processor_none() -> None:
+def test_data_from_re_processor_none():
     test_text = 'var config = {"title": "EasyBook"};'
 
     data_processor = processors.DataTextFromReProcessor(
-        re_query=r"var config_wrong = (.*?);",
+        query=r"var config_wrong = (.*?);",
         new_source="config_json",
         none_if_empty=True,
     )
 
-    db = data_processor.parse_data(test_text)
+    json_dict = data_processor.parse_data(test_text)
 
-    assert db["config_json"] is None
+    assert json_dict["config_json"] is None
 
 
-def test_data_from_re_json_processor() -> None:
+def test_data_json_from_re_to_dict_processor():
     test_text = 'var config = {"title": "EasyBook"};'
 
     data_processor = processors.DataJsonFromReToDictProcessor(
-        re_query=r"var config = (.*?);", new_source="config_json"
+        query=r"var config = (.*?);",
+        new_source="config_json",
     )
 
-    db = data_processor.parse_data(test_text)
+    json_dict = data_processor.parse_data(test_text)
 
-    assert db["config_json"]["title"] == "EasyBook"
+    assert json_dict["config_json"]["title"] == "EasyBook"
 
 
-def test_data_variant_processor() -> None:
+def test_data_variant_processor():
     db = processors.DataVariantProcessor(
         query=jp("variants"), variant_query=key("color")
     ).parse_data(test_variants_data)
@@ -139,7 +185,7 @@ def test_data_variant_processor() -> None:
     assert list(db["data_variants"].values())[0] == expected_values_result
 
 
-def test_data_variant_processor_multi_values() -> None:
+def test_data_variant_processor_multi_values():
     # Lets test with multi_values set to True
     db = processors.DataVariantProcessor(
         query=jp("variants"), variant_query=key("color"), multi_values=True
@@ -169,7 +215,7 @@ def test_data_variant_processor_multi_values() -> None:
     assert list(db["data_variants"].keys())[0] == "black"
 
 
-def test_data_variant_processor_lower_false() -> None:
+def test_data_variant_processor_lower_false():
     db = processors.DataVariantProcessor(
         query=key("variants"),
         variant_query=jp("color"),
@@ -180,7 +226,7 @@ def test_data_variant_processor_lower_false() -> None:
     assert list(db["data_variants"].keys())[0] == "Black"
 
 
-def test_data_variant_processor_with_variant_values_false() -> None:
+def test_data_variant_processor_with_variant_values_false():
     db = processors.DataVariantProcessor(
         query=key("variants"),
         variant_query=jp("color"),

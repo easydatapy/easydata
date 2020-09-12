@@ -16,25 +16,24 @@ _attr_shortcut_mappings = {
 
 
 class PyQuerySearch(QuerySearch):
-    def __init__(self, query: Optional[str] = None, rm: Optional[str] = None):
+    def __init__(
+        self,
+        query: Optional[str] = None,
+        remove_query: Optional[str] = None,
+    ):
 
         self._query = query
-        self._rm_query = rm
+        self._remove_query = remove_query
 
-        self._first = True
-        self._attr = None
-        self._text = False
-        self._ntext = False
-        self._html = False
-        self._items = False
+        self._first: bool = True
+        self._attr: Optional[str] = None
+        self._text: bool = False
+        self._ntext: bool = False
+        self._html: bool = False
+        self._items: bool = False
 
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
-
-    def rm(self, query: str):
-        self._rm_query = query
-
-        return self
 
     def _parse(
         self,
@@ -103,8 +102,8 @@ class PyQuerySearch(QuerySearch):
         if pq and first:
             pq = pq.eq(0)
 
-        if self._rm_query and pq:
-            pq = pq.clone().remove(self._rm_query)
+        if self._remove_query and pq:
+            pq = pq.clone().remove(self._remove_query)
 
         return pq
 
@@ -115,15 +114,42 @@ class PyQuerySearch(QuerySearch):
 
         pseudo_key = query_parts[-1]
 
-        if "-items" in pseudo_key:
-            pseudo_key = pseudo_key.split("-")[0]
+        pseudo_key = self._process_pseudo_key_extension(pseudo_key)
 
+        self._process_pseudo_key(pseudo_key)
+
+    def _process_pseudo_key_extension(self, pseudo_key: str) -> str:
+        # Attributes can have attribute value with - in it, so we must sure that it
+        # has extension. Otherwise we just ignore it.
+        if pseudo_key.startswith("attr") and ")-" not in pseudo_key:
+            return pseudo_key
+        elif "-" not in pseudo_key:
+            return pseudo_key  # doesn't have extension
+
+        pseudo_key_parts = pseudo_key.split("-")
+
+        # If split by - produces more than 2 list items that means that we are dealing
+        # with attr value that has - in it.
+        if len(pseudo_key_parts) > 2:
+            pseudo_key = "-".join(pseudo_key_parts[:-1])
+        else:
+            pseudo_key = pseudo_key_parts[0]
+
+        pseudo_key_extension = pseudo_key_parts[-1]
+
+        if pseudo_key_extension == "items":
             self._items = True
-        elif "-all" in pseudo_key:
-            pseudo_key = pseudo_key.split("-")[0]
-
+        elif pseudo_key_extension == "all":
             self._first = False
+        else:
+            raise ValueError(
+                "Pseudo key extension {} is not supported. Currently supported "
+                "are -items and -all".format(pseudo_key_extension)
+            )
 
+        return pseudo_key
+
+    def _process_pseudo_key(self, pseudo_key: str) -> None:
         if pseudo_key.startswith("attr"):
             attr_value = pseudo_key.split("(")[-1].strip(")")
             self._attr = attr_value
@@ -139,9 +165,8 @@ class PyQuerySearch(QuerySearch):
             self._items = True
         else:
             raise ValueError(
-                "Pseudo type '{}' is not supported for extraction type. Currently "
-                "supported are: text,ntext,html,items,<pseudo el>-items, "
-                "attr(<value>),{}".format(
+                "Pseudo key '{}' is not supported. Currently supported are: text,"
+                "ntext,html,items, attr(<value>),{}".format(
                     pseudo_key, ",".join(_attr_shortcut_mappings.keys())
                 )
             )

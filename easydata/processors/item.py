@@ -134,7 +134,7 @@ class ItemDiscountProcessor(BaseProcessor):
         item_discount_key: Optional[str] = None,
         decimals: Optional[int] = None,
         no_decimals: Optional[bool] = None,
-        rm_item_sale_price_key: Optional[bool] = None,
+        remove_item_sale_price_key: Optional[bool] = None,
     ):
 
         self.__item_price_key = item_price_key
@@ -142,7 +142,7 @@ class ItemDiscountProcessor(BaseProcessor):
         self.__item_discount_key = item_discount_key
         self.__decimals = decimals
         self.__no_decimals = no_decimals
-        self.__rm_item_sale_price_key = rm_item_sale_price_key
+        self.__remove_item_sale_price_key = remove_item_sale_price_key
 
     @property
     def _item_price_key(self):
@@ -170,9 +170,9 @@ class ItemDiscountProcessor(BaseProcessor):
         return self.__no_decimals or self.config[config_key]
 
     @property
-    def _rm_item_sale_price_key(self):
-        config_key = "ED_ITEM_DISCOUNT_RM_ITEM_SALE_PRICE_KEY"
-        return self.__rm_item_sale_price_key or self.config[config_key]
+    def _remove_item_sale_price_key(self):
+        config_key = "ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY"
+        return self.__remove_item_sale_price_key or self.config[config_key]
 
     def parse(self, item: dict) -> dict:
         item_price = self._get_float_price_value_from_item_by_key(
@@ -196,7 +196,7 @@ class ItemDiscountProcessor(BaseProcessor):
                 no_decimals=self._no_decimals,
             )
 
-        if self._rm_item_sale_price_key:
+        if self._remove_item_sale_price_key:
             del item[self._item_sale_price_key]
 
         return item

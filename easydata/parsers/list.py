@@ -35,8 +35,8 @@ class List(BaseData):
 
         if not parser:
             parser = self._default_parser_obj
-
-        mix.validate_parser(parser)
+        else:
+            mix.validate_parser(parser)
 
         self._parser = parser
         self._unique = unique
@@ -48,7 +48,7 @@ class List(BaseData):
         super().__init__(**kwargs)
 
     @property
-    def _default_parser_obj(self) -> Base:
+    def _default_parser_obj(self):
         return Data()
 
     def _parse_value(self, value: Any, data: Any) -> list:
@@ -66,7 +66,7 @@ class List(BaseData):
             )
 
         parsed_list_values = [
-            self._parser.parse(data, lvalue, True) for lvalue in list_values
+            self._parser.parse(data, lv, True) for lv in list_values  # type: ignore
         ]
 
         processed_list_values = self._process_list_values(parsed_list_values)
@@ -113,6 +113,23 @@ class TextList(List):
     def __init__(
         self,
         *args,
+        normalize: bool = True,
+        capitalize: bool = False,
+        title: bool = False,
+        uppercase: bool = False,
+        lowercase: bool = False,
+        replace_keys: Optional[list] = None,
+        remove_keys: Optional[list] = None,
+        split_text_key: Optional[Union[str, tuple]] = None,
+        split_text_keys: Optional[ListType[Union[str, tuple]]] = None,
+        take: Optional[int] = None,
+        skip: Optional[int] = None,
+        text_num_to_numeric: bool = False,
+        language: Optional[str] = None,
+        fix_spaces: bool = True,
+        escape_new_lines: bool = True,
+        new_line_replacement: str = " ",
+        add_stop: Optional[Union[bool, str]] = None,
         allow: Optional[Union[str, ListType[str]]] = None,
         callow: Optional[Union[str, ListType[str]]] = None,
         from_allow: Optional[Union[str, ListType[str]]] = None,
@@ -124,6 +141,26 @@ class TextList(List):
         multiply_keys: Optional[Union[list, tuple]] = None,
         **kwargs,
     ):
+
+        self._text_parser_properties = {
+            "normalize": normalize,
+            "capitalize": capitalize,
+            "title": title,
+            "uppercase": uppercase,
+            "lowercase": lowercase,
+            "replace_keys": replace_keys,
+            "remove_keys": remove_keys,
+            "split_key": split_text_key,
+            "split_keys": split_text_keys,
+            "take": take,
+            "skip": skip,
+            "text_num_to_numeric": text_num_to_numeric,
+            "language": language,
+            "fix_spaces": fix_spaces,
+            "escape_new_lines": escape_new_lines,
+            "new_line_replacement": new_line_replacement,
+            "add_stop": add_stop,
+        }
 
         self._allow = allow
         self._callow = callow
@@ -141,8 +178,8 @@ class TextList(List):
         )
 
     @property
-    def _default_parser_obj(self) -> Text:
-        return Text()
+    def _default_parser_obj(self):
+        return Text(**self._text_parser_properties)
 
     def _process_list_values(
         self,
@@ -202,6 +239,33 @@ class TextList(List):
 
 
 class UrlList(TextList):
+    def __init__(
+        self,
+        *args,
+        from_text: bool = False,
+        remove_qs: Optional[Union[str, list, bool]] = None,
+        qs: Optional[dict] = None,
+        domain: Optional[str] = None,
+        protocol: Optional[str] = None,
+        **kwargs,
+    ):
+
+        self._url_parser_properties = {
+            "from_text": from_text,
+            "remove_qs": remove_qs,
+            "qs": qs,
+            "domain": domain,
+            "protocol": protocol,
+        }
+
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
     @property
-    def _default_parser_obj(self) -> Url:
-        return Url()
+    def _default_parser_obj(self):
+        return Url(
+            **self._url_parser_properties,
+            **self._text_parser_properties,
+        )

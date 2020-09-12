@@ -1,8 +1,14 @@
-from easydata.utils import mix
-from tests.factory import load_html_with_pq, load_json
+import pytest
+from pyquery import PyQuery
 
-pq = load_html_with_pq("product")
-jd = load_json("product")
+from easydata.utils import mix
+
+test_nested_html = """
+<h2 class="name">
+    <div class="brand">EasyData</div>
+    Test Product Item
+</h2>
+"""
 
 
 def test_unique_list():
@@ -29,39 +35,42 @@ def test_tuple_list_to_dict_default():
 
 
 def test_pq_remove_nodes():
-    assert pq("#nested-name").text() == "GROOVE\nEasybook Pro 13"
+    pq = PyQuery(test_nested_html)
 
-    rpq = mix.pq_remove_nodes(pq("#nested-name"), ".nested-brand")
+    assert pq(".name").text() == "EasyData\nTest Product Item"
 
-    assert rpq.text() == "Easybook Pro 13"
+    rpq = mix.pq_remove_nodes(pq(".name"), ".brand")
+
+    assert rpq.text() == "Test Product Item"
 
     # Check if original was still preserved
-    assert pq("#nested-name").text() == "GROOVE\nEasybook Pro 13"
+    assert pq(".name").text() == "EasyData\nTest Product Item"
 
 
-def test_multiply_list_values_split_key():
-    list_values = ["1-2-3", "4-5", "-6"]
+@pytest.mark.parametrize(
+    "test_data, split_key, result",
+    [
+        (["1-2-3", "4-5", "-6"], "-", ["1", "2", "3", "4", "5", "6"]),
+        (["1-2-3", "4-5", "-6"], "|", ["1-2-3", "4-5", "-6"]),
+    ],
+)
+def test_multiply_list_values_split_key(test_data, split_key, result):
+    assert mix.multiply_list_values(test_data, split_key) == result
 
-    expected_list_values = ["1", "2", "3", "4", "5", "6"]
-    assert mix.multiply_list_values(list_values, "-") == expected_list_values
-    assert mix.multiply_list_values(list_values, "|") == list_values
 
-
-def test_multiply_list_values_multiply_key():
-    list_values = ["its-one-s"]
-
-    multiply_keys = ("-one-", ["-one-", "-two-", "-three-"])
-    expect_list = ["its-one-s", "its-two-s", "its-three-s"]
-    assert (
-        mix.multiply_list_values(list_values=list_values, multiply_keys=multiply_keys)
-        == expect_list
-    )
-
-    multiply_keys = [
-        ("-two-", ["-two-", "-one-"]),
+@pytest.mark.parametrize(
+    "multiply_keys",
+    [
         ("-one-", ["-one-", "-two-", "-three-"]),
-    ]
-    assert (
-        mix.multiply_list_values(list_values=list_values, multiply_keys=multiply_keys)
-        == expect_list
+        [
+            ("-two-", ["-two-", "-one-"]),
+            ("-one-", ["-one-", "-two-", "-three-"]),
+        ],
+    ],
+)
+def test_multiply_list_values_multiply_key(multiply_keys):
+    multiplied_values = mix.multiply_list_values(
+        ["its-one-s"], multiply_keys=multiply_keys
     )
+
+    assert multiplied_values == ["its-one-s", "its-two-s", "its-three-s"]
