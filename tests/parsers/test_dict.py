@@ -27,7 +27,7 @@ def test_dict():
     dict_parser = parsers.Dict(
         pq("#size-variants li::items"),
         key_parser=parsers.Text(pq("::text")),
-        value_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
+        val_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
     )
 
     expected_result = {"l": True, "xl": False, "xxl": True}
@@ -36,7 +36,7 @@ def test_dict():
     dict_parser = parsers.Dict(
         pq("#size-variants li::items"),
         key_query=pq("::text"),
-        value_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
+        val_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
     )
 
     assert dict_parser.parse(test_html) == expected_result
@@ -44,14 +44,14 @@ def test_dict():
     dict_parser = parsers.Dict(
         pq("#size-variants li::items"),
         key_query=pq("::text"),
-        value_query=pq("::attr(size-stock)"),
+        val_query=pq("::attr(size-stock)"),
     )
 
     expected_text_result = {"l": "true", "xl": "false", "xxl": "true"}
     assert dict_parser.parse(test_html) == expected_text_result
 
     dict_parser = parsers.Dict(
-        jp("sizes"), key_parser=parsers.Text(), value_parser=parsers.Bool()
+        jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Bool()
     )
 
     assert dict_parser.parse(test_dict_sizes) == expected_result
@@ -64,23 +64,74 @@ def test_dict():
 
     assert dict_parser.parse(test_dict_sizes) == expected_result
 
-    dict_parser = parsers.Dict(jp("sizes"), value_parser=parsers.Bool())
+    dict_parser = parsers.Dict(jp("sizes"), val_parser=parsers.Bool())
 
     assert dict_parser.parse(test_dict_sizes) == expected_result
 
     dict_parser = parsers.Dict(
-        jp("sizes"), key_parser=parsers.Text(), value_parser=parsers.Text()
+        jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Text()
     )
 
     expected_result = {"l": "True", "xl": "False", "xxl": "True"}
     assert dict_parser.parse(test_dict_sizes) == expected_result
 
 
+@pytest.mark.parametrize(
+    "test_data, result, properties",
+    [
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "true", "lg": "true"},
+            {"key_allow": ["sm", "lg"]},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "true"},
+            {"key_callow": ["sm", "LG"]},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "true", "lg": "true"},
+            {"key_deny": "md"},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "true", "lg": "true"},
+            {"key_cdeny": ["md", "LG"]},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "true"},
+            {"key_allow": ["sm", "lg"], "key_deny": "lg"},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": None},
+            {"sm": "true", "md": "false", "lg": None},
+            {},
+        ),
+        (
+            {"sm": "true", "md": "false", "lg": None},
+            {"sm": "true", "md": "false"},
+            {"ignore_non_values": True},
+        ),
+        ({"sm": "true", None: "false", "lg": "true"}, {"sm": "true", "lg": "true"}, {}),
+        (
+            {"sm": "true", None: "false", "lg": "true"},
+            {"sm": "true", None: "false", "lg": "true"},
+            {"ignore_non_keys": False},
+        ),
+    ],
+)
+def test_dict_variations(test_data, result, properties):
+    dict_parser = parsers.Dict(**properties)
+    assert dict_parser.parse(test_data) == result
+
+
 def test_bool_dict():
     bool_dict_parser = parsers.BoolDict(
         pq("#size-variants li::items"),
         key_query=pq("::text"),
-        value_query=pq("::attr(size-stock)"),
+        val_query=pq("::attr(size-stock)"),
     )
 
     expected_text_result = {"l": True, "xl": False, "xxl": True}
@@ -88,15 +139,39 @@ def test_bool_dict():
 
 
 @pytest.mark.parametrize(
-    "test_data, result",
+    "test_data, result, properties",
     [
-        ({"l": True, "xl": False}, {"l": True, "xl": False}),
-        ({"l": 12, "xl": 0}, {"l": True, "xl": False}),
-        ({"l": "true", "xl": "false"}, {"l": True, "xl": False}),
-        ({"l": "True", "xl": "False"}, {"l": True, "xl": False}),
-        ({"l": "n/a", "xl": "12"}, {"l": False, "xl": False}),
+        ({"l": True, "xl": False}, {"l": True, "xl": False}, {}),
+        ({"l": 12, "xl": 0}, {"l": True, "xl": False}, {}),
+        ({"l": "true", "xl": "false"}, {"l": True, "xl": False}, {}),
+        ({"l": "True", "xl": "False"}, {"l": True, "xl": False}, {}),
+        ({"l": "n/a", "xl": "12"}, {"l": False, "xl": False}, {}),
+        (
+            {"sm-s": "in-stock", "md-m": "oos", "lg-l": "in-stock"},
+            {"sm": True, "md": False, "lg": True},
+            {"key_split_text_key": "-", "val_contains": ["in-stock"]},
+        ),
+        (
+            {"sm-s": "in-stock", "md-m": "oos", "lg-l": "in-stock"},
+            {"sm": False, "md": False, "lg": False},
+            {"key_split_text_key": "-", "val_contains": ["in stock"]},
+        ),
+        (
+            {"sm-s": "in-stock", "md-m": "oos", "lg-l": "in-stock"},
+            {"sm": True, "md": False, "lg": True},
+            {
+                "key_split_text_key": "-",
+                "val_contains": ["stock"],
+                "val_split_text_key": ("-", -1),
+            },
+        ),
+        (
+            {"sm-s": 1, "md-m": 0, "lg-l": 3},
+            {"sm": True, "lg": True},
+            {"key_split_text_key": "-", "key_allow": ["lg", "sm"]},
+        ),
     ],
 )
-def test_bool_dict_various_types(test_data, result):
-    bool_dict_parser = parsers.BoolDict()
+def test_bool_dict_variations(test_data, result, properties):
+    bool_dict_parser = parsers.BoolDict(**properties)
     assert bool_dict_parser.parse(test_data) == result
