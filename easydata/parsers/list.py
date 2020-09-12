@@ -142,23 +142,26 @@ class TextList(List):
         **kwargs,
     ):
 
-        self._normalize = normalize
-        self._capitalize = capitalize
-        self._title = title
-        self._uppercase = uppercase
-        self._lowercase = lowercase
-        self._replace_keys = replace_keys
-        self._remove_keys = remove_keys
-        self._split_text_key = split_text_key
-        self._split_text_keys = split_text_keys
-        self._take = take
-        self._skip = skip
-        self._text_num_to_numeric = text_num_to_numeric
-        self._language = language
-        self._fix_spaces = fix_spaces
-        self._escape_new_lines = escape_new_lines
-        self._new_line_replacement = new_line_replacement
-        self._add_stop = add_stop
+        self._text_parser_properties = {
+            "normalize": normalize,
+            "capitalize": capitalize,
+            "title": title,
+            "uppercase": uppercase,
+            "lowercase": lowercase,
+            "replace_keys": replace_keys,
+            "remove_keys": remove_keys,
+            "split_key": split_text_key,
+            "split_keys": split_text_keys,
+            "take": take,
+            "skip": skip,
+            "text_num_to_numeric": text_num_to_numeric,
+            "language": language,
+            "fix_spaces": fix_spaces,
+            "escape_new_lines": escape_new_lines,
+            "new_line_replacement": new_line_replacement,
+            "add_stop": add_stop,
+        }
+
         self._allow = allow
         self._callow = callow
         self._from_allow = from_allow
@@ -176,25 +179,7 @@ class TextList(List):
 
     @property
     def _default_parser_obj(self) -> Text:
-        return Text(
-            normalize=self._normalize,
-            capitalize=self._capitalize,
-            title=self._title,
-            uppercase=self._uppercase,
-            lowercase=self._lowercase,
-            replace_keys=self._replace_keys,
-            remove_keys=self._remove_keys,
-            split_key=self._split_text_key,
-            split_keys=self._split_text_keys,
-            take=self._take,
-            skip=self._skip,
-            text_num_to_numeric=self._text_num_to_numeric,
-            language=self._language,
-            fix_spaces=self._fix_spaces,
-            escape_new_lines=self._escape_new_lines,
-            new_line_replacement=self._new_line_replacement,
-            add_stop=self._add_stop,
-        )
+        return Text(**self._text_parser_properties)
 
     def _process_list_values(
         self,
@@ -262,16 +247,16 @@ class UrlList(TextList):
         qs: Optional[dict] = None,
         domain: Optional[str] = None,
         protocol: Optional[str] = None,
-        normalize: bool = True,
         **kwargs,
     ):
 
-        self._from_text = from_text
-        self._remove_qs = remove_qs
-        self._qs = qs
-        self._domain = domain
-        self._protocol = protocol
-        self._normalize_url = normalize
+        self._url_parser_properties = {
+            "from_text": from_text,
+            "remove_qs": remove_qs,
+            "qs": qs,
+            "domain": domain,
+            "protocol": protocol,
+        }
 
         super().__init__(
             *args,
@@ -281,10 +266,6 @@ class UrlList(TextList):
     @property
     def _default_parser_obj(self) -> Url:
         return Url(
-            from_text=self._from_text,
-            remove_qs=self._remove_qs,
-            qs=self._qs,
-            domain=self._domain,
-            protocol=self._protocol,
-            normalize=self._normalize_url,
+            **self._url_parser_properties,
+            **self._text_parser_properties,
         )
