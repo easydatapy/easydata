@@ -1,5 +1,4 @@
 import json
-import re
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
@@ -11,6 +10,7 @@ from easydata.data import DataBag
 from easydata.parsers.base import BaseData
 from easydata.processors.base import BaseProcessor
 from easydata.queries.base import QuerySearch
+from easydata.queries.re import ReQuery
 from easydata.utils import parse
 
 __all__ = (
@@ -193,49 +193,59 @@ class DataTextFromReProcessor(DataBaseProcessor):
     def __init__(
         self,
         *args,
-        re_query,
-        multi=False,
+        query,
         dotall=True,
+        ignore_case=False,
+        bytes_to_string_decode: str = "utf-8",
         none_if_empty=False,
         process_value=None,
         **kwargs,
     ):
 
-        self._re_query = re_query
-        self._multi = multi
+        self._query = query
         self._dotall = dotall
+        self._ignore_case = ignore_case
+        self._bytes_to_string_decode = bytes_to_string_decode
         self._none_if_empty = none_if_empty
         self._process_value = process_value
 
         super().__init__(*args, **kwargs)
 
     def _process_data(self, source_data: str) -> Any:
-        results = re.findall(self._re_query, source_data, re.DOTALL)
+        value = ReQuery(
+            query=self._query,
+            dotall=self._dotall,
+            ignore_case=self._ignore_case,
+            bytes_to_string_decode=self._bytes_to_string_decode,
+        ).get(source_data)
 
-        if not results:
+        if not value:
             if self._none_if_empty:
                 return None
 
             error_msg = 'No matches were found for a re queries "{}"'
-            raise ValueError(error_msg.format(self._re_query))
+            raise ValueError(error_msg.format(self._query))
 
         if self._process_value:
-            results = [self._process_value(result) for result in results]
+            if isinstance(value, list):
+                value = [self._process_value(v) for v in value]
+            else:
+                value = self._process_value(value)
 
-        return results if self._multi else results[0]
+        return value
 
 
 class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
     def _process_data(self, source_data: str) -> Any:
-        res = super()._process_data(source_data)
+        value = super()._process_data(source_data)
 
-        if not res:
+        if not value:
             return None
 
-        if self._multi:
-            return [json.loads(result) for result in res]
+        if isinstance(value, list):
+            return [json.loads(v) for v in value]
 
-        return json.loads(res)
+        return json.loads(value)
 
 
 class DataVariantProcessor(DataBaseProcessor):
