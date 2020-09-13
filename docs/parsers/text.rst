@@ -6,7 +6,6 @@ Text Parsers
 
 Text
 ====
-
 .. autoclass:: easydata.parsers.text::Text
 
 ``Text`` is a parser that normalizes and manipulates simple
@@ -14,7 +13,6 @@ texts like titles or similar.
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``key`` instance from ``queries``
 selector module.
 
@@ -52,10 +50,8 @@ Floats, integers will get transformed to string automatically.
     >>> parsers.Text().parse(test_float)
     '123.12'
 
-
 Parameters
 ----------
-
 .. option:: normalize
 
 As seen in example above, text normalization (bad encoding) is
@@ -68,18 +64,16 @@ parameter to ``False`` to disable text normalization.
     >>> parsers.Text(normalize=False).parse(test_text)
     Easybook Pro 13 &lt;3 uÌˆnicode
 
-
 .. option:: capitalize
 
-We can capitalize first character in our string if needed by setting
-``capitalize`` parameter to ``True``. By default is set to ``False``.
+We can capitalize first character in our string, by setting ``capitalize`` parameter
+to ``True``. By default is set to ``False``.
 
 .. code-block:: python
 
     >>> test_text = 'easybook PRO 15'
     >>> parsers.Text(capitalize=True).parse(test_text)
     Easybook PRO 15
-
 
 .. option:: title
 
@@ -92,7 +86,6 @@ become lowercase with ``title`` parameter set to ``True``.
     >>> parsers.Text(title=True).parse(test_text)
     Easybook Pro 15
 
-
 .. option:: uppercase
 
 We can set all chars in our string to uppercase by ``uppercase``
@@ -104,7 +97,6 @@ parameter set to ``True``.
     >>> parsers.Text(uppercase=True).parse(test_text)
     EASYBOOK PRO 15
 
-
 .. option:: lowercase
 
 We can set all chars in our string to lowercase by ``lowercase``
@@ -115,7 +107,6 @@ parameter set to ``True``.
     >>> test_text = 'easybook PRO 15'
     >>> parsers.Text(lowercase=True).parse(test_text)
     easybook pro 15
-
 
 .. option:: replace_keys
 
@@ -161,7 +152,6 @@ Lets specify split index through tuple.
     >>> parsers.Text(split_key=('-', -1)).parse(test_text)
     pro_13
 
-
 .. option:: split_keys
 
 ``split_keys`` work in a same way as ``split_key`` but instead of single
@@ -173,18 +163,16 @@ split key it accepts list of keys.
     >>> parsers.Text(split_keys=[('-', -1), '_']).parse(test_text)
     pro
 
-
 .. option:: take
 
-With ``take`` parameter we can limit maximum number that are shown
-at the end result. Lets see how it works in example bellow.
+With ``take`` parameter we can limit maximum number of chars that are
+shown at the end result. Lets see how it works in example bellow.
 
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 13'
     >>> parsers.Text(max_chars=8).parse(test_text)
     Easybook
-
 
 .. option:: skip
 
@@ -196,7 +184,6 @@ Lets see how it works in example bellow.
     >>> test_text = 'Easybook Pro 13'
     >>> parsers.Text(skip=8).parse(test_text)
     Pro 13
-
 
 .. option:: text_num_to_numeric
 
@@ -212,7 +199,6 @@ numbers by setting ``text_num_to_numeric`` parameter to ``True``.
 If our text is in different language we need to change language value in
 our ``language`` parameter. Currently supported languages are only
 ``en, es, hi and ru``.
-
 
 .. option:: fix_spaces
 
@@ -233,7 +219,6 @@ Now lets change ``fix_spaces`` parameter to ``False`` and see what happens.
     >>> parsers.Text(fix_spaces=False).parse(test_text)
     Easybook   Pro  15
 
-
 .. option:: escape_new_lines
 
 By default all new line characters are converted to empty space as we can
@@ -253,7 +238,6 @@ Now lets change ``escape_new_lines`` parameter to ``False`` and see what happens
     >>> parsers.Text(escape_new_lines=False).parse(test_text)
     Easybook\nPro\n15
 
-
 .. option:: new_line_replacement
 
 If ``escape_new_lines`` is set to ``True``, then by default all new line chars
@@ -265,7 +249,6 @@ default setting by changing value of ``new_line_replacement`` parameter.
     >>> test_text = 'Easybook\nPro\n15'
     >>> parsers.Text(new_line_replacement='<br>').parse(test_text)
     Easybook<br>Pro<br>15
-
 
 .. option:: add_stop
 

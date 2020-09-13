@@ -4,22 +4,27 @@
 FAQ
 ===
 
-Is easydata a framework?
+
+Is EasyData a framework?
 ========================
 No
 
-Does easydata have item validation?
+
+Does EasyData have item validation?
 ===================================
 No
 
-Can easydata make requests?
+
+Can EasyData make requests?
 ===========================
 No
 
-Does easydata support scrapy?
+
+Does EasyData support scrapy?
 =============================
 No. But is currently work in progress and integration will come soon through
 separate package.
+
 
 In which applications can easydata be used?
 ===========================================
@@ -28,5 +33,7 @@ In which applications can easydata be used?
 * feed processing
 * api integrations
 
-Basically it can be used in any application where data transformation is
-required.
+.. note::
+
+    *EasyData* can be used in any application where *data* transformation is
+    required.

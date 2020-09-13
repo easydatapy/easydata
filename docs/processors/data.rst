@@ -8,7 +8,6 @@ Data Processors
 
 DataProcessor
 =============
-
 .. autoclass:: easydata.processors.data::DataProcessor
 
 ``DataProcessor`` directly extends ``DataBaseProcessor`` and it's default parameters.
@@ -24,7 +23,6 @@ from a ``DataBaseProcessor``.
 
 Parameters
 ----------
-
 .. option:: source
 
 Default value of ``source`` parameter is ``data``. This means that by default
@@ -54,61 +52,60 @@ name under a ``new_source`` parameter.
 
 DataToPqProcessor
 =================
-
 .. autoclass:: easydata.processors.data::DataToPqProcessor
+
 
 .. _processors-data-json-to-dict-processor:
 
 DataJsonToDictProcessor
 =======================
-
 .. autoclass:: easydata.processors.data::DataJsonToDictProcessor
+
 
 .. _processors-data-yaml-to-dict-processor:
 
 DataYamlToDictProcessor
 =======================
-
 .. autoclass:: easydata.processors.data::DataYamlToDictProcessor
+
 
 .. _processors-data-json-from-query-to-dict-processor:
 
 DataJsonFromQueryToDictProcessor
 ================================
-
 .. autoclass:: easydata.processors.data::DataJsonFromQueryToDictProcessor
+
 
 .. _processors-data-xml-to-dict-processor:
 
 DataXmlToDictProcessor
 ======================
-
 .. autoclass:: easydata.processors.data::DataXmlToDictProcessor
+
 
 .. _processors-data-text-from-re-processor:
 
 DataTextFromReProcessor
 =======================
-
 .. autoclass:: easydata.processors.data::DataTextFromReProcessor
+
 
 .. _processors-data-json-from-re-to-dict-processor:
 
 DataJsonFromReToDictProcessor
 =============================
-
 .. autoclass:: easydata.processors.data::DataJsonFromReToDictProcessor
+
 
 .. _processors-data-from-query-processor:
 
 DataFromQueryProcessor
 ======================
-
 .. autoclass:: easydata.processors.data::DataFromQueryProcessor
+
 
 .. _processors-data-variant-processor:
 
 DataVariantProcessor
 ====================
-
 .. autoclass:: easydata.processors.data::DataVariantProcessor

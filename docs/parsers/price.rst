@@ -6,7 +6,6 @@ Price Parsers
 
 PriceFloat
 ==========
-
 .. autoclass:: easydata.parsers.price::PriceFloat
 
 ``PriceFloat`` parser will try to extract prices from a ``str``, ``int`` or
@@ -21,7 +20,6 @@ To read docs regarding other parameters than the one described here, please go t
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 
 .. code-block:: python
@@ -45,10 +43,8 @@ Another example with a ``float`` data source.
     >>> parsers.PriceFloat(jp('price')).parse(test_dict)
     3330.9
 
-
 Parameters
 ----------
-
 .. option:: decimals
 
 We can manipulate how many ``decimals`` parsed value will be have. By default
@@ -73,9 +69,9 @@ We can completely disable number rounding to decimals by settings
     >>> parsers.PriceFloat(decimals=None).parse(test_text)
     999.91264
 
+
 PriceInt
 ========
-
 .. autoclass:: easydata.parsers.price::PriceInt
 
 ``PriceInt`` works exactly the same as ``PriceFloat`` but returns ``int`` type
@@ -83,7 +79,6 @@ instead ``float``.
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 
 .. code-block:: python
@@ -107,9 +102,9 @@ Another example with a ``float`` data source.
     >>> parsers.PriceInt(jp('price')).parse(test_dict)
     3330
 
+
 PriceText
 =========
-
 .. autoclass:: easydata.parsers.price::PriceText
 
 ``PriceText`` works exactly the same as ``PriceFloat`` but returns ``str`` type
@@ -117,7 +112,6 @@ instead ``float``.
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 
 .. code-block:: python

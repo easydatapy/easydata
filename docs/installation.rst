@@ -6,7 +6,6 @@ Installation
 
 Installing EasyData
 ======================
-
 ``easydata`` library runs on Python 3.6 and above.
 
 If you’re already familiar with installation of Python packages, you can
@@ -16,9 +15,9 @@ install ``easydata`` and its dependencies from PyPI with:
 
     pip install easydata
 
+
 Things that are good to know
 ============================
-
 ``easydata`` is written in pure Python and depends on a few key Python packages
 (among others):
 

@@ -6,7 +6,6 @@ Url Parsers
 
 Url
 ===
-
 .. autoclass:: easydata.parsers.url::Url
 
 ``Url`` parser is based upon ``Text`` parser and therefore inherits all parameters
@@ -18,7 +17,6 @@ To read docs regarding other parameters than the one described here, please go t
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 
 .. code-block:: python
@@ -37,10 +35,8 @@ Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
 In this case we see that url in a test_dict is partial. ``Url`` parser will try
 to construct and output always full urls.
 
-
 Parameters
 ----------
-
 .. option:: qs
 
 With ``qs`` parameter we can manipulate urls query strings. We can change existing
@@ -62,7 +58,6 @@ string value.
     >>> test_url = 'https://demo.com/?home=true'
     >>> parsers.Url(qs={'home': 'false', 'country': 'SI'}).parse(test_url)
     'https://demo.com/?home=false&country=SI'
-
 
 .. option:: remove_qs
 
@@ -95,7 +90,6 @@ will be removed.
     >>> parsers.Url(remove_qs=True).parse(test_url)
     'https://demo.com/'
 
-
 .. option:: from_text
 
 ``Url`` parser has ability to extract url from a text as we can see in example
@@ -106,7 +100,6 @@ bellow.
     >>> test_text = 'Home url is:  https://demo.com/home  !!!'
     >>> parsers.Url(from_text=True).parse(test_text)
     'https://demo.com/home'
-
 
 .. option:: domain
 
@@ -129,7 +122,6 @@ order to construct full url.
     >>> test_url = '/product/1122'
     >>> parsers.Url(domain='demo.com').parse(test_url)
     'https://demo.com/product/1122'
-
 
 .. option:: protocol
 

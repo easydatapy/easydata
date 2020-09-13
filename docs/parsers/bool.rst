@@ -6,12 +6,10 @@ Bool Parsers
 
 Bool
 ====
-
 .. autoclass:: easydata.parsers.bool::Bool
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
 
 .. code-block:: python
@@ -41,10 +39,8 @@ Use of query selectors is not required, as we can see bellow.
     >>> parsers.Bool().parse(test_data)
     True
 
-
 Parameters
 ----------
-
 .. option:: contains
 
 ``contains`` property can accept list of keys which will be used for a
@@ -57,7 +53,6 @@ also accepted.
     >>> text = 'Easybook Pro 13'
     >>> parsers.Bool(contains=['pro 13']).parse(text)
     True
-
 
 .. option:: ccontains
 
@@ -78,7 +73,6 @@ Lets try with lowercase keys.
     >>> parsers.Bool(contains=['Pro 13']).parse(text)
     False
 
-
 .. option:: contains_query
 
 ``contains_query`` is a powerful feature that enables you to specify dynamic
@@ -90,7 +84,6 @@ query selector to get our contains keys.
     >>> test_dict = {'title': 'Easybook Pro 13', 'info': {'brand': 'Easybook}'}
     >>> parsers.Bool(jp('title'), contains_query=jp('info.brand')).parse(text)
     True
-
 
 .. option:: contains_query_source
 

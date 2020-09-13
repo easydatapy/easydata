@@ -1,7 +1,6 @@
 =======
 Parsers
 =======
-
 Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-data`

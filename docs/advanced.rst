@@ -9,6 +9,7 @@ Guide Assumptions
 This guide is designed for those that already went through :ref:`getting-started`
 and :ref:`architecture` sections.
 
+
 Creating block models
 =====================
 *Item block models* are ``ItemModel`` objects but with a difference that its
@@ -297,6 +298,7 @@ adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
 
 Now discount won't be even calculated.
 
+
 Temporary item parsers
 ======================
 Sometimes we don't want values from item attributes to be outputted in a final
@@ -341,6 +343,7 @@ As we can see only ``'discount'`` and it's value are returned while ``'price'``
 and ``'sale_price'`` item keys and it's values gets deleted, but after they are
 already passed to item processors in order to be processed.
 
+
 Item method
 ===========
 In some cases our item parsers just won't parse value from data properly due to
@@ -362,6 +365,7 @@ will create item method which will produce exact same end result.
     class ProductItemModel(ItemModel):
         def item_brand(data: DataBag):
             return data['data']['brand']
+
 
 Data processing in a model
 ==========================
@@ -409,7 +413,6 @@ will create new data source called ``brand_type``.
                 data['brand_type'] = 'other'
 
             return data
-
 
 Now lets parse our ``test_json_text`` with ``ProductItemModel`` and show it's output.
 
@@ -475,7 +478,6 @@ with bool value, which is determined if price is discounted or not.
 
             return item
 
-
 Now lets parse our ``test_dict`` with ``ProductItemModel`` and show it's output.
 
 .. code-block:: python
@@ -500,21 +502,21 @@ Output:
     but they are still accessible in ``preprocess_item``, ``item_processors`` and
     ``process_item``.*
 
+
 Variants
 ========
+*Coming soon ...*
 
-*Documentation with examples coming soon ...*
 
 Nesting models
 ==============
+*Coming soon ...*
 
-*Documentation with examples coming soon ...*
 
 Validation
 ==========
 ``easydata`` doesn't come with validation solution since it's main purpose is to
-transform data, but it's easy to create your own solution and bellow we will
-explain few of different solutions and best way from our perspective to
-implement them.
+transform data, but it's easy to create your own solution and bellow we will explain
+a few of different solutions and a best way how to implement them from our perspective.
 
-*Examples coming soon ...*
+*Coming soon ...*
