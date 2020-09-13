@@ -17,8 +17,10 @@ purpose is to be used as a reusable extension that contains predefined item
 parsers and processors. To explain this functionality in more details is best
 to show it through examples bellow.
 
-Basic model block
+Basic block model
 -----------------
+Lets first create sample *HTML* text stored in a ``test_html`` variable.
+
 .. code-block:: python
 
     test_html = """
@@ -35,8 +37,8 @@ Basic model block
         </html>
     """
 
-Now let's create our model block class which will be responsible for extracting price
-data from the HTML above.
+Now let's create model block class, which will be responsible for extracting price
+data from the *HTML* above.
 
 .. code-block:: python
 
@@ -57,8 +59,9 @@ data from the HTML above.
             ('discount', ItemDiscountProcessor())
         ]
 
-As mentioned before, classes as above are meant to be used withing ``ItemModel`` so
-lets create our ``ItemModel`` bellow.
+As mentioned before, model blocks as above are meant to be used withing ``ItemModel``.
+Now lets create ``ItemModel`` which will utilize ``block_models`` property with
+``PricingBlockModel`` as a value in a list.
 
 .. code-block:: python
 
@@ -84,7 +87,7 @@ lets create our ``ItemModel`` bellow.
             contains=['yes']
         )
 
-Now lets parse our HTML with our ``ProductItemModel`` and print it's output.
+Now lets parse our *HTML* with our ``ProductItemModel`` and print it's output.
 
 .. code-block:: python
 
@@ -108,7 +111,7 @@ Output:
 As we can see from the result, ``discount`` was made through a ``ItemDiscountProcessor``
 which was added in a ``PricingBlockModel``.
 
-If needed, we can easily disable ``ItemDiscountProcessor`` in our ``ProductItemModel``.
+If needed, we can easily disable ``ItemDiscountProcessor`` within our ``ProductItemModel``.
 
 .. code-block:: python
 
@@ -138,11 +141,11 @@ We can also override ``item_price`` from the ``PricingBlockModel`` in our ``Prod
 
         ...
 
-Block ItemModel with custom parameters
---------------------------------------
-We can also create reusable block item models with ``__init__`` parameters
-which will modify or create parsers based on our input parameters. This is also
-preferred way how block item models should be created and used in most cases.
+Block models with custom parameters
+-----------------------------------
+We can also create reusable block models with ``__init__`` parameter, which will modify
+or create parsers based on our input parameters. This is also preferred way how block
+models should be created and used in most cases.
 
 Example:
 
@@ -194,7 +197,7 @@ Named processors
 ----------------
 We already got to know item and data processors in the :ref:`getting-started`
 section and here we will explain how to use named item and data processors from
-blocks or models that were dynamically added in a custom model initialization.
+blocks or models that were dynamically added through a custom model initialization.
 
 For starters lets create *block models* without named item processors.
 
@@ -339,9 +342,9 @@ Output:
         'discount': 50.05
     }
 
-As we can see only ``'discount'`` and it's value are returned while ``'price'``
-and ``'sale_price'`` item keys and it's values gets deleted, but after they are
-already passed to item processors in order to be processed.
+As we can see in our result output that only ``'discount'`` and it's value are returned,
+while ``'price'`` and ``'sale_price'`` item keys with it's values gets deleted, but only after
+they are already processed by item processors.
 
 
 Item method
