@@ -207,3 +207,21 @@ Default: ``False``
 ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY
 -------------------------------------------
 Default: ``False``
+
+.. _config-ed-data-variants-name:
+
+ED_DATA_VARIANTS_NAME
+---------------------
+Default: ``variants``
+
+.. _config-ed-data-variants-key-name:
+
+ED_DATA_VARIANTS_KEY_NAME
+-------------------------
+Default: ``variants_key``
+
+.. _config-ed-data-variant-name:
+
+ED_DATA_VARIANT_NAME
+--------------------
+Default: ``variant``
