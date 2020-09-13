@@ -113,12 +113,42 @@ Parameters
 
 .. option:: item_price_key
 
+.. note::
+
+    Default value of *item_price_key* parameter can be defined through a config variable
+    :ref:`config-ed-item-discount-item-price-key` in a config file or a model.
+
 .. option:: item_sale_price_key
+
+.. note::
+
+    Default value of *item_sale_price_key* parameter can be defined through a config variable
+    :ref:`config-ed-item-discount-item-sale-price-key` in a config file or a model.
 
 .. option:: item_discount_key
 
+.. note::
+
+    Default value of *item_discount_key* parameter can be defined through a config variable
+    :ref:`config-ed-item-discount-item-discount-key` in a config file or a model.
+
 .. option:: decimals
+
+.. note::
+
+    Default value of *decimals* parameter can be defined through a config variable
+    :ref:`config-ed-item-discount-decimals` in a config file or a model.
 
 .. option:: no_decimals
 
+.. note::
+
+    Default value of *no_decimals* parameter can be defined through a config variable
+    :ref:`config-ed-item-discount-no-decimals` in a config file or a model.
+
 .. option:: remove_item_sale_price_key
+
+.. note::
+
+    Default value of *remove_item_sale_price_key* parameter can be defined through a config
+    variable :ref:`config-ed-item-discount-rm-item-sale-price-key` in a config file or a model.

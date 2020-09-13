@@ -56,6 +56,11 @@ We can change our date time output in any valid str format that we want through 
     >>> parsers.DateTime(datetime_format='%d.%m.%Y %H:%M:%S').parse(test_date_text)
     '10.12.2018 10:55:50'
 
+.. note::
+
+    Default value of *datetime_format* parameter can be defined through a config
+    variable :ref:`config-ed-datetime-format` in a config file or a model.
+
 .. option:: min_year
 
 If we set value in a ``min_year`` parameter and year of our date time in a string is
@@ -166,6 +171,11 @@ We can change our date time output in any valid str format that we want through 
     >>> parsers.DateTime(date_format='%d.%m.%Y').parse(test_date_text)
     '10.12.2018'
 
+.. note::
+
+    Default value of *date_format* parameter can be defined through a config
+    variable :ref:`config-ed-date-format` in a config file or a model.
+
 
 DateSearch
 ==========
@@ -233,6 +243,11 @@ We can change our date time output in any valid str format that we want through 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
     >>> parsers.Time(time_format='%H-%M-%S').parse(test_date_text)
     '10-55-50'
+
+.. note::
+
+    Default value of *time_format* parameter can be defined through a config
+    variable :ref:`config-ed-time-format` in a config file or a model.
 
 
 TimeSearch

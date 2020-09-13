@@ -69,6 +69,11 @@ We can completely disable number rounding to decimals by settings
     >>> parsers.PriceFloat(decimals=None).parse(test_text)
     999.91264
 
+.. note::
+
+    Default value of *decimals* parameter can be defined through a config variable
+    :ref:`config-ed-price-decimals` in a config file or a model.
+
 
 PriceInt
 ========

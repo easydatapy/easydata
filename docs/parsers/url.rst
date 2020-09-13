@@ -123,6 +123,12 @@ order to construct full url.
     >>> parsers.Url(domain='demo.com').parse(test_url)
     'https://demo.com/product/1122'
 
+.. note::
+
+    Default value of *domain* parameter can be defined through a config variable
+    *ED_URL_DOMAIN* in a model.
+
+
 .. option:: protocol
 
 As we saw in example above, default protocol ``https`` is used when provided domain
@@ -134,3 +140,8 @@ protocol value ``https`` by specifying new value into protocol parameter.
     >>> test_url = '/product/1122'
     >>> parsers.Url(domain='demo.com', protocol='ftp').parse(test_url)
     'ftp://demo.com/product/1122'
+
+.. note::
+
+    Default value of *protocol* parameter can be defined through a config
+    variable :ref:`config-ed-url-protocol` in a config file or a model.

@@ -138,6 +138,11 @@ text belongs to so that sentences are split properly around abbreviations.
 Please note that currently only ``en`` and ``es`` language parameter values
 are supported. *Support for more is under way*
 
+.. note::
+
+    Default value of *language* parameter can be defined through a config variable
+    :ref:`config-ed-language` in a config file or a model.
+
 .. option:: allow
 
 We can control which sentences we want to get extracted by providing list of
