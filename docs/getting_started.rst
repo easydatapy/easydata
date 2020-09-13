@@ -9,18 +9,16 @@ through the guide you should know:
     - how to use ``ItemModel``
     - how to assign parsers to ``ItemModel``
     - how to use ``query`` selectors with parsers
-    - basic usage of data processors
-    - basic usage of item processors
+    - basic usage of *data* processors
+    - basic usage of *item* processors
 
 Guide Assumptions
 =================
-This guide is designed for beginners that haven't worked with ``easydata``
-before. There are some prerequisites for the tutorial that have to be
-followed:
+This guide is designed for beginners that haven't worked with ``easydata`` before. There
+are some prerequisites for the tutorial that have to be followed:
 
     - python 3.6 and above
-    - installing ``easydata`` package, which can be followed under
-      :ref:`installation`
+    - installing ``easydata`` package, which can be followed under :ref:`installation`
 
 Creating Model
 ==============
@@ -55,10 +53,20 @@ We will use following html in examples bellow:
         </html>
     """
 
-Now lets create an ``ItemModel`` which will process html above and parse it to
-item dict. To select data in a text parser we will use ``pq``, which is based
-on a PyQuery library and also adds custom pseudo element support like ``::text``,
-``attr()``
+Now lets create an ``ItemModel`` which will process html above and parse it to item dict.
+To select data in a text parser we will use ``pq``, which is based on a *PyQuery* library
+with custom pseudo elements to handle output (``::text``, ``::href``, ``::attr(<attr-name>)``,
+etc.).
+
+.. note::
+
+    *EasyData* currently ships with 4 *query* selectors to handle various data formats:
+        * :ref:`queries-pyquery` - is a *css* selector which can handle *HTML* and *XML*
+          data formats.
+        * :ref:`queries-jmespath` - is advanced json selector.
+        * :ref:`queries-key` - is a simple key based selector to be used on a python *dict*.
+        * :ref:`queries-regex` - is a *regex* based selector with a regex pattern as a query
+          selector.
 
 .. code-block:: python
 
@@ -192,11 +200,11 @@ Data processors are extensions to models which help to prepare/convert
 data for parser in cases data is more complex and with regular query
 selectors it cannot be selected in it's raw form.
 
-.. note::
+.. tip::
 
-    **The greatest power of data processor usage is to build your own
+    The greatest power of *data* processor usage is to build your own
     as a reusable piece of data converter in order to be used between
-    different models when needed.**
+    different models when needed.
 
 Example
 -------
@@ -213,7 +221,7 @@ In this example we will use following html with json info:
                 </h2>
                 <script type="text/javascript">
                     var json_data = {
-                        "brand": "EasyData",
+                        "brand": {"name": "EasyData"},
                         "name": "Test Product Item"
                     };
                 </script>
@@ -228,7 +236,7 @@ Lets create our item model with ``data_processors`` included.
 
     from easydata import ItemModel, parsers
     from easydata.processors import DataJsonFromReToDictProcessor
-    from easydata.queries import pq, key
+    from easydata.queries import pq, jp
 
 
     class ProductItemModel(ItemModel):
@@ -240,12 +248,12 @@ Lets create our item model with ``data_processors`` included.
         ]
 
         item_name = parsers.Text(
-            key('name'),
+            jp('name'),
             source='json_info'
         )
 
         item_brand = parsers.Text(
-            key('brand'),
+            jp('brand.name'),
             source='json_info'
         )
 
@@ -336,14 +344,14 @@ EasyData ships with multiple data processors to handle different case scenarios:
 
 Adding Item Processor
 =====================
-Item processors are similar to data processor but instead of transforming data
+*Item* processors are similar to *data* processor but instead of transforming data
 for a parser, their purpose is to modify already parsed item dictionary.
 
-.. note::
+.. tip::
 
-    **Similar to data processors, greatest benefit is to create your own items
+    Similar to *data* processors, greatest benefit is to create your own *item*
     processors and reuse them between different models. For example: validation
-    for item dictionary.**
+    for item dictionary.
 
 Example
 -------
@@ -425,13 +433,13 @@ Lets see how ``ItemDiscountProcessor`` works in more detail.
         ]
 
 ``ItemDiscountProcessor`` looks for parsed ``price`` and ``sale_price`` in item
-dictionary and calculates discount between these two values. Finally it creates
-a new discount key in item dictionary and adds discount value to it. If our
-price and sale price values live under different keys under item dictionary
-than default ones ``price`` and ``sale_price``, then we can through parameters
-change those default values to suit our needs. All parameters that
-``ItemDiscountProcessor`` accepts are ``item_price_key``, ``item_sale_price_key``,
-``item_discount_key``, ``decimals``, ``no_decimals``, ``remove_item_sale_price_key``.
+dictionary and calculates discount between these two values. Finally it creates a new
+discount key in item dictionary and adds discount value to it. If our price and sale
+price values live under different keys under item dictionary than default ones ``price``
+and ``sale_price``, then we can through parameters change those default values to suit
+our needs. All parameters that ``ItemDiscountProcessor`` accepts are ``item_price_key``,
+``item_sale_price_key``, ``item_discount_key``, ``decimals``, ``no_decimals``,
+``remove_item_sale_price_key``.
 
 We can also specify multiple items processors if needed:
 

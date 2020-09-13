@@ -12,9 +12,9 @@ Architecture
 * item processors
 * data bag
 
-Each of these components can be used independently to process data and because of
-that, writing tests for a custom build components is easy and straightforward
-without a need to utilize mocks.
+Each of these components can be used independently to process data and because of that,
+writing tests for a custom build components is easy and straightforward without a need
+to utilize mocks.
 
 .. topic:: Most important component is a model.
 
@@ -57,17 +57,17 @@ through other components.
     >> product_model = ProductItemModel()
 
 When we initialize our ``ProductItemModel`` nothing happens. Initialization of processors
-and other core components is done after we call ``parse_item`` method for a first time.
-Design decision to ignore ``__init__`` for class initialization is in order to add
-``ProductItemModel`` as a mixin to your existing project or to extend ``Spider`` class in a
-``scrapy`` framework if used.
+and other core components is done after we call ``parse`` method for a first time. Design
+decision to ignore ``__init__`` for class initialization is in order to add ``ProductItemModel``
+as a mixin to your existing project or to extend ``Spider`` class in a ``scrapy`` framework
+if needed.
 
 Now lets pass our variables, that we created before, with different kind of data to
-``parse_item`` method.
+``parse`` method.
 
 .. code-block:: python
 
-    >> product_model.parse_item(data=json_text, html=html_text)
+    >> product_model.parse(data=json_text, html=html_text)
     {'price': 999.9, 'discount': 50.01}
 
 .. note::
@@ -76,31 +76,33 @@ Now lets pass our variables, that we created before, with different kind of data
     since all properties that start with ``item_temp`` will be deleted before final
     output.
 
-When we pass our ``json_text`` and ``html_text`` to parse_item, they will immediately
-be stored into a ``DataBag`` object dictionary under ``data`` and ``html`` keys respectively.
-All parsers and processors will by default look in a ``DataBag`` for a ``data`` key,
-unless specified otherwise in a processor or a parser. We can see in our example model
-above, that a ``PriceFloat`` parser for a ``item_temp_sale_price`` property has a value
-``html`` in it's ``source`` parameter ... this means that under the hood parser will try to
-extract data from ``html`` key in our ``DataBag`` dictionary rather than default ``data``.
-Similar principles apply also for data processors.
+When we pass our ``json_text`` and ``html_text`` to ``parse``, our model will get registered
+with *model manager* which basically handles are components specified in our model. Model
+is registered within *model manager* only when we call ``parse`` for the first time. In next
+step through *model manager* our passed ``json_text`` and ``html_text`` data will be stored
+into a ``DataBag`` object dictionary under ``data`` and ``html`` keys respectively. All parsers
+and processors will by default look in a ``DataBag`` for a ``data`` key, unless specified
+otherwise in a processor or a parser. We can see in our example model above, that a ``PriceFloat``
+parser for a ``item_temp_sale_price`` property has a value ``html`` in it's ``source`` parameter
+... this means that under the hood parser will try to extract data from ``html`` key in our
+``DataBag`` dictionary rather than default ``data``. Similar principles apply also for data processors.
 
 .. note::
 
     ``DataBag`` is a dictionary based object, which is used through all parsing cycle in
-    a model. All other components (except ``items_processor``) have access to it in
+    a model. All other components (except ``item_processors``) have access to it in
     order to extract, create, modify or delete data in a ``DataBag`` dictionary.
 
-When ``DataBag`` is created under the hood on a ``parse_item`` call, it will be passed
+When ``DataBag`` is created under the hood on a ``parse`` call, it will be passed
 first through **data processors**, where it will be modified or transformed and in next
 step will be passed further to item parsers. In item parsers, data will be extracted from
 a ``DataBag`` and it's values stored in a item dictionary.
 
-Before final output, item dictionary will get passed through ``items_processor``, if there is
-a need for item dictionary keys or values to be modified.
+Before final output, item dictionary will get passed through ``item_processors``, if there is
+a need for item dictionary *keys* or *values* to be modified.
 
 
 Next steps
 ==========
-To get better understanding regarding processors and many other components, please
-proceed further to :ref:`advanced` section.
+To get better understanding regarding processors and many other components, please proceed
+further to :ref:`advanced` section.
