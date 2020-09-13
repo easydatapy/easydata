@@ -106,122 +106,124 @@ to any particular component. In that case the module of that component will be
 shown, typically a parser or a processor. It also means that the component must
 be used in order for the config to have any effect.
 
+Default config variables:
+-------------------------
 .. _config-ed-language:
 
 ED_LANGUAGE
------------
+###########
 Default: ``'en'``
 
 .. _config-ed-datetime-format:
 
 ED_DATETIME_FORMAT
-------------------
+##################
 Default: ``'%m/%d/%Y %H:%M:%S'``
 
 .. _config-ed-date-format:
 
 ED_DATE_FORMAT
---------------
+##############
 Default: ``'%m/%d/%Y'``
 
 .. _config-ed-time-format:
 
 ED_TIME_FORMAT
---------------
+##############
 Default: ``'%H:%M:%S'``
 
 .. _config-ed-datetime-formats:
 
 ED_DATETIME_FORMATS
--------------------
+###################
 Default: ``None``
 
 .. _config-ed-datetime-language:
 
 ED_DATETIME_LANGUAGE
---------------------
+####################
 Default: ``None``
 
 .. _config-ed-datetime-locales:
 
 ED_DATETIME_LOCALES
--------------------
+###################
 Default: ``None``
 
 .. _config-ed-datetime-region:
 
 ED_DATETIME_REGION
-------------------
+##################
 Default: ``None``
 
 .. _config-ed-url-domain:
 
 ED_URL_DOMAIN
--------------
+#############
 Default: ``None``
 
 .. _config-ed-url-protocol:
 
 ED_URL_PROTOCOL
----------------
+###############
 Default: ``'https'``
 
 .. _config-ed-price-decimals:
 
 ED_PRICE_DECIMALS
------------------
+#################
 Default: ``2``
 
 .. _config-ed-item-discount-item-price-key:
 
 ED_ITEM_DISCOUNT_ITEM_PRICE_KEY
--------------------------------
+###############################
 Default: ``'price'``
 
 .. _config-ed-item-discount-item-sale-price-key:
 
 ED_ITEM_DISCOUNT_ITEM_SALE_PRICE_KEY
-------------------------------------
+####################################
 Default: ``'sale_price'``
 
 .. _config-ed-item-discount-item-discount-key:
 
 ED_ITEM_DISCOUNT_ITEM_DISCOUNT_KEY
-----------------------------------
+##################################
 Default: ``'discount'``
 
 .. _config-ed-item-discount-decimals:
 
 ED_ITEM_DISCOUNT_DECIMALS
--------------------------
+#########################
 Default: ``2``
 
 .. _config-ed-item-discount-no-decimals:
 
 ED_ITEM_DISCOUNT_NO_DECIMALS
-----------------------------
+############################
 Default: ``False``
 
 .. _config-ed-item-discount-rm-item-sale-price-key:
 
 ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY
--------------------------------------------
+###########################################
 Default: ``False``
 
 .. _config-ed-data-variants-name:
 
 ED_DATA_VARIANTS_NAME
----------------------
+#####################
 Default: ``variants``
 
 .. _config-ed-data-variants-key-name:
 
 ED_DATA_VARIANTS_KEY_NAME
--------------------------
+#########################
 Default: ``variants_key``
 
 .. _config-ed-data-variant-name:
 
 ED_DATA_VARIANT_NAME
---------------------
+####################
 Default: ``variant``
