@@ -3,7 +3,6 @@
 ===============
 Getting started
 ===============
-
 This guide covers getting started with the package ``easydata``. After working
 through the guide you should know:
 
@@ -15,7 +14,6 @@ through the guide you should know:
 
 Guide Assumptions
 =================
-
 This guide is designed for beginners that haven't worked with ``easydata``
 before. There are some prerequisites for the tutorial that have to be
 followed:
@@ -26,8 +24,7 @@ followed:
 
 Creating Model
 ==============
-
-In this example we will use following html:
+We will use following html in examples bellow:
 
 .. code-block:: python
 
@@ -336,6 +333,7 @@ EasyData ships with multiple data processors to handle different case scenarios:
 * :ref:`processors-data-from-query-processor`
 * :ref:`processors-data-variant-processor`
 
+
 Adding Item Processor
 =====================
 Item processors are similar to data processor but instead of transforming data
@@ -433,7 +431,7 @@ price and sale price values live under different keys under item dictionary
 than default ones ``price`` and ``sale_price``, then we can through parameters
 change those default values to suit our needs. All parameters that
 ``ItemDiscountProcessor`` accepts are ``item_price_key``, ``item_sale_price_key``,
-``item_discount_key``, ``decimals``, ``no_decimals``, ``rm_item_sale_price_key``.
+``item_discount_key``, ``decimals``, ``no_decimals``, ``remove_item_sale_price_key``.
 
 We can also specify multiple items processors if needed:
 
@@ -462,7 +460,6 @@ We can also specify multiple items processors if needed:
         }
     }
 
-
 Default item processors
 -----------------------
 EasyData ships with multiple items processors to handle different case scenarios:
@@ -474,8 +471,9 @@ EasyData ships with multiple items processors to handle different case scenarios
 * :ref:`processors-item-remove-keys-processor`
 * :ref:`processors-item-discount-processor`
 
-Where go next?
-==============
+
+Next Steps
+==========
 It's great to have an understanding how is data shared between components, especially
 if you are planing to build custom parsers or processors. For a brief explanation
 to see how everything works underneath, please refer to :ref:`architecture` section.

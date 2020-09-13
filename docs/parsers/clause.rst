@@ -6,7 +6,6 @@ Clause Parsers
 
 Union
 =====
-
 .. autoclass:: easydata.parsers.clause::Union
 
 **Example:**
@@ -79,7 +78,6 @@ value. All other parsers further down the line are ignored when first match is f
 
 With
 ====
-
 .. autoclass:: easydata.parsers.clause::With
 
 **Example:**
@@ -126,7 +124,6 @@ Now lets parse ``test_html`` data and print our result.
 
 JoinText
 ========
-
 .. autoclass:: easydata.parsers.clause::JoinText
 
 ``JoinText`` will combine string values of two or more parsers.
@@ -164,9 +161,9 @@ Now lets parse ``test_html`` data and print our result.
 
     'EasyData Easybook Pro 13'
 
+
 JoinList
 ========
-
 .. autoclass:: easydata.parsers.clause::JoinList
 
 ``JoinList`` is similar to ``JoinText`` but instead of joining two ``str``
@@ -217,9 +214,9 @@ Now lets parse ``test_dict`` data and print our result.
 
     ['gold color', 'retina', 'i7 proc', '16 gb']
 
+
 JoinDict
 ========
-
 .. autoclass:: easydata.parsers.clause::JoinDict
 
 ``JoinDict`` is similar to ``JoinList`` but instead of joining two ``list``
@@ -271,3 +268,17 @@ Now lets parse ``test_dict`` data and print our result.
 .. code-block:: python
 
     {'color': 'gold', 'display': 'retina', 'proc': 'i7', 'ram': '16 gb'}
+
+
+ItemDict
+========
+.. autoclass:: easydata.parsers.clause::ItemDict
+
+examples coming soon ...
+
+
+ItemList
+========
+.. autoclass:: easydata.parsers.clause::ItemList
+
+examples coming soon ...

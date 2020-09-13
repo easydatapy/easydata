@@ -3,7 +3,6 @@
 ============
 Contributing
 ============
-
 If you’re reading this, you’re probably interested in contributing to EasyData. Thank
 you very much! Open source projects live-and-die based on the support they receive
 from others, and the fact that you’re even considering contributing to the EasyData
@@ -27,9 +26,9 @@ There are many ways to contribute to EasyData. Here are some of them:
   *:ref:`how-to-contribute`* instructions below for details on how to
   write and submit a *pull request*.
 
+
 Reporting bugs
 ==============
-
 Well-written bug reports are very helpful, so keep in mind the following
 guidelines when you're going to report a new bug.
 
@@ -56,9 +55,9 @@ guidelines when you're going to report a new bug.
 
 .. _how-to-contribute:
 
+
 How do I make a contribution?
 =============================
-
 Never made an open source contribution before? Wondering how contributions work in
 our project? Here's a quick rundown!
 
@@ -94,9 +93,9 @@ our project? Here's a quick rundown!
 
 .. _coding-style:
 
+
 Coding style
 ============
-
 Please follow coding conventions listed bellow when writing code:
 
 * Follow *PEP 8*.
@@ -111,7 +110,6 @@ Please follow coding conventions listed bellow when writing code:
 
 Auto formatting
 ---------------
-
 EasyData uses *black* and *isort* for automatic code formatting, so that we can focus
 more on a fixing problem or new feature implementation that code formatting.
 
@@ -124,21 +122,19 @@ compliant.
 
 Check for PEP 8 compliance
 --------------------------
-
 To run a check for PEP 8 compliance please use::
 
     tox -e lint
 
+
 Tests
 =====
-
 Tests are implemented using the pytest.
 
 .. _running-tests:
 
 Running tests
 -------------
-
 To run tests locally please use::
 
     tox -e py3
@@ -156,19 +152,18 @@ All tests runs will produce at the end of console output also coverage report.
 
 Writing tests
 -------------
-
 All added new functionality (including new features and bug fixes) must include
 a test case in order to check that everything works as expected, so please include
 test cases for your patches, otherwise PR won't get merged.
 
 EasyData uses *pytest*, which are located in the ``tests/`` directory.
 
+
 Code of Conduct
 ===============
 
 Our Pledge
 ----------
-
 In the interest of fostering an open and welcoming environment, we as
 contributors and maintainers pledge to making participation in our project and
 our community a harassment-free experience for everyone, regardless of age, body
@@ -178,7 +173,6 @@ orientation.
 
 Our Standards
 -------------
-
 Examples of behavior that contributes to creating a positive environment
 include:
 
@@ -201,7 +195,6 @@ Examples of unacceptable behavior by participants include:
 
 Our Responsibilities
 --------------------
-
 Project maintainers are responsible for clarifying the standards of acceptable
 behavior and are expected to take appropriate and fair corrective action in
 response to any instances of unacceptable behavior.

@@ -86,8 +86,8 @@ minor tweaks to this documentation or the core.
     advanced
     config
     parsers/index
-    processors/index
     queries/index
+    processors/index
     extending/index
     scrapy
     faq

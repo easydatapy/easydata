@@ -6,7 +6,6 @@ Data Parsers
 
 BaseData
 ========
-
 .. autoclass:: easydata.parsers.base::BaseData
 
 .. note::
@@ -26,10 +25,8 @@ explained further bellow.
     reference is to check other parsers how they are build upon *BaseData* and which methods
     are needed to be used in order to process selected value.
 
-
 Parameters
 ----------
-
 In bellow examples we will use ``Data`` parser which inherits ``BaseData`` and is exactly
 the same as ``BaseData`` since ``BaseData`` can not be instantiated and it's an abstract
 class.
@@ -154,7 +151,6 @@ Result:
     >>> ProductItemModel().parse_item(test_html)
     {'name': 'John Doe autographed baseball.', 'signed': True}
 
-
 .. option:: default
 
 Parser can also return ``default`` value if specified, if data cannot be extracted or found
@@ -165,7 +161,6 @@ by selectors.
     >>> test_dict = {'info': {'brand': ''}}
     >>> parsers.Data(query=jp('info.brand'), default='EasyData').parse(test_dict)
     'EasyData'
-
 
 .. option:: default_from_item
 
@@ -210,7 +205,6 @@ Result:
 
     >>> ProductItemModel().parse_item(test_html)
     {'name': 'EasyBook pro 15', 'description': 'EasyBook pro 15'}
-
 
 .. option:: source
 

@@ -3,22 +3,20 @@
 ===================
 Description Parsers
 ===================
-
 Description parsers by default will remove redundant spaces, capitalize sentences,
 fix bad encoding and add stop keys if they are missing in a sentences. They can
 also parse html tables into readable sentences and offer many options to manipulate
 outcome of parsed sentences.
 
+
 Sentences
 =========
-
 .. autoclass:: easydata.parsers.desc::Sentences
 
 ``Sentences`` parser will extract and split sentences from given data source.
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``pq`` instance from ``queries``
 selector module. ``pq`` is a css query selector using ``PyQuery`` library under
 the hood.
@@ -123,10 +121,8 @@ Another example with ``pq`` selector ignoring specific parts od html nodes.
     correctly because description parsers rely on html nodes when extracting
     and structuring sentences.
 
-
 Parameters
 ----------
-
 .. option:: language
 
 If we are parsing text in other language than english then we need to
@@ -141,7 +137,6 @@ text belongs to so that sentences are split properly around abbreviations.
 
 Please note that currently only ``en`` and ``es`` language parameter values
 are supported. *Support for more is under way*
-
 
 .. option:: allow
 
@@ -160,7 +155,6 @@ Regex pattern is also supported as parameter value:
 
     >>> parsers.Sentences(allow=[r'\bfirst']).parse(test_text)
 
-
 .. option:: callow
 
 ``callow`` is similar to ``allow`` but with exception that provided keys
@@ -172,7 +166,6 @@ are case sensitive. Regex pattern as a key is also supported.
     >>> parsers.Sentences(allow=['First', 'Third']).parse(test_text)
     ['Third sentence.']
 
-
 .. option:: from_allow
 
 We can skip sentences by providing keys in ``from_allow`` parameter.
@@ -183,7 +176,6 @@ Keys are not case sensitive and regex pattern is also supported.
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
     >>> parsers.Sentences(from_allow=['second']).parse(test_text)
     ['Second txt.', 'Third Txt.', 'FOUR txt.']
-
 
 .. option:: from_callow
 
@@ -204,7 +196,6 @@ Lets recreate same example as before but with lowercase key.
     >>> parsers.Sentences(from_allow=['second']).parse(test_text)
     []
 
-
 .. option:: to_allow
 
 ``to_allow`` is similar to ``from_allow`` but in reverse order. Here
@@ -216,7 +207,6 @@ sensitive and regex pattern is also supported.
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
     >>> parsers.Sentences(to_allow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.']
-
 
 .. option:: to_callow
 
@@ -237,7 +227,6 @@ Lets recreate same example as before but with a lowercase key.
     >>> parsers.Sentences(to_callow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.', 'FOUR txt.']
 
-
 .. option:: deny
 
 We can control which sentences we don't want to get extracted by providing
@@ -250,7 +239,6 @@ regex pattern is also supported.
     >>> parsers.Sentences(deny=['first', 'third']).parse(test_text)
     ['Second sentence.']
 
-
 .. option:: cdeny
 
 ``cdeny`` is similar to ``deny`` but with exception that provided keys
@@ -261,7 +249,6 @@ are case sensitive. Regex pattern as a key is also supported.
     >>> test_text = 'first sentence? Second sentence. Third sentence'
     >>> parsers.Sentences(cdeny=['First', 'Third']).parse(test_text)
     ['First sentence?', 'Second sentence.']
-
 
 .. option:: normalize
 
@@ -283,7 +270,6 @@ Lets try to set parameter ``normalize`` to ``False`` and see what happens.
     >>> parsers.Sentences(normalize=False).parse(test_text)
     ['First sentence...', 'Bad uÌˆnicode.', 'HTML entities &lt;3!']
 
-
 .. option:: capitalize
 
 By default all sentences will get capitalized as we can see bellow.
@@ -302,7 +288,6 @@ We can disable this behaviour by setting parameter ``capitalize`` to ``False``.
     >>> parsers.Sentences(capitalize=False).parse(test_text)
     ['first sentence?', 'Second sentence.', 'third sentence.']
 
-
 .. option:: title
 
 We can set our text output to title by setting parameter ``title``
@@ -313,7 +298,6 @@ to ``True``.
     >>> test_text = 'first sentence? Second sentence. third sentence'
     >>> parsers.Sentences(title=True).parse(test_text)
     'First Sentence? Second Sentence. Third Sentence'
-
 
 .. option:: uppercase
 
@@ -326,7 +310,6 @@ to ``True``.
     >>> parsers.Sentences(uppercase=True).parse(test_text)
     ['FIRST SENTENCE?', 'SECOND SENTENCE.', 'THIRD SENTENCE.']
 
-
 .. option:: lowercase
 
 We can set our text output to lowercase by setting parameter ``lowercase``
@@ -338,14 +321,12 @@ to ``True``.
     >>> parsers.Sentences(lowercase=True).parse(test_text)
     'first sentence? second sentence. third sentence'
 
-
 .. option:: min_chars
 
 By default ``min_chars`` has a value of 5. This means that any sentence that has
 less than 5 chars, will be filtered out and not seen at the end result. This
 is done to remove ambiguous sentences, especially when extracting text from
 html. We can raise or decrease this limit by changing the value of ``min_chars``.
-
 
 .. option:: replace_keys
 
@@ -359,7 +340,6 @@ also supported and search keys are not case sensitive.
     >>> parsers.Sentences(replace_keys=[('third', 'Last'), ('nce!', 'nce?')]).parse(test_text)
     ['First sentence?', 'Second sentence.', 'Last.']
 
-
 .. option:: remove_keys
 
 We can remove all chars in sentences by providing list of search keys in a
@@ -371,7 +351,6 @@ are not case sensitive.
     >>> test_text = 'first sentence! - second sentence.  Third'
     >>> parsers.Sentences(remove_keys=['sentence', '!']).parse(test_text)
     ['First.', 'Second.', 'Third.']
-
 
 .. option:: replace_keys_raw_text
 
@@ -402,7 +381,6 @@ happens.
     >>> parsers.Sentences(replace_keys_raw_text=replace_keys).parse(test_text)
     ['Easybook pro 15.', 'Color: Gray.', 'Material: Aluminium.']
 
-
 .. option:: remove_keys_raw_text
 
 Works similar as ``replace_keys_raw_text``, but instead of providing list
@@ -424,7 +402,6 @@ by removing color and stop key at the same time and get one sentence instead.
     >>> test_text = 'Easybook pro 15. Color: Gray'
     >>> parsers.Sentences(remove_keys_raw_text=['. color:']).parse(test_text)
     ['Easybook pro 15 Gray.']
-
 
 .. option:: split_inline_breaks
 
@@ -451,7 +428,6 @@ In cases when we want to disable this behaviour, we can set parameter
 Please note that chars like ``.``, ``:``, ``?``, ``!`` are not considered
 as inline breaks.
 
-
 .. option:: inline_breaks
 
 In above example we saw how default char breaks work. In cases when we want to
@@ -469,7 +445,6 @@ Regex pattern is also supported as a parameter value:
 .. code-block:: python
 
     >>> parsers.Sentences(inline_breaks=[r'\b>']).parse(test_text)
-
 
 .. option:: stop_key
 
@@ -491,7 +466,6 @@ desired char in a ``stop_key`` parameter.
     >>> parsers.Sentences(stop_key='!').parse(test_text)
     ['First feature!', 'Second feature?']
 
-
 .. option:: text_num_to_numeric
 
 We can convert all alpha chars that describe numeric values to actual
@@ -510,17 +484,14 @@ our ``language`` parameter. Currently supported languages regarding
 
 Description
 ===========
-
 .. autoclass:: easydata.parsers.desc::Description
 
 ``Description`` parser accepts all parameters as ``Sentences`` parser and works in
 exact same way with only difference, that returned value is ``string`` rather
 than a ``list`` of sentences.
 
-
 Parameters
 ----------
-
 .. option:: sentence_separator
 
 Behind the scenes sentences are from a text always broken into list and
@@ -546,9 +517,9 @@ custom one.
     >>> parsers.Description(sentence_separator=' > ').parse(test_text)
     First sentence? > Second sentence. > Third sentence.
 
+
 Features
 ========
-
 .. autoclass:: easydata.parsers.desc::Features
 
 ``Features`` parser accepts all parameters as ``Sentences`` parser and works in
@@ -573,9 +544,9 @@ features. Regular sentences are ignored.
     >>> parsers.Features(test_text).parse(test_text)
     [('Color', 'Black'), ('Material', 'Aluminium')]
 
+
 FeaturesDict
 ============
-
 .. autoclass:: easydata.parsers.desc::FeaturesDict
 
 ``FeaturesDict`` parser accepts all parameters as ``Features`` parser and works in

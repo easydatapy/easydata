@@ -6,9 +6,9 @@ Item Processors
 
 .. _processors-item-keys-merge-into-list-processor:
 
+
 ItemKeysMergeIntoListProcessor
 ==============================
-
 .. autoclass:: easydata.processors.item::ItemKeysMergeIntoListProcessor
 
 ``ItemKeysMergeIntoDictProcessor`` creates a list of values under a new key on
@@ -30,7 +30,6 @@ Parameters
 
 ItemKeysMergeProcessor
 ======================
-
 .. autoclass:: easydata.processors.item::ItemKeysMergeProcessor
 
 Parameters
@@ -47,7 +46,6 @@ Parameters
 
 ItemKeysMergeIntoDictProcessor
 ==============================
-
 .. autoclass:: easydata.processors.item::ItemKeysMergeIntoDictProcessor
 
 ``ItemKeysMergeIntoDictProcessor`` creates a dictionary under a new key on
@@ -69,7 +67,6 @@ Parameters
 
 ItemValueToStrProcessor
 =======================
-
 .. autoclass:: easydata.processors.item::ItemValueToStrProcessor
 
 ``ItemValueToStrProcessor`` converts values from various types to str.
@@ -86,7 +83,6 @@ Parameters
 
 ItemRemoveKeysProcessor
 =======================
-
 .. autoclass:: easydata.processors.item::ItemRemoveKeysProcessor
 
 ``ItemRemoveKeysProcessor`` removes keys from item dictionary.
@@ -101,7 +97,6 @@ Parameters
 
 ItemDiscountProcessor
 =====================
-
 .. autoclass:: easydata.processors.item::ItemDiscountProcessor
 
 ``ItemDiscountProcessor`` looks for parsed ``price`` and ``sale_price`` in item
@@ -112,7 +107,6 @@ than default ones ``price`` and ``sale_price``, then we can through parameters,
 change those default values in order to suit our needs.
 
 All parameters that ``ItemDiscountProcessor`` accepts are listed bellow:
-
 
 Parameters
 ----------
@@ -127,4 +121,4 @@ Parameters
 
 .. option:: no_decimals
 
-.. option:: rm_item_sale_price_key
+.. option:: remove_item_sale_price_key

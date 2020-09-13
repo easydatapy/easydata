@@ -3,7 +3,6 @@
 ============
 Architecture
 ============
-
 ``easydata`` consist of several components:
 
 * model
@@ -100,5 +99,8 @@ a ``DataBag`` and it's values stored in a item dictionary.
 Before final output, item dictionary will get passed through ``items_processor``, if there is
 a need for item dictionary keys or values to be modified.
 
+
+Next steps
+==========
 To get better understanding regarding processors and many other components, please
 proceed further to :ref:`advanced` section.

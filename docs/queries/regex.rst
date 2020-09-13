@@ -3,5 +3,6 @@
 ============
 ReQuery (re)
 ============
-
 .. autoclass:: easydata.queries.re::ReQuery
+
+*Coming soon ...*

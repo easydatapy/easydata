@@ -54,6 +54,7 @@ Now lets select brand name from our *HTML* and pass ``test_html`` to our ``pq`` 
 If we wouldn't add pseudo key ``::text`` at the end of our *css* selector, then we would get
 ``PyQuery`` instance instead of brand value.
 
+
 Pseudo keys
 ===========
 .. option:: ::text
@@ -159,6 +160,7 @@ to our ``::text`` pseudo key. Lets try that in example bellow.
 
 ``-all`` extension currently works only with ``::text`` and ``::ntext`` pseudo keys.
 
+
 Pseudo keys "-items" extension
 ==============================
 Purpose of ``-items`` extension is to return a ``list`` of all *HTML* elements matched by
@@ -171,6 +173,7 @@ a *css* selector.
 
 ``-items`` works with all other pseudo keys such as ``::text``, ``::ntext``, ``src``, ``val``,
 ``::attr(<attr-name>)``, ``href``, etc.
+
 
 Removing HTML elements from result
 ==================================
@@ -191,12 +194,11 @@ element that we want to be excluded from end result.
 
 .. code-block:: python
 
-    >>> pq('h2::text', rm='span').get(test_html)
+    >>> pq('h2::text', remove_query='span').get(test_html)
     'Test Product Item'
 
 We can also exclude multiple nested *HTML* elements by separating them with a *comma* if needed.
 
 .. code-block:: python
 
-    >>> pq('h2::text', rm='span,#some-id,.some-class').get(test_html)
-
+    >>> pq('.made-up-class::text', remove_query='span,#some-id,.some-class').get(test_html)

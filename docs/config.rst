@@ -3,7 +3,6 @@
 ======
 Config
 ======
-
 The EasyData config allows you to customize the behaviour of all EasyData
 components, including the parsers, processors and models themselves.
 
@@ -12,6 +11,7 @@ that the code can use to pull configuration values from. The config attributes c
 populated through different mechanisms, which are described below.
 
 For a list of available built-in config variables see: :ref:`config-reference`.
+
 
 Populating config
 =================
@@ -75,7 +75,6 @@ example, proper config names for a date time parsers would be ``ED_URL_DOMAIN``,
 
 Accessing config
 ================
-
 Via ``easydata.utils.config``:
 
 .. code-block:: python
@@ -95,6 +94,7 @@ Through ``config`` property in a component, we will get any config value that wa
 overwritten in a ``model``.
 
 .. _config-reference:
+
 
 Built-in config reference
 =========================
@@ -204,6 +204,6 @@ Default: ``False``
 
 .. _config-ed-item-discount-rm-item-sale-price-key:
 
-ED_ITEM_DISCOUNT_RM_ITEM_SALE_PRICE_KEY
----------------------------------------
+ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY
+-------------------------------------------
 Default: ``False``

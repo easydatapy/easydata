@@ -6,7 +6,6 @@ List Parsers
 
 List
 ====
-
 .. autoclass:: easydata.parsers.list::List
 
 ``List`` parser returns a value of ``list`` type. It's main advantage is that each
@@ -16,7 +15,6 @@ examples.
 
 Getting Started
 ---------------
-
 Lets import first ``parsers`` module and ``jp`` together with ``pq`` from
 ``queries`` selector module.
 
@@ -138,10 +136,8 @@ Now lets parse ``test_html_text`` data and print our result.
         'https://demo.com/imgs/3.jpg'
     ]
 
-
 Parameters
 ----------
-
 .. option:: unique
 
 By default ``List`` parser will ensure that all values in a returned ``list``
@@ -212,7 +208,6 @@ Now lets parse ``test_json_text`` data and print our result.
 
 As we can see our list contains now two ``https://demo.com/imgs/3.jpg`` values.
 
-
 .. option:: max_num
 
 Setting a ``int`` value to ``max_num`` parameter will basically ensure how many
@@ -248,7 +243,6 @@ As we can see, our original ``list`` had 3 image urls in it, and now because we 
 set to our parameter ``max_num`` value of 2, we get only ``list`` consisted of 2
 image urls.
 
-
 .. option:: split_key
 
 Through ``split_key`` we can break a text into list which be processed by ``List``
@@ -281,16 +275,13 @@ Now lets parse ``test_text`` data and print our result.
 
 TextList
 ========
-
 .. autoclass:: easydata.parsers.list::TextList
 
 ``TextList`` extends ``List`` parsers and therefore all parameters from it, are also
 available in ``TextList``. ``TextList`` output is a ``list`` of ``str``.
 
-
 Parameters
 ----------
-
 .. option:: allow
 
 We can control which list values we want to get extracted by providing list of
@@ -319,7 +310,6 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.eu'
     ]
 
-
 .. option:: callow
 
 ``callow`` is similar to ``allow`` but with exception that provided keys
@@ -345,7 +335,6 @@ Now lets parse ``test_list`` data and print our result.
     [
         'http://demo.eu'
     ]
-
 
 .. option:: from_allow
 
@@ -373,7 +362,6 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.net',
         'http://demo.eu'
     ]
-
 
 .. option:: from_callow
 
@@ -423,7 +411,6 @@ Now lets parse ``test_list`` data and print our result.
 
     []
 
-
 .. option:: to_allow
 
 ``to_allow`` is similar to ``from_allow`` but in reverse order. Here
@@ -451,7 +438,6 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.com',
         'http://demo.net'
     ]
-
 
 .. option:: to_callow
 
@@ -505,7 +491,6 @@ Now lets parse ``test_list`` data and print our result.
         'http://demo.eu'
     ]
 
-
 .. option:: multiply_keys
 
 Setting values into ``multiply_keys`` enables you to parse ``str`` or a first
@@ -555,3 +540,54 @@ or
     test_url = ['https://demo.com/imgs/1.jpg', 'https://demo.com/imgs/no-image.jpg']
 
 We would still get same result as in example above.
+
+.. option:: normalize
+
+.. option:: capitalize
+
+.. option:: title
+
+.. option:: uppercase
+
+.. option:: lowercase
+
+.. option:: replace_keys
+
+.. option:: remove_keys
+
+.. option:: split_text_key
+
+.. option:: split_text_keys
+
+.. option:: take
+
+.. option:: skip
+
+.. option:: text_num_to_numeric
+
+.. option:: language
+
+.. option:: fix_spaces
+
+.. option:: escape_new_lines
+
+.. option:: new_line_replacement
+
+.. option:: add_stop
+
+
+UrlList
+=======
+.. autoclass:: easydata.parsers.list::UrlList
+
+examples coming soon ...
+
+.. option:: from_text
+
+.. option:: remove_qs
+
+.. option:: qs
+
+.. option:: domain
+
+.. option:: protocol
