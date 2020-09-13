@@ -77,7 +77,7 @@ minor tweaks to this documentation or the core.
 
 .. toctree::
     :maxdepth: 1
-    :numbered:
+    :numbered: 3
     :hidden:
 
     installation
