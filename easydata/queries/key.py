@@ -14,6 +14,7 @@ class KeyQuery(QuerySearch):
         self._query = query
         self._keys = False
         self._values = False
+        self._dict_key_value = None
 
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
@@ -64,6 +65,17 @@ class KeyQuery(QuerySearch):
 
     def _process_data_key_values(self, data):
         if data:
+            if self._dict_key_value:
+                if not isinstance(data, list):
+                    raise TypeError(
+                        "Pseudo key dict(<key>:<value>) will make list to dict "
+                        "conversion if queried data is list type."
+                    )
+
+                dict_key, dict_value = self._dict_key_value
+
+                data = {ddata[dict_key]: ddata[dict_value] for ddata in data}
+
             if self._values:
                 data = list(data.values())
 
@@ -79,7 +91,11 @@ class KeyQuery(QuerySearch):
 
         pseudo_key = query_parts[-1]
 
-        if pseudo_key == "values":
+        if pseudo_key.startswith("dict"):
+            dict_key_value_text = pseudo_key.split("(")[-1].split(")")[0]
+            dict_key_value_list = [v.strip() for v in dict_key_value_text.split(":")]
+            self._dict_key_value = tuple(dict_key_value_list)
+        elif pseudo_key == "values":
             self._values = True
         elif pseudo_key == "keys":
             self._keys = True

@@ -5,7 +5,7 @@ import jmespath
 from easydata.queries.key import KeyQuery
 
 
-class JmesPathSearch(KeyQuery):
+class JMESPathSearch(KeyQuery):
     def _parse(
         self,
         data: Any,
