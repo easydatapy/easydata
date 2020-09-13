@@ -3,8 +3,8 @@
 ======
 Config
 ======
-The EasyData config allows you to customize the behaviour of all EasyData
-components, including the parsers, processors and models themselves.
+The EasyData config allows you to customize the behaviour of all EasyData components,
+including the parsers, processors and models themselves.
 
 The infrastructure of the config provides a global namespace of key-value mappings
 that the code can use to pull configuration values from. The config attributes can be
@@ -27,7 +27,7 @@ These mechanisms are described in more detail below.
 .. note::
 
     All custom config variables must start with ``ED_``, otherwise they wont be
-    recognized by config object.
+    recognized by config loader.
 
 Config per model
 ----------------
