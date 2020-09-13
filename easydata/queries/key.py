@@ -92,8 +92,8 @@ class KeyQuery(QuerySearch):
         pseudo_key = query_parts[-1]
 
         if pseudo_key.startswith("dict"):
-            dict_key_value_text = pseudo_key.split('(')[-1].split(')')[0]
-            dict_key_value_list = [v.strip() for v in dict_key_value_text.split(':')]
+            dict_key_value_text = pseudo_key.split("(")[-1].split(")")[0]
+            dict_key_value_list = [v.strip() for v in dict_key_value_text.split(":")]
             self._dict_key_value = tuple(dict_key_value_list)
         elif pseudo_key == "values":
             self._values = True
