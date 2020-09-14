@@ -4,8 +4,7 @@ Welcome to easydata's documentation!
 
     EasyData is in early stages of development; backwards incompatible
     changes are possible without deprecation warnings until beta status
-    is reached and therefore is not suitable to be used in production or
-    on a larger scale.
+    is reached and therefore is not suitable to be used in production.
 
 
 What is EasyData
@@ -15,7 +14,7 @@ from various sources (text, html, xml, json, dictionaries, lists and others) to 
 python dictionary with option to even combine different types of sources in order
 to transform to dictionary.
 
-It uses component based mapping at the hearth and it's concept is similar to django
+It uses component based mapping at the hearth and it's concept is similar to ORM-like
 models.
 
 **The benefits of using EasyData are:**

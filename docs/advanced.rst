@@ -382,10 +382,10 @@ Now discount won't be even calculated.
 Temporary item parsers
 ======================
 Sometimes we don't want values from item attributes to be outputted in a final
-result but we still need because items processors or other parser rely on them.
-To solve this issue elegantly, we can just prefix our attr item names with
-``item_temp_`` and item with that prefix will be deleted from final output.
-Lets show this in example below.
+result but we still need them because item processors or other item parsers
+rely on them. To solve this issue elegantly, we can just prefix our item properties
+with ``item_temp_`` and item with that prefix will be deleted from final output.
+Lets demonstrate this in example below.
 
 .. code-block:: python
 
@@ -409,7 +409,7 @@ Now lets parse our ``ProductItemModel`` and print it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse_item(test_html)  # test_html from previous section
 
 Output:
 
@@ -419,18 +419,18 @@ Output:
         'discount': 50.05
     }
 
-As we can see in our result output that only ``'discount'`` and it's value are returned,
-while ``'price'`` and ``'sale_price'`` item keys with it's values gets deleted, but only after
-they are already processed by item processors.
+As we can see in our result output, that only ``'discount'`` and it's value are returned,
+while ``'price'`` and ``'sale_price'`` item keys with it's values got deleted, but only after
+they were already processed by item processors.
 
 
 Item method
 ===========
 In some cases our item parsers just won't parse value from data properly due to
-it's complexity and in those cases we can make item methods instead of making an
-parser instance on a model property.
+it's complexity and in those cases we can make item methods instead of making parser
+instance on a model property.
 
-Lets demonstrate first parser instance on a model property to get more clarity.
+Lets demonstrate first with a parser instance on a model property to get more clarity.
 
 .. code-block:: python
 
@@ -588,10 +588,17 @@ Variants
 *Coming soon ...*
 
 
-Validation
-==========
+Item Validation
+===============
 ``easydata`` doesn't come with validation solution since it's main purpose is to
-transform data, but it's easy to create your own solution and bellow we will explain
-a few of different solutions and a best way how to implement them from our perspective.
+transform data, but it's easy to create your own solution via custom item processor
+which handles validation or to handle validation after model returns dict item.
 
-*Examples coming soon ...*
+Some validation libraries that we recommend:
+
+* Schematics_: validation library based on ORM-like models.
+* `JSON Schema`_: validation library based on JSON schema.
+
+
+.. _`Schematics`: https://schematics.readthedocs.io/en/latest/
+.. _`JSON Schema`: https://pypi.org/project/jsonschema/

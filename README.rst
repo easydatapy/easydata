@@ -18,33 +18,31 @@ EasyData
     :target: https://pypi.org/project/easydata/
     :alt: pypi package version
 
-.. warning::
+:warning:
 
     ``EasyData`` is in early stages of development; backwards incompatible
-    changes are possible without deprecation warnings until beta status
-    is reached and therefore is not suitable to be used in production or
-    on a larger scale.
+    changes are possible without deprecation warning until beta status
+    is reached and therefore is not suitable to be used in production.
+
 
 Overview
 ========
-
 ``EasyData`` is data object pattern that provides transformation of item data
 from various sources (text, html, xml, json, dictionaries, lists and others) to a
 python dictionary with option to even combine different types of sources in order
 to transform to dictionary.
 
-It uses component based mapping at the hearth and it's concept is similar to django
+It uses component based mapping at the hearth and it's concept is similar to ORM-like
 models.
+
 
 Documentation
 =============
-
 Documentation is available online at https://easydata.readthedocs.io/ and in the ``docs``
 directory.
 
 The benefits of using EasyData are:
 -----------------------------------
-
 * focusing on the object-oriented business logic
 * uniform extraction logic between various sources
 * speeds up development process of creating a transformer/parser significantly
@@ -60,7 +58,6 @@ The benefits of using EasyData are:
 
 Applications:
 -------------
-
 * Web scraping. It can easily be integrated with scrapy or any other python
   based solution or even your own.
 * Transforming *API* and *FEED* data from various formats.
@@ -72,15 +69,15 @@ Applications:
     EasyData is not tied to any framework, nor it's a framework and it can be
     easily added to existing projects.
 
+
 Requirements
 ============
-
 * Python 3.6+
 * Works on Linux, Windows, macOS, BSD
 
+
 Install
 =======
-
 The quick way::
 
     pip install easydata
@@ -88,14 +85,14 @@ The quick way::
 See the install section in the documentation at
 https://easydata.readthedocs.io/en/latest/installation.html for more details.
 
+
 Example
 =======
-
 Bellow we will give just a simple example, so you can get some presentation,
 how ``EasyData`` works. For more advanced examples or tutorials please refer
 to documentation.
 
-For transformation we will use following *HTML*:
+Lets make transformation on a following *HTML*:
 
 .. code-block:: python
 
@@ -211,9 +208,9 @@ Output:
         'stock': True
     }
 
+
 Contributing
 ============
-
 **Yes please!**  We are always looking for contributions, additions and improvements.
 
 See https://easydata.readthedocs.io/en/latest/contributing.html for more details.
