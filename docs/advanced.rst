@@ -87,7 +87,7 @@ Now lets create ``ItemModel`` which will utilize ``block_models`` property with
             contains=['yes']
         )
 
-Now lets parse our *HTML* with our ``ProductItemModel`` and print it's output.
+Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
 
 .. code-block:: python
 
@@ -188,6 +188,83 @@ Now lets use ``PricingCssBlockModel`` in our ``ProductItemModel``.
         ]
 
         ...
+
+Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
+
+.. code-block:: python
+
+    >>> item_model = ProductItemModel()
+
+    >>> item_model.parse_item(test_html)
+
+Output:
+
+.. code-block:: python
+
+    {
+        'brand': 'EasyData',
+        'discount': 50.05,
+        'name': 'EasyData Test Product Item',
+        'price': 99.9,
+        'sale_price': 49.9,
+        'stock': True
+    }
+
+
+Model as item property
+======================
+Item properties in a model can have instead of a parser object also a ``ItemModel``
+object which will produce dictionary value.
+
+In example bellow we will reuse ``PricingCssBlockModel`` from previous section.
+
+.. code-block:: python
+
+    from easydata import ItemModel, parsers
+    from easydata.queries import pq
+
+
+    class ProductItemModel(ItemModel):
+        item_name = parsers.Text(
+            pq('.name::text'),
+        )
+
+        item_brand = parsers.Text(
+            pq('.brand::text')
+        )
+
+        item_pricing = PricingCssBlockModel(
+            price_css='#price::text',
+            sale_price_css='#sale-price::text'
+        )
+
+        item_stock = parsers.Bool(
+            pq('.stock::attr(available)'),
+            contains=['yes']
+        )
+
+Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
+
+.. code-block:: python
+
+    >>> item_model = ProductItemModel()
+
+    >>> item_model.parse_item(test_html)  # test_html from previous section
+
+Output:
+
+.. code-block:: python
+
+    {
+        'brand': 'EasyData',
+        'name': 'EasyData Test Product Item',
+        'pricing': {
+            'discount': 50.05,
+            'price': 99.9,
+            'sale_price': 49.9,
+        },
+        'stock': True
+    }
 
 
 Advanced processor utilization
@@ -370,8 +447,8 @@ will create item method which will produce exact same end result.
             return data['data']['brand']
 
 
-Data processing in a model
-==========================
+Data processing
+===============
 It's encouraged that you create your own data processors to modify data, so that
 custom processors can be reused between other models, but there are some edge
 and specific cases which will occur hopefully not often and for that kind of
@@ -435,8 +512,8 @@ Output:
     }
 
 
-Item processing in a model
-==========================
+Item processing
+===============
 In a similar way as ``data_processors``, it's encouraged that you create your
 own item processors to modify item dictionary, so that custom processors can be
 reused between other models, but there are some edge and specific cases which will
@@ -511,15 +588,10 @@ Variants
 *Coming soon ...*
 
 
-Nesting models
-==============
-*Coming soon ...*
-
-
 Validation
 ==========
 ``easydata`` doesn't come with validation solution since it's main purpose is to
 transform data, but it's easy to create your own solution and bellow we will explain
 a few of different solutions and a best way how to implement them from our perspective.
 
-*Coming soon ...*
+*Examples coming soon ...*
