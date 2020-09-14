@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import Any, List, Optional
+from functools import lru_cache
+from typing import Any, List
 
 from easydata.data import DataBag
 from easydata.managers import ModelManager
@@ -13,8 +14,6 @@ class BaseModel(ABC):
     data_processors: List[DataBaseProcessor] = []
 
     item_processors: List[BaseProcessor] = []
-
-    _model_manager: Optional[ModelManager] = None
 
     def preprocess_data(self, data: DataBag):
         return data
@@ -34,12 +33,10 @@ class BaseModel(ABC):
     def initialized_model(self):
         pass
 
-    @property
-    def model_manager(self):
-        if not self._model_manager:
-            self._model_manager = ModelManager(self)
-
-        return self._model_manager
+    @property  # type: ignore
+    @lru_cache(maxsize=None)
+    def model_manager(self) -> ModelManager:
+        return ModelManager(self)
 
     def _parse_items(
         self,

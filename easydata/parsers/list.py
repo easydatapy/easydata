@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Any, Callable
 from typing import List as ListType
 from typing import Optional, Union
@@ -44,23 +45,19 @@ class List(BaseData):
 
         super().__init__(**kwargs)
 
-    @property
+    @property  # type: ignore
+    @lru_cache(maxsize=None)
     def _parser(self):
-        if self.__parser_obj:
-            # Value parser already initialized
-            return self.__parser_obj
-
         # Initialize and validate value parser
-        if self.__parser:
-            self.__parser_obj = self.__parser
-        else:
-            self.__parser_obj = self._default_parser_obj
+        value_parser = self.__parser or self._default_parser_obj
 
-        mix.validate_parser(self.__parser_obj)
+        mix.validate_parser(value_parser)
 
-        self.__parser_obj.init_config(self.config)
+        value_parser.init_config(self.config)
 
-        return self.__parser_obj
+        print("IT'S ALIVE")
+
+        return value_parser
 
     @property
     def _default_parser_obj(self):

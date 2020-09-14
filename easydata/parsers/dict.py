@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Any
 from typing import Dict as TypeDict
 from typing import List, Optional, Union
@@ -83,41 +84,29 @@ class Dict(BaseData):
             **kwargs,
         )
 
-    @property
+    @property  # type: ignore
+    @lru_cache(maxsize=None)
     def _key_parser(self):
-        if self.__key_parser_obj:
-            # Key parser already initialized
-            return self.__key_parser_obj
-
         # Initialize and validate key parser
-        if self.__key_parser:
-            self.__key_parser_obj = self.__key_parser
-        else:
-            self.__key_parser_obj = self._default_key_parser_obj
+        key_parser_obj = self.__key_parser or self._default_key_parser_obj
 
-        mix.validate_parser(self.__key_parser_obj)
+        mix.validate_parser(key_parser_obj)
 
-        self.__key_parser_obj.init_config(self.config)
+        key_parser_obj.init_config(self.config)
 
-        return self.__key_parser_obj
+        return key_parser_obj
 
-    @property
+    @property  # type: ignore
+    @lru_cache(maxsize=None)
     def _value_parser(self):
-        if self.__value_parser_obj:
-            # Value parser already initialized
-            return self.__value_parser_obj
-
         # Initialize and validate value parser
-        if self.__value_parser:
-            self.__value_parser_obj = self.__value_parser
-        else:
-            self.__value_parser_obj = self._default_value_parser_obj
+        value_parser_obj = self.__value_parser or self._default_value_parser_obj
 
-        mix.validate_parser(self.__value_parser_obj)
+        mix.validate_parser(value_parser_obj)
 
-        self.__value_parser_obj.init_config(self.config)
+        value_parser_obj.init_config(self.config)
 
-        return self.__value_parser_obj
+        return value_parser_obj
 
     @property
     def _default_key_parser_obj(self):
