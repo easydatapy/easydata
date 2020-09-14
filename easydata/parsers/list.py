@@ -55,8 +55,6 @@ class List(BaseData):
 
         value_parser.init_config(self.config)
 
-        print("IT'S ALIVE")
-
         return value_parser
 
     @property
