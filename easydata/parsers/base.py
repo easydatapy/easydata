@@ -102,6 +102,7 @@ class BaseData(Base, ABC):
             source=source,
         )
 
+    @abstractmethod
     def _parse_value(
         self,
         value: Any,
