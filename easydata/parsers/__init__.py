@@ -1,5 +1,6 @@
 from easydata.parsers.base import *  # noqa: F401 F403
 from easydata.parsers.bool import *  # noqa: F401 F403
+from easydata.parsers.choice import *  # noqa: F401 F403
 from easydata.parsers.clause import *  # noqa: F401 F403
 from easydata.parsers.desc import *  # noqa: F401 F403
 from easydata.parsers.dict import *  # noqa: F401 F403
