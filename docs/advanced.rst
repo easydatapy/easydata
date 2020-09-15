@@ -379,22 +379,22 @@ adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
 Now discount won't be even calculated.
 
 
-Temporary item parsers
-======================
+Protected items
+===============
 Sometimes we don't want values from item attributes to be outputted in a final
 result but we still need them because item processors or other item parsers
 rely on them. To solve this issue elegantly, we can just prefix our item properties
-with ``item_temp_`` and item with that prefix will be deleted from final output.
+with ``_item`` and item with that prefix will be deleted from final output.
 Lets demonstrate this in example below.
 
 .. code-block:: python
 
     class ProductItemModel(ItemModel):
-        item_temp_price = parsers.PriceFloat(
+        _item_price = parsers.PriceFloat(
             pq('#price::text')
         )
 
-        item_temp_sale_price = parsers.PriceFloat(
+        _item_sale_price = parsers.PriceFloat(
             pq('#sale-price::text')
         )
 
@@ -541,7 +541,7 @@ with bool value, which is determined if price is discounted or not.
     class ProductItemModel(ItemModel):
         item_price = parsers.PriceFloat(jp('price'))
 
-        item_temp_sale_price = parsers.PriceFloat(jp('sale_price'))
+        _item_sale_price = parsers.PriceFloat(jp('sale_price'))
 
         item_processors = [
             ItemDiscountProcessor()
@@ -578,7 +578,7 @@ Output:
 
 .. note::
     *Please note that sale_price is missing in final output because we declared in
-    a model our sale price property as a temporary and those get deleted at the end,
+    a model our sale price property as a protected and those get deleted at the end,
     but they are still accessible in ``preprocess_item``, ``item_processors`` and
     ``process_item``.*
 
