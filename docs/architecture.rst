@@ -6,6 +6,7 @@ Architecture
 ``easydata`` consist of several components:
 
 * model
+* block models
 * parsers
 * queries
 * data processors
@@ -22,15 +23,15 @@ to utilize mocks.
     as a result.
 
 
-First let create some variables, which will hold different kind of data, that we will
-pass to ``parse_item`` method later on in this tutorial.
+First let create some variables, which will hold different kind of data, that will be
+passed to a ``parse_item`` method later in this tutorial.
 
 .. code-block:: python
 
     >> json_text = '{"price": 999.90}'
     >> html_text = '<p class="sale_price">499.9<p>'
 
-Now we will create a simple ``ItemModel`` and explain how data is passed and processed
+First we will create a simple ``ItemModel`` and explain how data is passed and processed
 through other components.
 
 .. code-block:: python
@@ -42,7 +43,7 @@ through other components.
 
         item_price = parsers.PriceFloat(jp('price'))
 
-        item_temp_sale_price = parsers.PriceFloat(
+        _item_sale_price = parsers.PriceFloat(
             pq('sale_price::text'),
             source='html'
         )
@@ -57,13 +58,14 @@ through other components.
     >> product_model = ProductItemModel()
 
 When we initialize our ``ProductItemModel`` nothing happens. Initialization of processors
-and other core components is done after we call ``parse`` method for a first time. Design
-decision to ignore ``__init__`` for class initialization is in order to add ``ProductItemModel``
-as a mixin to your existing project or to extend ``Spider`` class in a ``scrapy`` framework
-if needed.
+and other core components is done after we call ``parse`` method for a first time.
 
-Now lets pass our variables, that we created before, with different kind of data to
-``parse`` method.
+.. note::
+
+    Design decision not to use ``__init__`` for class initialization is in order to add
+    ``ItemModel`` as a mixin to your existing class if needed.
+
+Now lets pass our variables with different types of data to ``parse`` method.
 
 .. code-block:: python
 
@@ -73,8 +75,7 @@ Now lets pass our variables, that we created before, with different kind of data
 .. note::
 
     In a result we are missing ``sale_price`` in our dictionary. This is intentionally
-    since all properties that start with ``item_temp`` will be deleted before final
-    output.
+    since all properties that start with ``_item`` will be deleted before final output.
 
 When we pass our ``json_text`` and ``html_text`` to ``parse``, our model will get registered
 with *model manager* which basically handles are components specified in our model. Model
@@ -83,9 +84,10 @@ step through *model manager* our passed ``json_text`` and ``html_text`` data wil
 into a ``DataBag`` object dictionary under ``data`` and ``html`` keys respectively. All parsers
 and processors will by default look in a ``DataBag`` for a ``data`` key, unless specified
 otherwise in a processor or a parser. We can see in our example model above, that a ``PriceFloat``
-parser for a ``item_temp_sale_price`` property has a value ``html`` in it's ``source`` parameter
+parser for a ``_item_sale_price`` property has a value ``html`` in it's ``source`` parameter
 ... this means that under the hood parser will try to extract data from ``html`` key in our
-``DataBag`` dictionary rather than default ``data``. Similar principles apply also for data processors.
+``DataBag`` dictionary rather than default ``data`` key. Similar principles apply also for
+data processors.
 
 .. note::
 
