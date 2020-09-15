@@ -15,6 +15,8 @@ Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-clause`
 
+* :ref:`parsers-choice`
+
 * :ref:`parsers-description`
 
 * :ref:`parsers-price`
@@ -33,6 +35,7 @@ Purpose of parsers is to extract data and to transform it into desired format.
     list
     bool
     clause
+    choice
     description
     price
     time
