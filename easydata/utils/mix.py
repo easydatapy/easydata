@@ -94,7 +94,7 @@ def apply_processors(
 
 def extract_attr_names_from_obj(
     obj: object,
-    attr_prefix: str,
+    attr_prefixes: List[str],
     ignore_attr_prefix: Optional[List[str]] = None,
 ):
 
@@ -105,7 +105,7 @@ def extract_attr_names_from_obj(
             if any(attr_name.startswith(sk) for sk in ignore_attr_prefix):
                 continue
 
-        if attr_name.startswith(attr_prefix + "_"):
+        if any(attr_name.startswith(ap) for ap in attr_prefixes):
             attr_names.append(attr_name)
 
     return attr_names
@@ -113,22 +113,18 @@ def extract_attr_names_from_obj(
 
 def iter_attr_data_from_obj(
     obj: object,
-    attr_prefix: str,
-    preserve_prefix: bool = False,
+    attr_prefixes: List[str],
     ignore_attr_prefix: Optional[List[str]] = None,
 ):
 
     attr_name = extract_attr_names_from_obj(
         obj=obj,
-        attr_prefix=attr_prefix,
+        attr_prefixes=attr_prefixes,
         ignore_attr_prefix=ignore_attr_prefix,
     )
 
     for attr_name in attr_name:
         attr_value = getattr(obj, attr_name)
-
-        if not preserve_prefix:
-            attr_name = attr_name.lstrip(attr_prefix).lstrip("_")
 
         yield attr_name, attr_value
 
