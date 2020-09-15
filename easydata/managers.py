@@ -20,7 +20,7 @@ class ModelManager(ConfigMixin):
 
         self._item_parsers: dict = {}
 
-        self._item_temp_names: List[str] = []
+        self._item_protected_names: List[str] = []
 
         self._config_properties: dict = {}
 
@@ -96,13 +96,13 @@ class ModelManager(ConfigMixin):
 
                 item = self._apply_item_processors(item)
 
-                yield self._remove_temp_item_keys(item)
+                yield self._remove_protected_item_keys(item)
         else:
             item = data.get_all()
 
             item = self._apply_item_processors(item)
 
-            yield self._remove_temp_item_keys(item)
+            yield self._remove_protected_item_keys(item)
 
     def _apply_data_processors(self, data: DataBag) -> DataBag:
         for model in self._models:
@@ -132,13 +132,13 @@ class ModelManager(ConfigMixin):
 
         return item
 
-    def _remove_temp_item_keys(self, item: dict) -> dict:
-        if not self._item_temp_names:
+    def _remove_protected_item_keys(self, item: dict) -> dict:
+        if not self._item_protected_names:
             return item
 
-        for item_temp_name in self._item_temp_names:
-            if item_temp_name in item:
-                del item[item_temp_name]
+        for item_protected_name in self._item_protected_names:
+            if item_protected_name in item:
+                del item[item_protected_name]
 
         return item
 
@@ -174,30 +174,32 @@ class ModelManager(ConfigMixin):
     def _load_item_parsers_from_model(self, model):
         item_attr_items = mix.iter_attr_data_from_obj(
             obj=model,
-            attr_prefix="item",
+            attr_prefixes=["item_", "_item_"],
             ignore_attr_prefix=self._ignore_item_attr_prefix,
         )
 
         for item_name, parser_method in item_attr_items:
-            if item_name.startswith("temp_"):
-                item_name = item_name.replace("temp_", "")
+            if item_name.startswith("item_"):
+                item_name = item_name.replace("item_", "")
 
-                if item_name not in self._item_temp_names:
-                    self._item_temp_names.append(item_name)
+            if item_name.startswith("_item_"):
+                item_name = item_name.replace("_item_", "")
+
+                if item_name not in self._item_protected_names:
+                    self._item_protected_names.append(item_name)
             else:
-                # If parser from parent model is not temp, then delete it from
-                # _item_temp_names list if exists, because child had temp parser
-                # with the same item name.
-                if item_name in self._item_temp_names:
-                    self._item_temp_names.remove(item_name)
+                # If parser from parent model is not protected, then delete it from
+                # _item_protected_names list if exists, because child had protected
+                # parser with the same item name.
+                if item_name in self._item_protected_names:
+                    self._item_protected_names.remove(item_name)
 
             self._item_parsers[item_name] = parser_method
 
     def _load_config_properties_from_model(self, model):
         config_data = mix.iter_attr_data_from_obj(
             obj=model,
-            attr_prefix="ED",
-            preserve_prefix=True,
+            attr_prefixes=["ED_"],
         )
 
         for config_name, config_value in config_data:

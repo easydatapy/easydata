@@ -8,7 +8,7 @@ class ProductModel(ItemModel):
 
     item_tags = ["phones", "ecommerce"]
 
-    item_temp_brand = parsers.Text(jp("brand"), source="json_data")
+    _item_brand = parsers.Text(jp("brand"), source="json_data")
 
     item_designer = parsers.Text(from_item="brand")
 
@@ -41,7 +41,7 @@ class ProductSimpleWithProcessDataModel(ItemModel):
 class ProductSimpleWithProcessItemModel(ItemModel):
     item_price = parsers.PriceFloat(jp("price"))
 
-    item_temp_sale_price = parsers.PriceFloat(jp("sale_price"))
+    _item_sale_price = parsers.PriceFloat(jp("sale_price"))
 
     item_processors = [ItemDiscountProcessor()]
 

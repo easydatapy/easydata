@@ -33,14 +33,14 @@ class ProductModel(ItemModel):
 
     item_tags = ["phones", "ecommerce"]
 
-    item_temp_brand = parsers.Text(jp("brand"), source="json_data")
+    _item_brand = parsers.Text(jp("brand"), source="json_data")
 
     item_designer = parsers.Text(from_item="brand")
 
 
 def test_model_manager():
     model_manager = ModelManager(ProductModel())
-    assert model_manager.item_keys() == ["designer", "language", "tags", "brand"]
+    assert model_manager.item_keys() == ["brand", "designer", "language", "tags"]
 
     assert isinstance(model_manager.get_item_val("tags"), list)
 
@@ -58,9 +58,9 @@ def test_model_manager_block_models():
         "currency",
         "language",
         "domain",
+        "brand",
         "designer",
         "tags",
-        "brand",
     ]
     assert model_manager.item_keys() == result_keys
 

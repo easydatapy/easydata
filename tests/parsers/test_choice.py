@@ -95,9 +95,9 @@ def test_choice_lookup_queries_choice_bool_parser_source(
 
 def test_choice_lookup_items():
     class ProductModel(models.ItemModel):
-        item_temp_category = parsers.Text(pq("#accessory .name::text"))
+        _item_category = parsers.Text(pq("#accessory .name::text"))
 
-        item_temp_name = parsers.Text(pq("#accessory .type::text"))
+        _item_name = parsers.Text(pq("#accessory .type::text"))
 
         item_type = parsers.Choice(
             lookup_items=["name", "category"],
