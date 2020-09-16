@@ -50,23 +50,20 @@ class PriceFloat(Text):
         data: Any,
     ):
 
-        value = super()._parse_value(
-            value=value,
-            data=data,
+        value = super()._parse_value(value=value, data=data)
+
+        if not value:
+            return None
+
+        value = price.to_float(
+            price_value=value,
+            decimals=self._decimals,
         )
 
-        if value:
-            value = price.to_float(
-                price_value=value,
-                decimals=self._decimals,
-            )
+        if value is None:
+            return None
 
-            if value is None:
-                return None
-
-            return self._process_min_max_value(value)
-
-        return None
+        return self._process_min_max_value(value)
 
     def _process_min_max_value(self, value: float) -> Optional[float]:
         min_value = self._min_value
@@ -88,10 +85,7 @@ class PriceInt(PriceFloat):
         data: Any,
     ):
 
-        value = super()._parse_value(
-            value=value,
-            data=data,
-        )
+        value = super()._parse_value(value=value, data=data)
 
         return int(value) if value else None
 
@@ -103,9 +97,6 @@ class PriceText(PriceFloat):
         data: Any,
     ):
 
-        value = super()._parse_value(
-            value=value,
-            data=data,
-        )
+        value = super()._parse_value(value=value, data=data)
 
         return str(value) if value else None
