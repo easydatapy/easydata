@@ -7,7 +7,8 @@ from easydata.utils import config
 class ConfigMixin:
     _config: Optional[ConfigLoader] = None
 
-    def has_config_initialized(self):
+    @property
+    def has_config(self):
         return bool(self._config)
 
     @property
@@ -17,12 +18,20 @@ class ConfigMixin:
 
         return self._config
 
-    def init_config(self, config_obj: Union[dict, ConfigLoader]):
-        if isinstance(config_obj, ConfigLoader):
-            self._config = config_obj
-        else:
-            new_config = config.copy()
+    def init_config(
+        self,
+        config_obj: Union[dict, ConfigLoader],
+        override: bool = False,
+    ):
 
-            new_config.from_dict(config_obj)
+        if not self.has_config or override:
+            if isinstance(config_obj, ConfigLoader):
+                self._config = config_obj
+            else:
+                new_config = config.copy()
 
-            self._config = new_config
+                new_config.from_dict(config_obj)
+
+                self._config = new_config
+
+        return self
