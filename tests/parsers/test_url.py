@@ -80,13 +80,18 @@ def test_url_normalize(test_data, result):
     assert url_parser.parse(test_data) == result
 
 
-def test_url_config():
+@pytest.mark.parametrize(
+    "config_dict, result",
+    [
+        ({"ED_URL_DOMAIN": "demo.com"}, "https://demo.com/product/1122"),
+        (
+            {"ED_URL_DOMAIN": "demo.com", "ED_URL_PROTOCOL": "ftp"},
+            "ftp://demo.com/product/1122",
+        ),
+    ],
+)
+def test_url_config(config_dict, result):
     url_parser = Url()
 
-    url_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
-    expected_url = "https://demo.com/product/1122"
-    assert url_parser.parse(test_url_partial) == expected_url
-
-    url_parser.init_config({"ED_URL_DOMAIN": "demo.com", "ED_URL_PROTOCOL": "ftp"})
-    expected_url = "ftp://demo.com/product/1122"
-    assert url_parser.parse(test_url_partial) == expected_url
+    url_parser.init_config(config_dict)
+    assert url_parser.parse(test_url_partial) == result
