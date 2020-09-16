@@ -23,6 +23,8 @@ Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-time`
 
+* :ref:`parsers-email`
+
 * :ref:`parsers-dictionary`
 
 .. toctree::
@@ -39,4 +41,5 @@ Purpose of parsers is to extract data and to transform it into desired format.
     description
     price
     time
+    email
     dictionary
