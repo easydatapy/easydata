@@ -53,9 +53,7 @@ class List(BaseData):
 
         mix.validate_parser(value_parser)
 
-        value_parser.init_config(self.config)
-
-        return value_parser
+        return value_parser.init_config(self.config)
 
     @property
     def _default_parser_obj(self):

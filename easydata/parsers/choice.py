@@ -70,8 +70,7 @@ class Choice(Base):
             choice_value, choice_search_data = choice_data
 
             if isinstance(choice_search_data, Bool):
-                if not choice_search_data.has_config_initialized():
-                    choice_search_data.init_config(self.config)
+                choice_search_data.init_config(self.config)
 
                 if choice_search_data.parse(data=data):
                     return choice_value
