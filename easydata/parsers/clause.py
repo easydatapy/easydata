@@ -1,6 +1,7 @@
 from typing import Any, Dict
+from typing import Union as UnionType
 
-from easydata.parsers.base import Base
+from easydata.parsers.base import Base, BaseData
 
 __all__ = (
     "Union",
@@ -18,15 +19,11 @@ class Union(Base):
 
     def __init__(
         self,
-        *kwargs,
+        *args: UnionType[Base, BaseData],
     ):
 
-        self.parsers = kwargs
+        self.parsers = args
         self._validate_fields()
-
-    def _config_initialize(self, parser: Base):
-        if not parser.has_config_initialized():
-            parser.init_config(self.config)
 
     def parse(
         self,
@@ -36,9 +33,7 @@ class Union(Base):
     ) -> Any:
 
         for parser in self.parsers:
-            self._config_initialize(parser)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
@@ -63,17 +58,18 @@ class With(Union):
 
         parsers = list(self.parsers)
 
-        for parser in parsers:
-            self._config_initialize(parser)
-
-        value = parsers.pop(0).parse(
-            data=data,
-            parent_data=parent_data,
-            with_parent_data=with_parent_data,
+        value = (
+            parsers.pop(0)
+            .init_config(self.config)
+            .parse(
+                data=data,
+                parent_data=parent_data,
+                with_parent_data=with_parent_data,
+            )
         )
 
         for parser in parsers:
-            value = parser.parse(value)
+            value = parser.init_config(self.config).parse(value)
 
         return value
 
@@ -81,7 +77,7 @@ class With(Union):
 class JoinText(Union):
     def __init__(
         self,
-        *args,
+        *args: UnionType[Base, BaseData],
         separator: str = " ",
     ):
 
@@ -99,9 +95,7 @@ class JoinText(Union):
         values = []
 
         for parser in self.parsers:
-            self._config_initialize(parser)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
@@ -112,7 +106,7 @@ class JoinText(Union):
 
             if not isinstance(value, str):
                 error_msg = "Value returned from {} must be type of str!"
-                raise TypeError(error_msg.format(parser.__class__.name))
+                raise TypeError(error_msg.format(type(parser).__name__))
 
             values.append(value)
 
@@ -130,9 +124,7 @@ class JoinList(Union):
         values = []
 
         for parser in self.parsers:
-            self._config_initialize(parser)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
@@ -143,7 +135,7 @@ class JoinList(Union):
 
             if not isinstance(value, list):
                 error_msg = "Value returned from {} must be type of list!"
-                raise TypeError(error_msg.format(parser.__class__.name))
+                raise TypeError(error_msg.format(type(parser).__name__))
 
             values += value
 
@@ -161,9 +153,7 @@ class JoinDict(Union):
         joined_dictionary: Dict[Any, Any] = {}
 
         for parser in self.parsers:
-            self._config_initialize(parser)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
@@ -174,7 +164,7 @@ class JoinDict(Union):
 
             if not isinstance(value, dict):
                 error_msg = "Value returned from {} must be type of dict!"
-                raise TypeError(error_msg.format(parser.__class__.name))
+                raise TypeError(error_msg.format(type(parser).__name__))
 
             joined_dictionary = {**joined_dictionary, **value}
 
@@ -201,10 +191,7 @@ class ItemDict(Base):
         parser_dict = {}
 
         for name, parser in self._parser_dict.items():
-            if not parser.has_config_initialized():
-                parser.init_config(self.config)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
@@ -221,11 +208,11 @@ class ItemDict(Base):
 class ItemList(Base):
     def __init__(
         self,
-        *kwargs,
+        *args: UnionType[Base, BaseData],
         ignore_non_values: bool = True,
     ):
 
-        self._parser_list = kwargs
+        self._parser_list = args
         self._ignore_non_values = ignore_non_values
 
     def parse(
@@ -238,10 +225,7 @@ class ItemList(Base):
         parser_list = []
 
         for parser in self._parser_list:
-            if not parser.has_config_initialized():
-                parser.init_config(self.config)
-
-            value = parser.parse(
+            value = parser.init_config(self.config).parse(
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,

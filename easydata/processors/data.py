@@ -1,5 +1,6 @@
 import json
 from abc import ABC, abstractmethod
+from functools import lru_cache
 from typing import Any, Dict, List, Optional, Union
 
 import xmltodict
@@ -8,6 +9,7 @@ from pyquery import PyQuery
 
 from easydata.data import DataBag
 from easydata.parsers.base import BaseData
+from easydata.parsers.data import Data
 from easydata.processors.base import BaseProcessor
 from easydata.queries.base import QuerySearch
 from easydata.queries.re import ReQuery
@@ -274,7 +276,6 @@ class DataVariantProcessor(DataBaseProcessor):
         if "new_source" not in kwargs:
             kwargs["new_source"] = "{}_variants".format(kwargs["source"])
 
-        self._parser = parser
         self._variant_parser = variant_parser
         self._query = query
         self._variant_query = variant_query
@@ -282,14 +283,20 @@ class DataVariantProcessor(DataBaseProcessor):
         self._with_variant_values = with_variant_values
         self._variant_values_lower = variant_values_lower
 
+        self.__parser = parser
+
         super().__init__(**kwargs)
 
-    def _process_data(self, data: Any) -> Any:
-        if self._parser:
-            data = self._parser.parse(data)
+    @property  # type: ignore
+    @lru_cache(maxsize=None)
+    def _parser(self) -> Optional[BaseData]:
+        return Data(self._query) if self._query else self.__parser
 
-        if self._query:
-            data = self._query.get(data)
+    def _process_data(self, data: Any) -> Any:
+        parser = self._parser
+
+        if parser:
+            data = parser.init_config(self.config).parse(data)  # type: ignore
 
         variants_data: Dict[Optional[str], Any] = {}
 
