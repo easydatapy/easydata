@@ -49,7 +49,7 @@ class BaseData(Base, ABC):
         data: Any,
         parent_data: Any = None,
         with_parent_data: bool = False,
-    ) -> str:
+    ) -> Any:
 
         if self._from_item and isinstance(data, DataBag):
             value = data.get(self._from_item)
