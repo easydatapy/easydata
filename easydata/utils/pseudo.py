@@ -1,13 +1,16 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
-def get_key_from_query(query: str, separator: str = "::"):
+def get_key_from_query(
+    query: str,
+    separator: str = "::",
+) -> Tuple[Optional[str], str]:
 
     query_parts = query.split(separator)
 
-    query = None if query.startswith(separator) else query_parts[0]
+    new_query = None if query.startswith(separator) else query_parts[0]
 
-    return query, query_parts[-1]
+    return new_query, query_parts[-1]
 
 
 def get_extension_value(
