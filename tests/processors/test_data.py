@@ -3,43 +3,10 @@ import json
 import pytest
 from pyquery import PyQuery
 
-from easydata import processors
+from easydata import parsers, processors
+from easydata.data import VariantsData
 from easydata.queries import jp, key, pq
-
-test_html_text = "<p>Sample text</p>"
-
-test_variants_data = {
-    "title": "EasyData Pro 13",
-    "variants": [
-        {"color": "Black", "stock": True},
-        {"color": "Gray", "stock": False},
-    ],
-}
-
-test_variants_data_multi = {
-    "title": "EasyData Pro",
-    "variants": [
-        {"color": "Black", "size": "13", "stock": True},
-        {"color": "Black", "size": "15", "stock": True},
-        {"color": "Gray", "size": "13", "stock": False},
-        {"color": "Gray", "size": "15", "stock": True},
-    ],
-}
-
-test_variants_html_data = """
-    <p>EasyBook Pro 15</p>
-    <div id="color-variants">
-        Colors:
-        <div class="color" stock="true">
-            <span class="color-name">Black</span>
-            <img src="https://demo.com/imgs/black-1.jpg">
-        </div>
-        <div class="color" stock="false">
-            <span>Gray</span>
-            <img src="https://demo.com/imgs/black-1.jpg">
-        </div>
-    </div>
-"""
+from tests.factory import dict_data, html_data
 
 
 @pytest.mark.parametrize(
@@ -52,7 +19,7 @@ test_variants_html_data = """
 def test_data_processor(source, data_type):
     db = processors.DataProcessor(
         process_source_data=lambda source_data: PyQuery(source_data)
-    ).parse_data(test_html_text)
+    ).parse_data(html_data.with_paragraph_text)
 
     assert isinstance(db[source], data_type)
 
@@ -65,7 +32,7 @@ def test_data_processor(source, data_type):
     ],
 )
 def test_data_to_pq_processor(source, data_type):
-    db = processors.DataToPqProcessor().parse_data(test_html_text)
+    db = processors.DataToPqProcessor().parse_data(html_data.with_paragraph_text)
 
     assert isinstance(db[source], data_type)
 
@@ -78,7 +45,9 @@ def test_data_to_pq_processor(source, data_type):
     ],
 )
 def test_data_to_pq_processor_new_source(new_source, source, data_type):
-    db = processors.DataToPqProcessor(new_source=new_source).parse_data(test_html_text)
+    db = processors.DataToPqProcessor(
+        new_source=new_source,
+    ).parse_data(html_data.with_paragraph_text)
 
     assert isinstance(db[source], data_type)
 
@@ -169,73 +138,52 @@ def test_data_json_from_re_to_dict_processor():
     assert json_dict["config_json"]["title"] == "EasyBook"
 
 
-def test_data_variant_processor():
-    db = processors.DataVariantProcessor(
-        query=jp("variants"), variant_query=key("color")
-    ).parse_data(test_variants_data)
+def test_data_variants_processor():
+    db = processors.DataVariantsProcessor(
+        query=jp("variants"), key_query=key("color")
+    ).parse_data(dict_data.with_variants_data)
 
-    assert isinstance(db["data_variants"], dict)
+    assert isinstance(db["variant_data"], VariantsData)
 
-    assert len(db["data_variants"]) == 2
+    assert len(db["variant_data"]) == 2
 
-    assert list(db["data_variants"].keys())[0] == "black"
+    assert list(db["variant_data"].keys())[0] == "Black"
 
-    expected_values_result = {"color": "Black", "stock": True}
-
-    assert list(db["data_variants"].values())[0] == expected_values_result
+    assert list(db["variant_data"].variants())[0] == {"color": "Black", "stock": True}
 
 
-def test_data_variant_processor_multi_values():
+def test_data_variants_processor_html():
+    # Lets test with HTML data and pq selector
+    db = processors.DataVariantsProcessor(
+        query=pq("#color-variants .color::items"),
+        key_parser=parsers.Text(pq("::text"), uppercase=True),
+    ).parse_data(html_data.with_prices_and_variants)
+
+    assert isinstance(db["variant_data"], VariantsData)
+
+    assert len(db["variant_data"]) == 2
+
+    assert list(db["variant_data"].keys())[0] == "BLACK"
+
+
+def test_data_variants_processor_multi_values():
     # Lets test with multi_values set to True
-    db = processors.DataVariantProcessor(
-        query=jp("variants"), variant_query=key("color"), multi_values=True
-    ).parse_data(test_variants_data_multi)
+    db = processors.DataVariantsProcessor(
+        query=jp("variants"), key_query=key("color")
+    ).parse_data(dict_data.with_variants_data_multi)
 
-    assert isinstance(db["data_variants"], dict)
+    assert isinstance(db["variant_data"], VariantsData)
 
-    assert len(db["data_variants"]) == 2
+    assert len(db["variant_data"]) == 2
 
-    assert list(db["data_variants"].keys())[0] == "black"
+    assert list(db["variant_data"].keys())[0] == "Black"
 
     expected_values_result = [
         {"color": "Black", "size": "13", "stock": True},
         {"color": "Black", "size": "15", "stock": True},
     ]
-    assert list(db["data_variants"].values())[0] == expected_values_result
+    assert db["variant_data"]["Black"] == expected_values_result
 
-    # Lets test with HTML data and pq selector
-    db = processors.DataVariantProcessor(
-        query=pq("#color-variants .color::items"), variant_query=pq("::text")
-    ).parse_data(test_variants_html_data)
+    assert list(db["variant_data"].values())[0] == expected_values_result
 
-    assert isinstance(db["data_variants"], dict)
-
-    assert len(db["data_variants"]) == 2
-
-    assert list(db["data_variants"].keys())[0] == "black"
-
-
-def test_data_variant_processor_lower_false():
-    db = processors.DataVariantProcessor(
-        query=key("variants"),
-        variant_query=jp("color"),
-        variant_values_lower=False,
-        multi_values=True,
-    ).parse_data(test_variants_data_multi)
-
-    assert list(db["data_variants"].keys())[0] == "Black"
-
-
-def test_data_variant_processor_with_variant_values_false():
-    db = processors.DataVariantProcessor(
-        query=key("variants"),
-        variant_query=jp("color"),
-        with_variant_values=False,
-        multi_values=True,
-    ).parse_data(test_variants_data_multi)
-
-    assert isinstance(db["data_variants"], list)
-
-    assert len(db["data_variants"]) == 2
-
-    assert db["data_variants"][0][0]["color"] == "Black"
+    assert db["variant_data"].variants()[0] == expected_values_result[0]
