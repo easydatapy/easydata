@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 import yaml
 
@@ -15,12 +15,12 @@ class KeyQuery(QuerySearch):
     ):
 
         self._query = query
-        self._keys = False
-        self._values = False
-        self._json = False
-        self._yaml = False
-        self._str = False
-        self._dict_key_value = None
+        self._keys: bool = False
+        self._values: bool = False
+        self._json: bool = False
+        self._yaml: bool = False
+        self._str: bool = False
+        self._dict_key_value: Optional[Tuple[str, str]] = None
 
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
@@ -130,9 +130,9 @@ class KeyQuery(QuerySearch):
         if pseudo_key.startswith("dict"):
             dict_key_value_text = pseudo_key.split("(")[-1].split(")")[0]
 
-            dict_key_value_list = [v.strip() for v in dict_key_value_text.split(":")]
+            dict_key_value_split = dict_key_value_text.split(":")
 
-            self._dict_key_value = tuple(dict_key_value_list)
+            self._dict_key_value = dict_key_value_split[0], dict_key_value_text[1]
         elif pseudo_key == "values":
             self._values = True
         elif pseudo_key == "keys":
