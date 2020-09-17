@@ -10,12 +10,13 @@ from easydata.parsers.data import Data
 from easydata.parsers.text import Text
 from easydata.parsers.url import Url
 from easydata.types import OptionalQuerySearch
-from easydata.utils import mix
+from easydata.utils import email, mix
 
 __all__ = (
     "List",
     "TextList",
     "UrlList",
+    "EmailSearchList",
 )
 
 
@@ -277,3 +278,20 @@ class UrlList(TextList):
             **self._url_parser_properties,
             **self._text_parser_properties,
         )
+
+
+class EmailSearchList(TextList):
+    def _process_list_values(
+        self,
+        list_values: Any,
+    ) -> ListType[Any]:
+
+        list_values = super()._process_list_values(list_values)
+
+        email_list_values = []
+
+        for list_value in list_values:
+            for email_value in email.search(list_value):
+                email_list_values.append(email_value)
+
+        return email_list_values

@@ -11,9 +11,10 @@ class JMESPathSearch(KeyQuery):
         data: Any,
     ):
 
-        data = jmespath.search(
-            expression=self._query,
-            data=data,
-        )
+        if self._query:
+            data = jmespath.search(
+                expression=self._query,
+                data=data,
+            )
 
         return self._process_data_key_values(data)
