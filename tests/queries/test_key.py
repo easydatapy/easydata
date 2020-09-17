@@ -26,13 +26,25 @@ expected_image_list = [
     "query, test_data, result",
     [
         ("product_type", test_data_dict, "smartphone"),
+        ("", test_data_dict, {"product_type": "smartphone"}),
+        ("::yaml", test_data_dict, 'product_type: smartphone\n'),
+        ("::json", test_data_dict, '{"product_type": "smartphone"}'),
+        ("::str", test_data_dict, "{'product_type': 'smartphone'}"),
+        ("prices::values", test_data_prices_dict, [79, 50]),
+        ("prices::keys", test_data_prices_dict, ["price", "sale_price"]),
+        ("prices::values-yaml", test_data_prices_dict, '- 79\n- 50\n'),
+        ("prices::values-json", test_data_prices_dict, "[79, 50]"),
+        ("prices::values-str", test_data_prices_dict, "[79, 50]"),
+        ("prices::keys-yaml", test_data_prices_dict, '- price\n- sale_price\n'),
+        ("prices::keys-json", test_data_prices_dict, '["price", "sale_price"]'),
+        ("prices::keys-str", test_data_prices_dict, "['price', 'sale_price']"),
         ("product_type", test_data_json, "smartphone"),
         ("product_type", None, None),
         ("product_type", "", None),
     ],
 )
 def test_key_query(query, test_data, result):
-    assert key("product_type").get(test_data) == result
+    assert key(query).get(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -73,42 +85,12 @@ def test_key_query_get_data_bag_source():
 @pytest.mark.parametrize(
     "query, test_data, result",
     [
-        ("prices::keys", test_data_prices_dict, ["price", "sale_price"]),
-        ("::keys", test_data_prices_dict["prices"], ["price", "sale_price"]),
-    ],
-)
-def test_key_query_get_keys(query, test_data, result):
-    assert key(query).get(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "query, test_data, result",
-    [
-        ("prices::values", test_data_prices_dict, [79, 50]),
-        ("::values", test_data_prices_dict["prices"], [79, 50]),
-    ],
-)
-def test_key_query_get_values(query, test_data, result):
-    assert key(query).get(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "query, test_data, result",
-    [
         ("image_list", test_data_images_dict, expected_image_list),
         (None, expected_image_list, expected_image_list),
     ],
 )
 def test_key_query_get_list(query, test_data, result):
     assert key(query).get(test_data) == result
-
-
-def test_key_query_get_list_keys():
-    assert key("prices::keys").get(test_data_prices_dict) == ["price", "sale_price"]
-
-
-def test_key_query_get_list_values():
-    assert key("prices::values").get(test_data_prices_dict) == [79, 50]
 
 
 def test_key_query_pseudo_key_exception():
