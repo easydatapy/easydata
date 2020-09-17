@@ -109,7 +109,7 @@ Now lets test our newly created ``model`` with adding multiple data sources to i
 
     >>> test_dict = {'title': 'Easybook Pro 13'}
     >>> test_brand_dict = {'name': 'Easybook'}
-    >>> item_model = ProductItemModel().parse_item(test_dict, brand_data=test_brand_dict)
+    >>> item_model = ProductItemModel().parse(test_dict, brand_data=test_brand_dict)
     {'stock': True}
 
 

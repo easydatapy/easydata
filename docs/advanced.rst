@@ -93,7 +93,7 @@ Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 Output:
 
@@ -195,7 +195,7 @@ Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 Output:
 
@@ -249,7 +249,7 @@ Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)  # test_html from previous section
+    >>> item_model.parse(test_html)  # test_html from previous section
 
 Output:
 
@@ -409,7 +409,7 @@ Now lets parse our ``ProductItemModel`` and print it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)  # test_html from previous section
+    >>> item_model.parse(test_html)  # test_html from previous section
 
 Output:
 
@@ -500,7 +500,7 @@ Now lets parse our ``test_json_text`` with ``ProductItemModel`` and show it's ou
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_json_text)
+    >>> item_model.parse(test_json_text)
 
 Output:
 
@@ -564,7 +564,7 @@ Now lets parse our ``test_dict`` with ``ProductItemModel`` and show it's output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_dict)
+    >>> item_model.parse(test_dict)
 
 Output:
 

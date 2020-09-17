@@ -186,7 +186,7 @@ will parse provided *HTML* data into ``dict`` object.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 Output:
 

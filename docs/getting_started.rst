@@ -125,7 +125,7 @@ etc.).
 Parsing data with Model
 =======================
 
-Calling parse_item to get item dict
+Calling parse to get item dict
 -----------------------------------
 In example bellow we can see how newly created ``ProductItemModel`` will
 parse provided HTML data into ``dict`` object.
@@ -134,7 +134,7 @@ parse provided HTML data into ``dict`` object.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 Output:
 
@@ -156,9 +156,9 @@ Output:
         'stock': True
     }
 
-Calling parse_item from a method inside model
+Calling parse from a method inside model
 ---------------------------------------------
-Advantages of calling ``parse_item`` from a method inside a model, is that you
+Advantages of calling ``parse`` from a method inside a model, is that you
 can put all extraction logic (making a request, reading feed file, etc.)
 inside item model and have better (depends on a use case) code organization.
 
@@ -178,7 +178,7 @@ inside item model and have better (depends on a use case) code organization.
                 # default url
                 response = requests.get('http://demo.com/item-page-123')
 
-            item_data = item_model.parse_item(response.text)
+            item_data = item_model.parse(response.text)
 
             with open("test_item.txt", "w") as text_file:
                 text_file.write(json.dumps(text_file))
@@ -191,7 +191,7 @@ with default url attribute:
 
     >>> ProductItemModel().store_item_from_url()
 
-and there is no need to call ``parse_item`` on item model object.
+and there is no need to call ``parse`` on item model object.
 
 
 Adding Data Processor
@@ -265,7 +265,7 @@ Lets create our item model with ``data_processors`` included.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 Output:
 
@@ -406,7 +406,7 @@ Lets create our item model with ``item_processors``
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse_item(test_html)
+    >>> item_model.parse(test_html)
 
 
 Output:

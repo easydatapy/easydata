@@ -148,7 +148,7 @@ Result:
 
 .. code-block:: python
 
-    >>> ProductItemModel().parse_item(test_html)
+    >>> ProductItemModel().parse(test_html)
     {'name': 'John Doe autographed baseball.', 'signed': True}
 
 .. option:: default
@@ -203,7 +203,7 @@ Result:
 
 .. code-block:: python
 
-    >>> ProductItemModel().parse_item(test_html)
+    >>> ProductItemModel().parse(test_html)
     {'name': 'EasyBook pro 15', 'description': 'EasyBook pro 15'}
 
 .. option:: source
@@ -220,7 +220,7 @@ change ``source`` value.
 **Example:**
 
 First let create some variables, which will hold different kind of data, that we will
-pass later in this tutorial to a ``parse_item`` method in a ``model`` instance.
+pass later in this tutorial to a ``parse`` method in a ``model`` instance.
 
 .. code-block:: python
 
@@ -241,11 +241,11 @@ Now we will create a simple ``ItemModel``.
         item_name = parsers.Data(pq('.name'), source="html")
 
 Now lets pass our variables, that we created before, with different kind of data to
-``parse_item`` method and see the result.
+``parse`` method and see the result.
 
 .. code-block:: python
 
-    >>> product_model.parse_item(data=test_dict, html=test_html)
+    >>> product_model.parse(data=test_dict, html=test_html)
     {'brand': 'EasyData', 'name': 'EasyBook pro 15'}
 
 
