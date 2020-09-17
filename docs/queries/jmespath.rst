@@ -174,6 +174,60 @@ list of dictionaries.
     >>> jp('options[].{name: name, stock: availability.value}::dict(name:stock)').get(test_dict)
     {'Monitor': 'yes', 'Mouse': 'no'}
 
+.. option:: ::str
+
+With ``::str`` pseudo key we can convert selected value into a *str* format.
+
+.. code-block:: python
+
+    >>> jp('brand::str').get(test_dict)
+    "{'name': 'EasyData', 'origin': 'Slovenia'}"
+
+``::str`` pseudo key can be even used as an extension to another pseudo key.
+
+.. code-block:: python
+
+    >>> jp('brand::values-str').get(test_dict)
+    "['EasyData', 'Slovenia']"
+
+``-str`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.
+
+.. option:: ::json
+
+With ``::json`` pseudo key we can convert selected value into a *json* str format.
+
+.. code-block:: python
+
+    >>> jp('brand::json').get(test_dict)
+    '{"name": "EasyData", "origin": "Slovenia"}'
+
+``::json`` pseudo key can be even used as an extension to another pseudo key.
+
+.. code-block:: python
+
+    >>> jp('brand::values-json').get(test_dict)
+    '["EasyData", "Slovenia"]'
+
+``-json`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.
+
+.. option:: ::yaml
+
+With ``::yaml`` pseudo key we can convert selected value into a *yaml* str format.
+
+.. code-block:: python
+
+    >>> jp('brand::yaml').get(test_dict)
+    'name: EasyData\norigin: Slovenia\n'
+
+``::yaml`` pseudo key can be even used as an extension to another pseudo key.
+
+.. code-block:: python
+
+    >>> jp('brand::keys-yaml').get(test_dict)
+    '- name\n- origin\n'
+
+``-yaml`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.
+
 
 .. _jmespath: https://pypi.org/project/jmespath/
 .. _JMESPath website: https://jmespath.org/tutorial.html

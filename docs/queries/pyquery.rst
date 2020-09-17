@@ -20,8 +20,8 @@ Through this tutorial we will use following *HTML*:
         <html>
             <body>
                 <div id="breadcrumbs">
-                    <div class=".breadcrumb">Home > </div>
-                    <div class=".breadcrumb">Items</div>
+                    <div class="breadcrumb">Home > </div>
+                    <div class="breadcrumb">Items</div>
                 </div>
                 <h2 class="name">
                     <div class="brand" content="EasyData">EasyData</div>
@@ -173,6 +173,13 @@ a *css* selector.
 
 ``-items`` works with all other pseudo keys such as ``::text``, ``::ntext``, ``src``, ``val``,
 ``::attr(<attr-name>)``, ``href``, etc.
+
+We can also use ``items`` as a pseudo key and  it will return list of ``PyQuery`` objects.
+This is especially useful when it's used inside ``List`` or ``Dict`` parsers where it needs
+further processing by a child parsers.
+
+    >>> pq('img::items').get(test_html)
+    [[<img>], [<img>]]
 
 
 Removing HTML elements from result
