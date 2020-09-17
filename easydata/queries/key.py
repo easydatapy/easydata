@@ -132,7 +132,7 @@ class KeyQuery(QuerySearch):
 
             dict_key_value_split = dict_key_value_text.split(":")
 
-            self._dict_key_value = dict_key_value_split[0], dict_key_value_text[1]
+            self._dict_key_value = dict_key_value_split[0], dict_key_value_split[1]
         elif pseudo_key == "values":
             self._values = True
         elif pseudo_key == "keys":
