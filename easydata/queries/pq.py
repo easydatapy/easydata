@@ -5,6 +5,7 @@ from pyquery import PyQuery
 
 from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
+from easydata.utils import pseudo
 
 _attr_shortcut_mappings = {
     "val": "value",
@@ -108,43 +109,26 @@ class PyQuerySearch(QuerySearch):
         return pq
 
     def _initialize_custom_pseudo_keys(self):
-        query_parts = self._query.split("::")
-
-        self._query = None if self._query.startswith("::") else query_parts[0]
-
-        pseudo_key = query_parts[-1]
+        self._query, pseudo_key = pseudo.get_key_from_query(self._query)
 
         pseudo_key = self._process_pseudo_key_extension(pseudo_key)
 
         self._process_pseudo_key(pseudo_key)
 
     def _process_pseudo_key_extension(self, pseudo_key: str) -> str:
-        # Attributes can have attribute value with - in it, so we must sure that it
-        # has extension. Otherwise we just ignore it.
-        if pseudo_key.startswith("attr") and ")-" not in pseudo_key:
+        pseudo_key, extension = pseudo.get_extension_value(pseudo_key, ["attr"])
+
+        if not extension:
             return pseudo_key
-        elif "-" not in pseudo_key:
-            return pseudo_key  # doesn't have extension
 
-        pseudo_key_parts = pseudo_key.split("-")
-
-        # If split by - produces more than 2 list items that means that we are dealing
-        # with attr value that has - in it.
-        if len(pseudo_key_parts) > 2:
-            pseudo_key = "-".join(pseudo_key_parts[:-1])
-        else:
-            pseudo_key = pseudo_key_parts[0]
-
-        pseudo_key_extension = pseudo_key_parts[-1]
-
-        if pseudo_key_extension == "items":
+        if extension == "items":
             self._items = True
-        elif pseudo_key_extension == "all":
+        elif extension == "all":
             self._first = False
         else:
             raise ValueError(
                 "Pseudo key extension {} is not supported. Currently supported "
-                "are -items and -all".format(pseudo_key_extension)
+                "are -items and -all".format(extension)
             )
 
         return pseudo_key
