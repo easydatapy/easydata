@@ -45,10 +45,3 @@ ED_ITEM_DISCOUNT_DECIMALS: int = 2
 ED_ITEM_DISCOUNT_NO_DECIMALS: bool = False
 
 ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY: bool = False
-
-# Config attributes used by models
-ED_DATA_VARIANTS_NAME = "variants"
-
-ED_DATA_VARIANTS_KEY_NAME = "variants_key"
-
-ED_DATA_VARIANT_NAME = "variant"
