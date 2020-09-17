@@ -1,7 +1,7 @@
 import pytest
 
 from easydata import parsers
-from easydata.queries import pq
+from easydata.queries import jp, pq
 from tests.factory import load_data_bag_with_pq
 
 db = load_data_bag_with_pq("product")
@@ -299,3 +299,98 @@ def test_url_list_config_override():
     url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
     assert url_list_parser.parse(["/imgs/1.jpg"]) == ["http://demo.net/imgs/1.jpg"]
+
+
+@pytest.mark.parametrize(
+    "query, result",
+    [
+        (
+            "::html",
+            [
+                "info@easydatapy.com",
+                "rg@easydatapy.com",
+                "admin@easydatapy.com",
+                "groove@easydatapy.com",
+            ],
+        ),
+        ("p::text", ["info@easydatapy.com"]),
+        ("body::text", ["info@easydatapy.com", "groove@easydatapy.com"]),
+        ("div::html-items", ["rg@easydatapy.com", "admin@easydatapy.com"]),
+        (
+            ".first a,.second a::href-items",
+            ["rg@easydatapy.com", "admin@easydatapy.com"],
+        ),
+        ("div a::href-items", ["rg@easydatapy.com", "admin@easydatapy.com"]),
+        (".website::text", []),
+    ],
+)
+def test_email_search_list_html(query, result):
+    test_email_html = """
+        <body>
+            <p>Email us at: info@easydatapy.com and receive great info!</p>
+            <div class="first"><a href="mailto:rg@easydatapy.com">RG</a></div>
+            <div class="second"><a href="mailto:admin@easydatapy.com">admin</a></div>
+            groove@easydatapy.com
+            <span class="website">easydatapy.com</span>
+        </body>
+    """
+
+    email_search_list_parser = parsers.EmailSearchList(
+        query=pq(query),
+    )
+
+    assert email_search_list_parser.parse(test_email_html) == result
+
+
+@pytest.mark.parametrize(
+    "query, result",
+    [
+        (
+            "::json",
+            [
+                "info@easydatapy.com",
+                "admin@easydatapy.com",
+                "rg@easydatapy.com",
+                "support@easydatapy.com",
+                "support2@easydatapy.com",
+            ],
+        ),
+        (
+            "::yaml",
+            [
+                "support@easydatapy.com",
+                "support2@easydatapy.com",
+                "admin@easydatapy.com",
+                "rg@easydatapy.com",
+                "info@easydatapy.com",
+            ],
+        ),
+        (
+            "::str",
+            [
+                "info@easydatapy.com",
+                "admin@easydatapy.com",
+                "rg@easydatapy.com",
+                "support@easydatapy.com",
+                "support2@easydatapy.com",
+            ],
+        ),
+        (
+            "additional_contacts",
+            ["support@easydatapy.com", "support2@easydatapy.com"],
+        ),
+    ],
+)
+def test_email_search_list_dict(query, result):
+    test_email_dict = {
+        "main_contact": "info@easydatapy.com",
+        "contacts": [
+            {"email": "admin@easydatapy.com", "name": "admin"},
+            {"email": "rg@easydatapy.com", "name": "RG"},
+        ],
+        "additional_contacts": ["support@easydatapy.com", "support2@easydatapy.com"],
+    }
+
+    email_search_list_parser = parsers.EmailSearchList(query=jp(query))
+
+    assert email_search_list_parser.parse(test_email_dict) == result
