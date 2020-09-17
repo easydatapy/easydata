@@ -591,3 +591,14 @@ examples coming soon ...
 .. option:: domain
 
 .. option:: protocol
+
+
+EmailSearchList
+===============
+.. autoclass:: easydata.parsers.list::EmailSearchList
+
+``EmailSearchList`` will search for emails in a text (html,xml,json,yaml,etc.) and
+return a list of validated email addresses.
+
+
+examples coming soon ...
