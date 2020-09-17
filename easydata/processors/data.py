@@ -1,13 +1,13 @@
 import json
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import xmltodict
 import yaml
 from pyquery import PyQuery
 
-from easydata.data import DataBag
+from easydata.data import DataBag, VariantsData
 from easydata.parsers.base import BaseData
 from easydata.parsers.data import Data
 from easydata.processors.base import BaseProcessor
@@ -24,7 +24,7 @@ __all__ = (
     "DataTextFromReProcessor",
     "DataJsonFromReToDictProcessor",
     "DataFromQueryProcessor",
-    "DataVariantProcessor",
+    "DataVariantsProcessor",
 )
 
 
@@ -250,42 +250,35 @@ class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
         return json.loads(value)
 
 
-class DataVariantProcessor(DataBaseProcessor):
+class DataVariantsProcessor(DataBaseProcessor):
     def __init__(
         self,
         source: str = "data",
         parser: Optional[BaseData] = None,
-        variant_parser: Optional[BaseData] = None,
         query: Optional[QuerySearch] = None,
-        variant_query: Optional[QuerySearch] = None,
-        multi_values: bool = False,
-        with_variant_values: bool = True,
-        variant_values_lower: bool = True,
+        key_parser: Optional[BaseData] = None,
+        key_query: Optional[QuerySearch] = None,
+        new_source: str = "variant_data",
         **kwargs,
     ):
 
-        if variant_parser and variant_query:
+        if key_parser and key_query:
             error_msg = (
-                "variant_query or variant_parser attributes cannot "
-                "be set at the same time."
+                "key_parser or key_query attributes cannot " "be set at the same time."
             )
             raise AttributeError(error_msg)
 
-        kwargs["source"] = source
-
-        if "new_source" not in kwargs:
-            kwargs["new_source"] = "{}_variants".format(kwargs["source"])
-
-        self._variant_parser = variant_parser
         self._query = query
-        self._variant_query = variant_query
-        self._multi_values = multi_values
-        self._with_variant_values = with_variant_values
-        self._variant_values_lower = variant_values_lower
+        self._key_parser = key_parser
+        self._key_query = key_query
 
         self.__parser = parser
 
-        super().__init__(**kwargs)
+        super().__init__(
+            source=source,
+            new_source=new_source,
+            **kwargs,
+        )
 
     @property  # type: ignore
     @lru_cache(maxsize=None)
@@ -293,37 +286,24 @@ class DataVariantProcessor(DataBaseProcessor):
         return Data(self._query) if self._query else self.__parser
 
     def _process_data(self, data: Any) -> Any:
+        variants_data = VariantsData()
+
         parser = self._parser
 
         if parser:
             data = parser.init_config(self.config).parse(data)  # type: ignore
 
-        variants_data: Dict[Optional[str], Any] = {}
-
         for data_info in data:
-            variant_key = self._get_variant_key(data_info)
+            variant_group_key = self._get_variant_key(data_info)
 
-            if self._with_variant_values and self._variant_values_lower:
-                if variant_key:
-                    variant_key = variant_key.lower()
+            variants_data[variant_group_key] = data_info
 
-            if variant_key not in variants_data:
-                variants_data[variant_key] = []
+        return variants_data
 
-            variants_data[variant_key].append(data_info)
-
-        if not self._multi_values:
-            variants_data = {k: v[0] for k, v in variants_data.items() if v}
-
-        if self._with_variant_values:
-            return variants_data
-
-        return list(variants_data.values())
-
-    def _get_variant_key(self, data: Any) -> Optional[str]:
-        if self._variant_parser:
-            return self._variant_parser.parse(data)
-        elif self._variant_query:
-            return self._variant_query.get(data)
+    def _get_variant_key(self, data: Any) -> Optional[Any]:
+        if self._key_parser:
+            return self._key_parser.parse(data)
+        elif self._key_query:
+            return self._key_query.get(data)
 
         return None

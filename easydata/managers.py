@@ -18,6 +18,10 @@ class ModelManager(ConfigMixin):
 
         self._models: list = []
 
+        self._with_items: bool = False
+
+        self._items_source: str = "data"
+
         self._item_parsers: dict = {}
 
         self._item_protected_names: List[str] = []
@@ -32,18 +36,6 @@ class ModelManager(ConfigMixin):
         self._init_config()
 
         self._init_parsers_config()
-
-    @property
-    def data_variants_name(self):
-        return self.config["ED_DATA_VARIANTS_NAME"]
-
-    @property
-    def data_variants_key_name(self):
-        return self.config["ED_DATA_VARIANTS_KEY_NAME"]
-
-    @property
-    def data_variant_name(self):
-        return self.config["ED_DATA_VARIANT_NAME"]
 
     @property
     def data_processors(self) -> ObjectLoader:
@@ -90,19 +82,19 @@ class ModelManager(ConfigMixin):
 
         data = self._apply_data_processors(data)
 
-        if data.has(self.data_variants_name):
-            for variant_data in self._parse_variants_data(data):
-                item = variant_data.get_all()
+        if self._with_items:
+            items_source = self._get_items_source(data)
 
-                item = self._apply_item_processors(item)
-
-                yield self._remove_protected_item_keys(item)
+            for variant_data in mix.parse_variants_data(data, items_source):
+                yield self._data_to_item(variant_data)
         else:
-            item = data.get_all()
+            yield self._data_to_item(data)
 
-            item = self._apply_item_processors(item)
-
-            yield self._remove_protected_item_keys(item)
+    def _get_items_source(self, data: DataBag):
+        if data.has("variant_data"):
+            return "variant_data"
+        else:
+            return self._items_source
 
     def _apply_data_processors(self, data: DataBag) -> DataBag:
         for model in self._models:
@@ -142,10 +134,23 @@ class ModelManager(ConfigMixin):
 
         return item
 
+    def _data_to_item(self, data: DataBag):
+        item = data.get_all()
+
+        item = self._apply_item_processors(item)
+
+        return self._remove_protected_item_keys(item)
+
     def _init_model(self, model):
         if model.block_models:
             for model_block in model.block_models:
                 self._init_model(model_block)
+
+        if hasattr(model, "with_items"):
+            self._with_items = getattr(model, "with_items")
+
+        if hasattr(model, "items_source"):
+            self._items_source = getattr(model, "items_source")
 
         model.init_model()
 
@@ -204,26 +209,3 @@ class ModelManager(ConfigMixin):
 
         for config_name, config_value in config_data:
             self._config_properties[config_name] = config_value
-
-    def _parse_variants_data(self, data):
-        variants_data = data[self.data_variants_name]
-
-        if isinstance(variants_data, dict):
-            for variant_key, variant_data in variants_data.items():
-                yield mix.make_variant_data_copy(
-                    data=data,
-                    variant_data=variant_data,
-                    variant_key=variant_key,
-                    variants_name=self.data_variants_name,
-                    variant_name=self.data_variant_name,
-                    variants_key_name=self.data_variants_key_name,
-                )
-        else:
-            for variant_data in variants_data:
-                yield mix.make_variant_data_copy(
-                    data=data,
-                    variant_data=variant_data,
-                    variants_name=self.data_variants_name,
-                    variant_name=self.data_variant_name,
-                    variants_key_name=self.data_variants_key_name,
-                )
