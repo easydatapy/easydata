@@ -70,7 +70,7 @@ Contributing
 ============
 **Yes please!**  We are always looking for contributions, additions and improvements.
 
-The source is available on `GitHub <http://github.com/sitegroove/easydata>`_
+The source is available on `GitHub <http://github.com/easydatapy/easydata>`_
 and contributions are always encouraged. Contributions can be as simple as
 minor tweaks to this documentation or the core.
 

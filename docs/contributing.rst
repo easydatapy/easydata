@@ -64,7 +64,7 @@ our project? Here's a quick rundown!
 1. Find an issue that you are interested in addressing or a feature that you would like to add.
 2. Fork the repository associated with the issue to your local GitHub organization. This means
    that you will have a copy of the repository under ``your-GitHub-username/easydata``.
-3. Clone the repository to your local machine using ``git clone https://github.com/sitegroove/easydata.git``.
+3. Clone the repository to your local machine using ``git clone https://github.com/easydatapy/easydata.git``.
 4. Create a new branch for your fix using ``git checkout -b #issue-num/title-of-issue-fix``.
 5. Make the appropriate changes for the issue you are trying to address or the feature that
    you want to add.
@@ -205,9 +205,9 @@ aligned to this Code of Conduct, or to ban temporarily or permanently any
 contributor for other behaviors that they deem inappropriate, threatening,
 offensive, or harmful.
 
-.. _tests/: https://github.com/sitegroove/easydata/tree/master/tests
-.. _open issues: https://github.com/sitegroove/easydata/issues
-.. _issue tracker: https://github.com/sitegroove/easydata/issues
+.. _tests/: https://github.com/easydatapy/easydata/tree/master/tests
+.. _open issues: https://github.com/easydatapy/easydata/issues
+.. _issue tracker: https://github.com/easydatapy/easydata/issues
 .. _pull request: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request
 
 Note: *Contributing section was inspired by *scrapy* contributing guidelines.*

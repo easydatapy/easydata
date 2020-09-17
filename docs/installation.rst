@@ -31,7 +31,7 @@ Things that are good to know
 - xmltodict_, python module that makes working with XML feel like you are working with JSON
 
 .. _dateparser: https://github.com/scrapinghub/dateparser
-.. _easytxt: https://github.com/sitegroove/easytxt
+.. _easytxt: https://github.com/easydatapy/easytxt
 .. _furl: https://github.com/gruns/furl
 .. _ftfy: https://github.com/LuminosoInsight/python-ftfy
 .. _jmespath: https://github.com/jmespath/jmespath.py
