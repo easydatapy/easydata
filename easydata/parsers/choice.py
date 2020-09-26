@@ -7,7 +7,7 @@ from easydata.data import DataBag
 from easydata.parsers.base import Base
 from easydata.parsers.bool import Bool
 from easydata.parsers.text import Text
-from easydata.types import RequiredQuerySearch
+from easydata.queries.base import QuerySearch
 from easydata.utils import mix
 
 __all__ = ("Choice",)
@@ -17,7 +17,7 @@ class Choice(Base):
     def __init__(
         self,
         choices: list,
-        lookup_queries: Optional[List[RequiredQuerySearch]] = None,
+        lookup_queries: Optional[List[QuerySearch]] = None,
         lookup_parsers: Optional[List[Base]] = None,
         lookup_items: Optional[List[str]] = None,
         default_choice: Optional[str] = None,
@@ -30,7 +30,7 @@ class Choice(Base):
         self._lookup_items = lookup_items
         self._choices = choices
         self._default_choice = default_choice
-        self._source = source if source else "data"
+        self._source = source or "main"
 
         self.__lookup_parsers = lookup_parsers
 

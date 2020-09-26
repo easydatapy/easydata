@@ -55,7 +55,7 @@ def test_key_query(query, test_data, result):
     ],
 )
 def test_key_query_get_data_bag(query, test_data, result):
-    db = DataBag(data=test_data)
+    db = DataBag(main=test_data)
     assert key(query).get(db) == result
 
 
@@ -67,7 +67,7 @@ def test_key_query_get_data_bag(query, test_data, result):
     ],
 )
 def test_key_query_get_data_bag_bad_source(query, test_data):
-    db = DataBag(data=test_data)
+    db = DataBag(main=test_data)
 
     with pytest.raises(ValueError) as excinfo:
         key(query).get(db)

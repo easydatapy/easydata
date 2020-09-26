@@ -11,6 +11,8 @@ class Url(Text):
         self,
         *args,
         from_text: bool = False,
+        from_qs: Optional[str] = None,
+        from_qs_unquote: Optional[str] = None,
         remove_qs: Optional[Union[str, list, bool]] = None,
         qs: Optional[dict] = None,
         domain: Optional[str] = None,
@@ -20,6 +22,8 @@ class Url(Text):
     ):
 
         self._from_text = from_text
+        self._from_qs = from_qs
+        self._from_qs_unquote = from_qs_unquote
         self._remove_qs = remove_qs
         self._qs = qs
         self._normalize_url = normalize
@@ -58,6 +62,9 @@ class Url(Text):
                 domain=self._domain,
                 protocol=self._protocol,
             )
+
+        if self._from_qs:
+            value = url.get_value_from_qs(value, self._from_qs)
 
         if value and self._remove_qs is not None:
             if isinstance(self._remove_qs, bool):

@@ -1,30 +1,7 @@
 import pytest
 
 from easydata.queries import jp
-
-test_dict = {
-    "title": "EasyBook pro 15",
-    "brand": {"name": "EasyData", "origin": "Slovenia"},
-    "image_data": [
-        {"zoom": "https://demo.com/img1.jpg"},
-        {"zoom": "https://demo.com/img2.jpg"},
-    ],
-    "images": [
-        "https://demo.com/img1.jpg",
-        "https://demo.com/img2.jpg",
-        "https://demo.com/img3.jpg",
-    ],
-    "options": [
-        {
-            "name": "Monitor",
-            "availability": {"value": "yes"},
-        },
-        {
-            "name": "Mouse",
-            "availability": {"value": "no"},
-        },
-    ],
-}
+from tests.factory import data_dict
 
 
 @pytest.mark.parametrize(
@@ -69,6 +46,7 @@ test_dict = {
             "options[].{name: name, stock: availability.value}::dict(name:stock)",
             {"Monitor": "yes", "Mouse": "no"},
         ),
+        ("options[?contains(name, 'Monitor')].availability.value", ["yes"]),
         ("brand::json", '{"name": "EasyData", "origin": "Slovenia"}'),
         ("brand::yaml", "name: EasyData\norigin: Slovenia\n"),
         (
@@ -84,7 +62,31 @@ test_dict = {
     ],
 )
 def test_jp_query(query, result):
-    assert jp(query).get(test_dict) == result
+    assert jp(query).get(data_dict.item_with_options) == result
+
+
+@pytest.mark.parametrize(
+    "query, params, result",
+    [
+        ("brand.{name}", {"name": "name"}, "EasyData"),
+        (
+            "options[].{{name: {name}, stock: availability.value}}",
+            {"name": "name"},
+            [{"name": "Monitor", "stock": "yes"}, {"name": "Mouse", "stock": "no"}],
+        ),
+        (
+            "options[?contains(name, '{value}')].availability.value",
+            {"value": "Moni"},
+            ["yes"],
+        ),
+        ("brand.{name}", {"name": None}, None),
+        ("brand.name", {"name": "name"}, "EasyData"),
+        ("brand.name", {}, "EasyData"),
+        ("brand.name", None, "EasyData"),
+    ],
+)
+def test_jp_query_params(query, params, result):
+    assert jp(query).get(data_dict.item_with_options, query_params=params) == result
 
 
 @pytest.mark.parametrize(

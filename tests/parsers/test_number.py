@@ -7,14 +7,14 @@ from easydata import parsers
     "test_data, result",
     [
         ("Was 99.9€", "99.9"),
+        ("1224,24", "1224.24"),
         ("", None),
         ("Was €", None),
         ("Was null €", None),
     ],
 )
-def test_price_text(test_data, result):
-    price_parser = parsers.PriceText()
-    assert price_parser.parse(test_data) == result
+def test_float_text(test_data, result):
+    assert parsers.FloatText().parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -31,9 +31,8 @@ def test_price_text(test_data, result):
         (0.15, 0.15),
     ],
 )
-def test_price_float(test_data, result):
-    price_parser = parsers.PriceFloat()
-    assert price_parser.parse(test_data) == result
+def test_float(test_data, result):
+    assert parsers.Float().parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -44,12 +43,11 @@ def test_price_float(test_data, result):
         (2, "99.91264", 99.91),
         (0, "999.91264", 1000),
         (False, 999.91264215, 999.91264215),
-        (None, 999.91264215, 999.91),
+        (None, 999.91264215, 999.91264215),
     ],
 )
-def test_price_float_decimals(decimals, test_data, result):
-    price_parser = parsers.PriceFloat(decimals=decimals)
-    assert price_parser.parse(test_data) == result
+def test_float_decimals(decimals, test_data, result):
+    assert parsers.Float(decimals=decimals).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -63,9 +61,8 @@ def test_price_float_decimals(decimals, test_data, result):
         (10, "Was null €", None),
     ],
 )
-def test_price_float_min_value(min_value, test_data, result):
-    price_parser = parsers.PriceFloat(min_value=min_value)
-    assert price_parser.parse(test_data) == result
+def test_float_min_value(min_value, test_data, result):
+    assert parsers.Float(min_value=min_value).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -79,24 +76,23 @@ def test_price_float_min_value(min_value, test_data, result):
         (10, "Was null €", None),
     ],
 )
-def test_price_float_max_value(max_value, test_data, result):
-    price_parser = parsers.PriceFloat(max_value=max_value)
-    assert price_parser.parse(test_data) == result
+def test_float_max_value(max_value, test_data, result):
+    assert parsers.Float(max_value=max_value).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
     "config_name, config_value, test_data, result",
     [
-        ("ED_PRICE_DECIMALS", 3, 999.91264, 999.913),
-        ("ED_PRICE_MIN_VALUE", 10, 9.99, None),
-        ("ED_PRICE_MAX_VALUE", 14, "15.99", None),
+        ("ED_NUMBER_DECIMALS", 3, 999.91264, 999.913),
+        ("ED_NUMBER_MIN_VALUE", 10, 9.99, None),
+        ("ED_NUMBER_MAX_VALUE", 14, "15.99", None),
     ],
 )
-def test_price_float_config(config_name, config_value, test_data, result):
-    price_parser = parsers.PriceFloat()
-    price_parser.init_config({config_name: config_value})
+def test_float_config(config_name, config_value, test_data, result):
+    float_parser = parsers.Float()
+    float_parser.init_config({config_name: config_value})
 
-    assert price_parser.parse(test_data) == result
+    assert float_parser.parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -108,6 +104,5 @@ def test_price_float_config(config_name, config_value, test_data, result):
         (0.15, 0),
     ],
 )
-def test_price_int(test_data, result):
-    price_parser = parsers.PriceInt()
-    assert price_parser.parse(test_data) == result
+def test_int(test_data, result):
+    assert parsers.PriceInt().parse(test_data) == result

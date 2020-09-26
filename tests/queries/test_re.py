@@ -21,12 +21,12 @@ html_text = "<div><p>EasyData</p></div>"
 @pytest.mark.parametrize(
     "query, test_data, source, result",
     [
-        ('basePrice": "(.*?)"', json_text, "data", "149.95"),
+        ('basePrice": "(.*?)"', json_text, "main", "149.95"),
         ('basePrice": "(.*?)"', json_text, None, "149.95"),
         ('wrongSearch": "(.*?)"', json_text, None, None),
         ('basePrice": "(.*?)"', None, None, None),
         ('basePrice": "(.*?)"', "", None, None),
-        ('basePrice": "(.*?)"', DataBag(data=json_text), "data", "149.95"),
+        ('basePrice": "(.*?)"', DataBag(main=json_text), "main", "149.95"),
         ('brand": "(.*?)"', {"brand": "EasyData"}, None, "EasyData"),
         ("<p>(.*?)</p>", PyQuery("<div><p>EasyData</p></div>"), None, "EasyData"),
         # Test that outer html tags are also shown when PyQuery converts back to text
@@ -49,7 +49,7 @@ def test_re_query_ignore_case():
         query='"baseprice": "(.*?)"',
         ignore_case=True,
     )
-    assert re_query.get(json_text, "data") == "149.95"
+    assert re_query.get(json_text, "main") == "149.95"
 
 
 @pytest.mark.parametrize(
@@ -63,7 +63,7 @@ def test_re_query_ignore_case():
 def test_re_query_dotall_ignore_case(query, dotall, ignore_case, result):
     re_query = re(query=query, dotall=dotall, ignore_case=ignore_case)
 
-    json_result = re_query.get(json_text, "data")
+    json_result = re_query.get(json_text, "main")
 
     if json_result:
         json_data = json.loads(json_result)
@@ -73,18 +73,18 @@ def test_re_query_dotall_ignore_case(query, dotall, ignore_case, result):
 
 
 def test_re_query_multiline_ignore_case():
-    json_result_text = re("spConfig = (.*?);").get(json_text, "data")
+    json_result_text = re("spConfig = (.*?);").get(json_text, "main")
     json_data = json.loads(json_result_text)
 
     assert json_data["basePrice"] == "149.95"
 
 
 def test_re_query_get_list():
-    assert re('"basePrice": "(.*?)"::all').get(json_text, "data") == ["149.95", "0"]
+    assert re('"basePrice": "(.*?)"::all').get(json_text, "main") == ["149.95", "0"]
 
 
 def test_re_query_missing_pattern_with_pseudo_key_all_exception():
     with pytest.raises(ValueError) as excinfo:
-        re("::all").get(json_text, "data")
+        re("::all").get(json_text, "main")
 
     assert "regex pattern is required beside ::all" in str(excinfo.value).lower()

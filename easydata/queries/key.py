@@ -14,7 +14,8 @@ class KeyQuery(QuerySearch):
         query: str = None,
     ):
 
-        self._query = query
+        super().__init__(query)
+
         self._keys: bool = False
         self._values: bool = False
         self._json: bool = False
@@ -28,10 +29,11 @@ class KeyQuery(QuerySearch):
     def _parse(
         self,
         data: Any,
+        query: Optional[str],
     ):
 
-        if self._query:
-            data = data.get(self._query)
+        if query:
+            data = data.get(query)
 
         return self._process_data_key_values(data)
 
@@ -62,7 +64,7 @@ class KeyQuery(QuerySearch):
             except Exception:
                 raise ValueError(
                     "Provided data from source {} could not be converted to dict or "
-                    "list in order to use key query!".format(source)
+                    "list in order to use query!".format(source)
                 )
         elif isinstance(data, (dict, list)):
             return data

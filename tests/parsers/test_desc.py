@@ -1,32 +1,31 @@
 import pytest
 
 from easydata.parsers import Description, Feature, Features, FeaturesDict, Sentences
-
-test_raw_sentences = "Ignored text   * color: Black - material: Aluminium."
+from tests.factory import data_text
 
 
 def test_description():
     description_parser = Description()
     expected_text = "Ignored text. Color: Black. Material: Aluminium."
-    assert description_parser.parse(test_raw_sentences) == expected_text
+    assert description_parser.parse(data_text.raw_sentences) == expected_text
 
 
 def test_sentences():
     sentences_parser = Sentences()
     expected_sentences = ["Ignored text.", "Color: Black.", "Material: Aluminium."]
-    assert sentences_parser.parse(test_raw_sentences) == expected_sentences
+    assert sentences_parser.parse(data_text.raw_sentences) == expected_sentences
 
 
 def test_features():
     features_parser = Features()
     expected_features = [("Color", "Black"), ("Material", "Aluminium")]
-    assert features_parser.parse(test_raw_sentences) == expected_features
+    assert features_parser.parse(data_text.raw_sentences) == expected_features
 
 
 def test_features_dict():
     features_dict_parser = FeaturesDict()
     expected_features_dict = {"Color": "Black", "Material": "Aluminium"}
-    result = features_dict_parser.parse(test_raw_sentences)
+    result = features_dict_parser.parse(data_text.raw_sentences)
     assert result == expected_features_dict
 
 
@@ -41,7 +40,7 @@ def test_features_dict():
 )
 def test_feature(key, result):
     feature_parser = Feature(key=key)
-    assert feature_parser.parse(test_raw_sentences) == result
+    assert feature_parser.parse(data_text.raw_sentences) == result
 
 
 @pytest.mark.parametrize(
@@ -54,4 +53,4 @@ def test_feature(key, result):
 )
 def test_feature_key_exact(key_exact, result):
     feature_parser = Feature(key_exact=key_exact)
-    assert feature_parser.parse(test_raw_sentences) == result
+    assert feature_parser.parse(data_text.raw_sentences) == result

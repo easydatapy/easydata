@@ -1,9 +1,11 @@
+from abc import ABC
 from typing import List, Optional, Union
 
 from easydata.processors.base import BaseProcessor
 from easydata.utils import price, validate
 
 __all__ = (
+    "ItemBaseProcessor",
     "ItemKeysMergeIntoListProcessor",
     "ItemKeysMergeProcessor",
     "ItemKeysMergeIntoDictProcessor",
@@ -13,7 +15,11 @@ __all__ = (
 )
 
 
-class ItemKeysMergeIntoListProcessor(BaseProcessor):
+class ItemBaseProcessor(BaseProcessor, ABC):
+    pass
+
+
+class ItemKeysMergeIntoListProcessor(ItemBaseProcessor):
     def __init__(
         self,
         new_item_key: str,
@@ -89,7 +95,7 @@ class ItemKeysMergeProcessor(ItemKeysMergeIntoListProcessor):
         return item
 
 
-class ItemValueToStrProcessor(BaseProcessor):
+class ItemValueToStrProcessor(ItemBaseProcessor):
     def __init__(
         self,
         item_keys: List[str],
@@ -114,7 +120,7 @@ class ItemValueToStrProcessor(BaseProcessor):
         return item
 
 
-class ItemRemoveKeysProcessor(BaseProcessor):
+class ItemRemoveKeysProcessor(ItemBaseProcessor):
     def __init__(self, item_keys: List[str]):
 
         self._item_keys = item_keys
@@ -126,7 +132,7 @@ class ItemRemoveKeysProcessor(BaseProcessor):
         return item
 
 
-class ItemDiscountProcessor(BaseProcessor):
+class ItemDiscountProcessor(ItemBaseProcessor):
     def __init__(
         self,
         item_price_key: Optional[str] = None,

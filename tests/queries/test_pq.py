@@ -1,29 +1,7 @@
 import pytest
 
 from easydata.queries import pq
-
-test_html = """
-    <html>
-        <body>
-            <div class="breadcrumbs">
-                <div class="breadcrumb">Home</div>
-                <div class="breadcrumb">Phone</div>
-                <div class="breadcrumb">Smartphone</div>
-            </div>
-            <h2 class="name">
-                <div class="brand">EasyData</div>
-                Test Product Item
-            </h2>
-            <input value="smartphone" content="phone" name="category" />
-            <a id="url" href="http://demo.com/product/123">Item Link</a>
-            <div class="images">
-                <img src="http://demo.com/img1.jpg" />
-                <img src="http://demo.com/img2.jpg" />
-                <img src="http://demo.com/img3.jpg" />
-            </div>
-        </body>
-    </html>
-"""
+from tests.factory import data_html
 
 exp_result_images = [
     "http://demo.com/img1.jpg",
@@ -33,7 +11,7 @@ exp_result_images = [
 
 
 def test_pq_query_text():
-    assert pq(".brand::text").get(test_html) == "EasyData"
+    assert pq(".brand::text").get(data_html.item_with_breadcrumbs) == "EasyData"
 
 
 @pytest.mark.parametrize(
@@ -44,9 +22,9 @@ def test_pq_query_text():
     ],
 )
 def test_pq_query_all(query, result):
-    assert pq(query).get(test_html) == result
+    assert pq(query).get(data_html.item_with_breadcrumbs) == result
 
-    assert pq(query=query).get(test_html) == result
+    assert pq(query=query).get(data_html.item_with_breadcrumbs) == result
 
 
 @pytest.mark.parametrize(
@@ -54,12 +32,13 @@ def test_pq_query_all(query, result):
     [".images img::attr(src)-items", ".images img::src-items"],
 )
 def test_pq_query_items(query):
-    assert pq(query).get(test_html) == exp_result_images
+    assert pq(query).get(data_html.item_with_breadcrumbs) == exp_result_images
 
 
 def test_pq_query_attr():
     exp_result = "smartphone"
-    assert pq('[name="category"]::attr(value)').get(test_html) == exp_result
+    test_data = data_html.item_with_breadcrumbs
+    assert pq('[name="category"]::attr(value)').get(test_data) == exp_result
 
 
 def test_pq_query_attr_all():
@@ -68,35 +47,37 @@ def test_pq_query_attr_all():
 
 
 def test_pq_query_attr_val():
-    result = pq('[name="category"]::val').get(test_html)
+    result = pq('[name="category"]::val').get(data_html.item_with_breadcrumbs)
     assert result == "smartphone"
 
 
 def test_pq_query_attr_name():
-    result = pq('[name="category"]::name').get(test_html)
+    result = pq('[name="category"]::name').get(data_html.item_with_breadcrumbs)
     assert result == "category"
 
 
 def test_pq_query_attr_content():
-    result = pq('[name="category"]::content').get(test_html)
+    result = pq('[name="category"]::content').get(data_html.item_with_breadcrumbs)
     assert result == "phone"
 
 
 def test_pq_query_attr_src():
-    result = pq(".images img::src").get(test_html)
+    result = pq(".images img::src").get(data_html.item_with_breadcrumbs)
     assert result == "http://demo.com/img1.jpg"
 
 
 def test_pq_query_attr_href():
-    result = pq("#url::href").get(test_html)
+    result = pq("#url::href").get(data_html.item_with_breadcrumbs)
     assert result == "http://demo.com/product/123"
 
 
 def test_pq_query_remove_query():
     exp_result = "Test Product Item"
-    assert pq(".name::text", remove_query=".brand").get(test_html) == exp_result
+    test_data = data_html.item_with_breadcrumbs
+    assert pq(".name::text", remove_query=".brand").get(test_data) == exp_result
 
 
 def test_pq_query_html():
     exp_result = '<div class="brand">EasyData</div>\nTest Product Item'
-    assert pq(".name::html").get(test_html).strip().replace("  ", "") == exp_result
+    test_data = data_html.item_with_breadcrumbs
+    assert pq(".name::html").get(test_data).strip().replace("  ", "") == exp_result

@@ -1,4 +1,5 @@
-from typing import List
+from types import GeneratorType
+from typing import Any, Iterator, List
 
 from easydata import models
 from easydata.data import DataBag
@@ -9,6 +10,13 @@ from easydata.utils import mix
 
 __all__ = ("ModelManager",)
 
+MODEL_VARIANTS_KEYS = [
+    "variants_query",
+    "variants_source",
+    "variants_key_parser",
+    "variants_key_query",
+]
+
 
 class ModelManager(ConfigMixin):
     _ignore_item_attr_prefix = ["item_processors"]
@@ -18,9 +26,9 @@ class ModelManager(ConfigMixin):
 
         self._models: list = []
 
-        self._with_items: bool = False
+        self._data_iter_query_processor = None
 
-        self._items_source: str = "data"
+        self._data_variants_processor = None
 
         self._item_parsers: dict = {}
 
@@ -29,6 +37,7 @@ class ModelManager(ConfigMixin):
         self._config_properties: dict = {}
 
         self._data_processors_loader = ObjectLoader()
+
         self._item_processors_loader = ObjectLoader()
 
         self._init_model(model)
@@ -57,12 +66,15 @@ class ModelManager(ConfigMixin):
     def process_item_parser(self, item_key: str, data: DataBag):
         item_parser = self._item_parsers[item_key]
 
+        if not item_parser:
+            return None
+
         if isinstance(item_parser, (str, float, int, list, dict)):
             return item_parser
         elif isinstance(item_parser, models.ItemModel):
             data = data.copy(item_parser.model_manager)
 
-            return item_parser.parse(data)
+            return item_parser.parse_item(data)
         elif isinstance(item_parser, BaseParser):
             return item_parser.parse(data)
 
@@ -72,41 +84,60 @@ class ModelManager(ConfigMixin):
         self,
         data=None,
         **kwargs,
-    ):
+    ) -> Iterator[dict]:
 
         if not isinstance(data, DataBag):
             if data:
-                kwargs["data"] = data
+                kwargs["main"] = data
 
-            data = DataBag(self, **kwargs)
+            data = DataBag(**kwargs)
 
-        data = self._apply_data_processors(data)
+        if not data.has_model_manger_instance():
+            data.init_model_manager(self)
 
-        if self._with_items:
-            items_source = self._get_items_source(data)
+        for iter_data in self._apply_data_processors(data):
+            yield self._data_to_item(iter_data)
 
-            for variant_data in mix.parse_variants_data(data, items_source):
-                yield self._data_to_item(variant_data)
+    def _apply_data_processors(self, data: DataBag) -> Iterator[DataBag]:
+        data = self._process_models_preprocess_data(data)
+
+        data_processors = list(self._data_processors_loader.values())
+
+        if data_processors:
+            for iter_data in self._apply_processors(data, data_processors):
+                iter_data = self._process_models_process_data(iter_data)
+
+                yield iter_data
         else:
-            yield self._data_to_item(data)
+            yield data
 
-    def _get_items_source(self, data: DataBag):
-        if data.has("variant_data"):
-            return "variant_data"
-        else:
-            return self._items_source
-
-    def _apply_data_processors(self, data: DataBag) -> DataBag:
-        for model in self._models:
-            data = model.preprocess_data(data)
-
-        data = mix.apply_processors(
-            value=data,
-            processors=list(self._data_processors_loader.values()),
-        )
-
+    def _process_models_process_data(self, data: DataBag):
         for model in self._models:
             data = model.process_data(data)
+
+        return data
+
+    def _apply_processors(
+        self,
+        value: Any,
+        processors: list,
+    ) -> Any:
+
+        for processor in processors:
+            value = self._apply_processor(processor, value)
+
+        yield from value
+
+    def _apply_processor(self, processor, value):
+        if isinstance(value, GeneratorType):
+            for iter_value in value:
+                yield from processor.parse(iter_value)
+        else:
+            yield from processor.parse(value)
+
+    def _process_models_preprocess_data(self, data: DataBag):
+        for model in self._models:
+            data = model.preprocess_data(data)
 
         return data
 
@@ -142,15 +173,9 @@ class ModelManager(ConfigMixin):
         return self._remove_protected_item_keys(item)
 
     def _init_model(self, model):
-        if model.block_models:
-            for model_block in model.block_models:
+        if hasattr(model, "block_models"):
+            for model_block in getattr(model, "block_models"):
                 self._init_model(model_block)
-
-        if hasattr(model, "with_items"):
-            self._with_items = getattr(model, "with_items")
-
-        if hasattr(model, "items_source"):
-            self._items_source = getattr(model, "items_source")
 
         model.init_model()
 
@@ -158,11 +183,15 @@ class ModelManager(ConfigMixin):
 
         self._load_config_properties_from_model(model)
 
-        if model.data_processors:
-            self._data_processors_loader.add_list(model.data_processors)
+        if hasattr(model, "data_processors"):
+            data_processors = getattr(model, "data_processors")
 
-        if model.item_processors:
-            self._item_processors_loader.add_list(model.item_processors)
+            self._data_processors_loader.add_list(data_processors)
+
+        if hasattr(model, "item_processors"):
+            item_processors = getattr(model, "item_processors")
+
+            self._item_processors_loader.add_list(item_processors)
 
         model.initialized_model()
 
@@ -193,9 +222,9 @@ class ModelManager(ConfigMixin):
                 if item_name not in self._item_protected_names:
                     self._item_protected_names.append(item_name)
             else:
-                # If parser from parent model is not protected, then delete it from
-                # _item_protected_names list if exists, because child had protected
-                # parser with the same item name.
+                # If item parser from parent model is not protected, then
+                # delete it from _item_protected_names list if exists, because
+                # child had protected item parser with the same item name.
                 if item_name in self._item_protected_names:
                     self._item_protected_names.remove(item_name)
 

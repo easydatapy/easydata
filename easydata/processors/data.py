@@ -1,13 +1,14 @@
 import json
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, Iterator, List, Optional, Union
 
 import xmltodict
 import yaml
+from easytxt.text import replace_chars_by_keys
 from pyquery import PyQuery
 
-from easydata.data import DataBag, VariantsData
+from easydata.data import DataBag
 from easydata.parsers.base import BaseData
 from easydata.parsers.data import Data
 from easydata.processors.base import BaseProcessor
@@ -21,6 +22,9 @@ __all__ = (
     "DataToPqProcessor",
     "DataJsonToDictProcessor",
     "DataJsonFromQueryToDictProcessor",
+    "DataFromIterQueryProcessor",
+    "DataYamlToDictProcessor",
+    "DataXmlToDictProcessor",
     "DataTextFromReProcessor",
     "DataJsonFromReToDictProcessor",
     "DataFromQueryProcessor",
@@ -29,9 +33,11 @@ __all__ = (
 
 
 class DataBaseProcessor(BaseProcessor, ABC):
+    _multi: bool = False
+
     def __init__(
         self,
-        source: str = "data",
+        source: str = "main",
         new_source: Optional[str] = None,
         process_source_data=None,
     ):
@@ -40,15 +46,36 @@ class DataBaseProcessor(BaseProcessor, ABC):
         self._new_source = new_source
         self._process_source_data = process_source_data
 
-    def parse(self, data: DataBag) -> DataBag:
-        new_source = self._new_source
-
+    def parse(self, data: DataBag) -> Iterator[DataBag]:
         source_data = data[self._source]
 
         if self._process_source_data:
             source_data = self._process_source_data(source_data)
 
-        trans_data = self._process_data(source_data)
+        transformed_data = self._process_data(source_data)
+
+        if self._multi:
+            for iter_transformed_data in transformed_data:
+                data_copy = data.copy()
+
+                yield self._transformed_data_to_data(iter_transformed_data, data_copy)
+        else:
+            yield self._transformed_data_to_data(transformed_data, data)
+
+    def parse_data(self, data=None, **kwargs):
+        if data:
+            kwargs["main"] = data
+
+        data = DataBag(**kwargs)
+
+        return self.parse(data)
+
+    @abstractmethod
+    def _process_data(self, source_data) -> Any:
+        pass
+
+    def _transformed_data_to_data(self, transformed_data, data):
+        new_source = self._new_source
 
         if new_source is None:
             original_source = "{}_raw".format(self._source)
@@ -56,21 +83,9 @@ class DataBaseProcessor(BaseProcessor, ABC):
 
             new_source = self._source
 
-        data[new_source] = trans_data
+        data[new_source] = transformed_data
 
         return data
-
-    def parse_data(self, data=None, **kwargs):
-        if data:
-            kwargs["data"] = data
-
-        data = DataBag(self, **kwargs)
-
-        return self.parse(data)
-
-    @abstractmethod
-    def _process_data(self, source_data) -> Any:
-        pass
 
 
 class DataProcessor(DataBaseProcessor):
@@ -171,17 +186,20 @@ class DataXmlToDictProcessor(DataBaseProcessor):
 class DataFromQueryProcessor(DataBaseProcessor):
     def __init__(
         self,
-        query: Union[List[QuerySearch], QuerySearch],
+        query: Union[QuerySearch],
         **kwargs,
     ):
 
-        if isinstance(query, QuerySearch):
-            self._query = [query]
+        self._query = query
 
         super().__init__(**kwargs)
 
     def _process_data(self, data: Any) -> Any:
         return parse.query_search(self._query, data)
+
+
+class DataFromIterQueryProcessor(DataFromQueryProcessor):
+    _multi = True
 
 
 class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
@@ -199,6 +217,7 @@ class DataTextFromReProcessor(DataBaseProcessor):
         dotall=True,
         ignore_case=False,
         bytes_to_string_decode: str = "utf-8",
+        replace_keys: Optional[list] = None,
         none_if_empty=False,
         process_value=None,
         **kwargs,
@@ -208,6 +227,7 @@ class DataTextFromReProcessor(DataBaseProcessor):
         self._dotall = dotall
         self._ignore_case = ignore_case
         self._bytes_to_string_decode = bytes_to_string_decode
+        self._replace_keys = replace_keys
         self._none_if_empty = none_if_empty
         self._process_value = process_value
 
@@ -234,6 +254,9 @@ class DataTextFromReProcessor(DataBaseProcessor):
             else:
                 value = self._process_value(value)
 
+        if value and self._replace_keys:
+            value = replace_chars_by_keys(value, self._replace_keys)
+
         return value
 
 
@@ -253,12 +276,11 @@ class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
 class DataVariantsProcessor(DataBaseProcessor):
     def __init__(
         self,
-        source: str = "data",
-        parser: Optional[BaseData] = None,
         query: Optional[QuerySearch] = None,
+        source: str = "main",
+        parser: Optional[BaseData] = None,
         key_parser: Optional[BaseData] = None,
         key_query: Optional[QuerySearch] = None,
-        new_source: str = "variant_data",
         **kwargs,
     ):
 
@@ -276,34 +298,40 @@ class DataVariantsProcessor(DataBaseProcessor):
 
         super().__init__(
             source=source,
-            new_source=new_source,
             **kwargs,
         )
+
+    def parse(self, data: DataBag) -> Iterator[DataBag]:
+        variants_source = self._new_source or self._source
+
+        for iter_data in super(DataVariantsProcessor, self).parse(data):
+            for var_iter_data in parse.variants_data(iter_data, variants_source):
+                yield var_iter_data
 
     @property  # type: ignore
     @lru_cache(maxsize=None)
     def _parser(self) -> Optional[BaseData]:
         return Data(self._query) if self._query else self.__parser
 
-    def _process_data(self, data: Any) -> Any:
-        variants_data = VariantsData()
+    def _process_data(self, data: Any) -> Dict[Optional[str], Any]:
+        variants_data: Dict[Optional[str], Any] = {}
 
         parser = self._parser
 
         if parser:
             data = parser.init_config(self.config).parse(data)  # type: ignore
 
-        for data_info in data:
-            variant_group_key = self._get_variant_key(data_info)
+        for data_index, data_info in enumerate(data):
+            if self._key_parser:
+                variant_group_key = self._key_parser.parse(data_info)
+            elif self._key_query:
+                variant_group_key = self._key_query.get(data_info)
+            else:
+                variant_group_key = str(data_index)
 
-            variants_data[variant_group_key] = data_info
+            if variant_group_key not in variants_data:
+                variants_data[variant_group_key] = []
+
+            variants_data[variant_group_key].append(data_info)
 
         return variants_data
-
-    def _get_variant_key(self, data: Any) -> Optional[Any]:
-        if self._key_parser:
-            return self._key_parser.parse(data)
-        elif self._key_query:
-            return self._key_query.get(data)
-
-        return None

@@ -2,23 +2,7 @@ import pytest
 
 from easydata import parsers
 from easydata.queries import jp, pq
-from tests.factory import load_data_bag_with_pq
-
-db = load_data_bag_with_pq("product")
-
-test_dict_text = {
-    "images": [
-        {"src": "https://demo.com/imgs/1.jpg"},
-        {"src": "https://demo.com/imgs/2.jpg"},
-        {"src": "https://demo.com/imgs/3.jpg"},
-    ]
-}
-
-test_img_url_list = [
-    "https://demo.com/imgs/1.jpg",
-    "https://demo.com/imgs/2.jpg",
-    "https://demo.com/imgs/3.jpg",
-]
+from tests.factory import data_html, data_list
 
 expected_urls = [
     "https://demo.com/imgs/1.jpg",
@@ -54,9 +38,14 @@ expected_multiplied_urls = [
 @pytest.mark.parametrize(
     "query, parser, test_data, result",
     [
-        (pq("#images img::items"), parsers.Url(pq("::src")), db, expected_urls),
-        (pq("#images img::src-items"), parsers.Url(), db, expected_urls),
-        (pq("#images img::src-items"), None, db, expected_urls),
+        (
+            pq("#images img::items"),
+            parsers.Url(pq("::src")),
+            data_html.images,
+            expected_urls,
+        ),
+        (pq("#images img::src-items"), parsers.Url(), data_html.images, expected_urls),
+        (pq("#images img::src-items"), None, data_html.images, expected_urls),
         (None, None, ["hello", "World &lt;3"], ["hello", "World &lt;3"]),
     ],
 )
@@ -87,7 +76,7 @@ def test_list_unique_true():
         pq("#image-container img::items"), parsers.Url(pq("::src")), unique=True
     )
 
-    assert list_parser.parse(db) == expected_urls
+    assert list_parser.parse(data_html.images) == expected_urls
 
 
 def test_list_unique_default():
@@ -96,7 +85,7 @@ def test_list_unique_default():
         parsers.Url(pq("::src")),
     )
 
-    assert list_parser.parse(db) == expected_urls
+    assert list_parser.parse(data_html.images) == expected_urls
 
 
 def test_list_unique_false():
@@ -104,7 +93,7 @@ def test_list_unique_false():
         pq("#image-container img::items"), parsers.Url(pq("::src")), unique=False
     )
 
-    assert list_parser.parse(db) == expected_urls_non_unique
+    assert list_parser.parse(data_html.images) == expected_urls_non_unique
 
 
 def test_list_max_num():
@@ -112,7 +101,7 @@ def test_list_max_num():
         pq("#image-container img::items"), parsers.Url(pq("::src")), max_num=2
     )
 
-    assert list_parser.parse(db) == expected_urls_max_2
+    assert list_parser.parse(data_html.images) == expected_urls_max_2
 
 
 def test_list_split_key():
@@ -168,13 +157,13 @@ def test_text_list_allow():
         "https://demo.com/imgs/3.jpg",
     ]
 
-    assert list_parser.parse(test_img_url_list) == expected_allowed_url_list
+    assert list_parser.parse(data_list.images) == expected_allowed_url_list
 
 
 def test_text_list_callow():
     list_parser = parsers.TextList(parser=parsers.Url(), callow=["1.JP", "3.jp"])
 
-    assert list_parser.parse(test_img_url_list) == [expected_urls[2]]
+    assert list_parser.parse(data_list.images) == [expected_urls[2]]
 
 
 @pytest.mark.parametrize(
@@ -188,7 +177,7 @@ def test_text_list_callow():
 def test_text_list_from_allow(from_allow, result):
     list_parser = parsers.TextList(parser=parsers.Url(), from_allow=from_allow)
 
-    assert list_parser.parse(test_img_url_list) == result
+    assert list_parser.parse(data_list.images) == result
 
 
 @pytest.mark.parametrize(
@@ -201,7 +190,7 @@ def test_text_list_from_allow(from_allow, result):
 def test_text_list_from_callow(from_callow, result):
     list_parser = parsers.TextList(parser=parsers.Url(), from_callow=from_callow)
 
-    assert list_parser.parse(test_img_url_list) == result
+    assert list_parser.parse(data_list.images) == result
 
 
 @pytest.mark.parametrize(
@@ -215,7 +204,7 @@ def test_text_list_from_callow(from_callow, result):
 def test_text_list_to_allow(to_allow, result):
     list_parser = parsers.TextList(parser=parsers.Url(), to_allow=to_allow)
 
-    assert list_parser.parse(test_img_url_list) == result
+    assert list_parser.parse(data_list.images) == result
 
 
 @pytest.mark.parametrize(
@@ -228,7 +217,7 @@ def test_text_list_to_allow(to_allow, result):
 def test_text_list_to_callow(to_callow, result):
     list_parser = parsers.TextList(parser=parsers.Url(), to_callow=to_callow)
 
-    assert list_parser.parse(test_img_url_list) == result
+    assert list_parser.parse(data_list.images) == result
 
 
 @pytest.mark.parametrize(
@@ -241,20 +230,20 @@ def test_text_list_to_callow(to_callow, result):
 def test_text_list_deny(deny, result):
     list_parser = parsers.TextList(parser=parsers.Url(), deny=deny)
 
-    assert list_parser.parse(test_img_url_list) == result
+    assert list_parser.parse(data_list.images) == result
 
 
 def test_text_list_cdeny():
     list_parser = parsers.TextList(parser=parsers.Url(), cdeny=["1.JP", "3.jp"])
 
-    assert list_parser.parse(test_img_url_list) == expected_urls[:2]
+    assert list_parser.parse(data_list.images) == expected_urls[:2]
 
 
 @pytest.mark.parametrize(
     "test_data, result",
     [
         (["https://demo.com/imgs/1.jpg"], expected_multiplied_urls),
-        (test_img_url_list, expected_multiplied_urls),
+        (data_list.images, expected_multiplied_urls),
         ("https://demo.com/imgs/1.jpg", expected_multiplied_urls),
     ],
 )

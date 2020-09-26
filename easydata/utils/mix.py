@@ -1,10 +1,9 @@
-from typing import Any, Callable, Iterable, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from easytxt.text import to_list
 from pyquery import PyQuery
 
 from easydata.config.loader import ConfigLoader
-from easydata.data import DataBag, VariantsData
 from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
 
@@ -127,60 +126,6 @@ def iter_attr_data_from_obj(
         attr_value = getattr(obj, attr_name)
 
         yield attr_name, attr_value
-
-
-def parse_variants_data(data: DataBag, source: str):
-    variants_data = data[source]
-
-    if isinstance(variants_data, VariantsData):
-        yield from parse_variants_data_obj_iter(
-            variants_data=variants_data,
-            data=data,
-            source=source,
-        )
-
-    else:
-        yield from parse_variants_data_iter(
-            variants_data=variants_data,
-            data=data,
-            source=source,
-        )
-
-
-def parse_variants_data_obj_iter(
-    variants_data: VariantsData,
-    data: DataBag,
-    source: str,
-) -> Iterable[DataBag]:
-
-    for variant_key, variant_multi_data in variants_data:
-        data_copy = data.copy()
-
-        variant_data = variant_multi_data[0]
-
-        data_copy[source] = variant_data
-        data_copy["variants"] = variant_multi_data
-        data_copy["variant_key"] = variant_key
-
-        yield data_copy
-
-
-def parse_variants_data_iter(
-    variants_data: Any,
-    data: DataBag,
-    source: str,
-) -> Iterable[DataBag]:
-
-    for variant_data in variants_data:
-
-        data_copy = data.copy()
-
-        original_source = "{}_raw".format(source)
-
-        data_copy[original_source] = data_copy[source]
-        data_copy[source] = variant_data
-
-        yield data_copy
 
 
 def multiply_list_values(

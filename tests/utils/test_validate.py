@@ -27,7 +27,7 @@ def test_price_value_type():
 
 
 def test_if_data_bag_with_source():
-    validate.if_data_bag_with_source(DataBag(), "data")
+    validate.if_data_bag_with_source(DataBag(), "main")
 
     with pytest.raises(AttributeError) as excinfo:
         validate.if_data_bag_with_source(DataBag(), None)

@@ -2,16 +2,14 @@ import pytest
 
 from easydata import parsers
 from easydata.queries import key, pq
-
-data_test_dict = {"stock": True}
-date_test_text = "Easybook Pro 13"
+from tests.factory import data_dict, data_text
 
 
 @pytest.mark.parametrize(
     "query, test_data, result",
     [
-        (key("stock"), data_test_dict, True),
-        (key("stock2"), data_test_dict, False),
+        (key("stock"), data_dict.stock, True),
+        (key("stock2"), data_dict.stock, False),
     ],
 )
 def test_bool(query, test_data, result):
@@ -40,9 +38,9 @@ def test_bool_various_types(test_data, result):
 @pytest.mark.parametrize(
     "contains_keys, test_data, result",
     [
-        (["pro 13"], date_test_text, True),
-        (["something", "pro 13"], date_test_text, True),
-        (["pros 13"], date_test_text, False),
+        (["pro 13"], data_text.title, True),
+        (["something", "pro 13"], data_text.title, True),
+        (["pros 13"], data_text.title, False),
     ],
 )
 def test_bool_contains(contains_keys, test_data, result):
@@ -53,9 +51,9 @@ def test_bool_contains(contains_keys, test_data, result):
 @pytest.mark.parametrize(
     "ccontains_keys, test_data, result",
     [
-        (["Pro 13"], date_test_text, True),
-        (["something", "Pro 13"], date_test_text, True),
-        (["pro 13"], date_test_text, False),
+        (["Pro 13"], data_text.title, True),
+        (["something", "Pro 13"], data_text.title, True),
+        (["pro 13"], data_text.title, False),
     ],
 )
 def test_bool_contains_case(ccontains_keys, test_data, result):
@@ -66,8 +64,8 @@ def test_bool_contains_case(ccontains_keys, test_data, result):
 @pytest.mark.parametrize(
     "query, contains_query, test_data, result",
     [
-        (pq("#full-name::text"), pq(".brand::text"), date_test_text, False),
-        (pq("#full-name::text"), pq(".brand::text-items"), date_test_text, False),
+        (pq("#full-name::text"), pq(".brand::text"), "Easybook Pro 13", False),
+        (pq("#full-name::text"), pq(".brand::text-items"), "Easybook Pro 13", False),
     ],
 )
 def test_bool_contains_query(query, contains_query, test_data, result):

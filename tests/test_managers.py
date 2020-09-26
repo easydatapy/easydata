@@ -1,3 +1,5 @@
+import pytest
+
 from easydata import parsers
 from easydata.managers import ModelManager
 from easydata.models import ItemModel
@@ -81,7 +83,14 @@ def test_model_manager_block_models():
     assert item_designer_parser.config[config_variants] == "variants_test_override"
 
 
-def test_model_manager_block_models_reverse_order():
+@pytest.mark.parametrize(
+    "item_key, item_value",
+    [
+        ("country", ["FR"]),
+        ("language", "en"),
+    ],
+)
+def test_model_manager_block_models_reverse_order(item_key, item_value):
     model = ProductModel()
     model.block_models = [
         SettingsModel(),
@@ -92,12 +101,18 @@ def test_model_manager_block_models_reverse_order():
 
     item_data = model_manager.items()
 
-    assert item_data["country"] == ["FR"]
-
-    assert item_data["language"] == "en"
+    assert item_data[item_key] == item_value
 
 
-def test_model_manager_block_models_nested():
+@pytest.mark.parametrize(
+    "item_key, item_value",
+    [
+        ("country", ["FR"]),
+        ("language", "en"),
+        ("domain", "us.demo.com"),
+    ],
+)
+def test_model_manager_block_models_nested(item_key, item_value):
     model = ProductModel()
     settings_model = SettingsBaseModel()
     settings_model.block_models = [SettingsModel()]
@@ -108,8 +123,4 @@ def test_model_manager_block_models_nested():
 
     item_data = model_manager.items()
 
-    assert item_data["country"] == ["FR"]
-
-    assert item_data["language"] == "en"
-
-    assert item_data["domain"] == "us.demo.com"
+    assert item_data[item_key] == item_value
