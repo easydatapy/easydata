@@ -27,7 +27,8 @@ class ReQuery(QuerySearch):
         else:
             self._all = False
 
-        self._query = query
+        super().__init__(query)
+
         self._dotall = dotall
         self._ignore_case = ignore_case
         self._bytes_to_string_decode = bytes_to_string_decode
@@ -35,18 +36,18 @@ class ReQuery(QuerySearch):
     def _parse(
         self,
         data: Any,
+        query: Optional[str],
     ):
 
         if self._all:
-            return list(self._iter_parse(data))
+            return list(self._iter_parse(data, query=query))
 
-        for result in self._iter_parse(data):
+        for result in self._iter_parse(data, query=query):
             return result
 
-    def _iter_parse(
-        self,
-        data: Any,
-    ) -> Iterable[Any]:
+    def _iter_parse(self, data: Any, query: Optional[str]) -> Iterable[Any]:
+        if not query:
+            raise ValueError("Query cannot be empty")
 
         flags = 0
 
@@ -56,7 +57,7 @@ class ReQuery(QuerySearch):
         if self._ignore_case:
             flags = flags | re.IGNORECASE if flags else re.IGNORECASE
 
-        results = re.finditer(self._query, data, flags)
+        results = re.finditer(query, data, flags)
 
         for result in results:
             yield result.group(1)

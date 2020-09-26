@@ -10,7 +10,7 @@ from easydata.parsers.bool import Bool
 from easydata.parsers.data import Data
 from easydata.parsers.price import PriceFloat, PriceText
 from easydata.parsers.text import Text
-from easydata.types import OptionalQuerySearch
+from easydata.queries.base import QuerySearch
 from easydata.utils import mix
 
 __all__ = (
@@ -25,11 +25,11 @@ __all__ = (
 class Dict(BaseData):
     def __init__(
         self,
-        query: OptionalQuerySearch = None,
+        query: Optional[QuerySearch] = None,
         key_parser: Base = None,
         val_parser: Base = None,
-        key_query: OptionalQuerySearch = None,
-        val_query: OptionalQuerySearch = None,
+        key_query: Optional[QuerySearch] = None,
+        val_query: Optional[QuerySearch] = None,
         ignore_non_values: bool = False,
         ignore_non_keys: bool = True,
         key_normalize: bool = True,
@@ -47,6 +47,7 @@ class Dict(BaseData):
         key_callow: Optional[Union[str, List[str]]] = None,
         key_deny: Optional[Union[str, List[str]]] = None,
         key_cdeny: Optional[Union[str, List[str]]] = None,
+        key_default: Optional[str] = None,
         **kwargs,
     ):
 
@@ -72,6 +73,7 @@ class Dict(BaseData):
         self._key_callow = key_callow
         self._key_deny = key_deny
         self._key_cdeny = key_cdeny
+        self._key_default = key_default
 
         self.__key_parser = key_parser
         self.__key_parser_obj = None
@@ -177,6 +179,9 @@ class Dict(BaseData):
 
             values = {k: v for k, v in values.items() if k in item_keys}
 
+        if self._key_default and values:
+            values = {k or self._key_default: v for k, v in values.items()}
+
         return values
 
 
@@ -267,7 +272,8 @@ class BoolDict(TextDict):
         *args,
         val_contains: Optional[Union[list, str]] = None,
         val_ccontains: Optional[Union[list, str]] = None,
-        val_contains_query: OptionalQuerySearch = None,
+        val_contains_query: Optional[QuerySearch] = None,
+        val_contains_query_params: Optional[dict] = None,
         val_contains_query_source: str = "data",
         val_empty_as_false: bool = True,
         **kwargs,
@@ -277,6 +283,7 @@ class BoolDict(TextDict):
             "contains": val_contains,
             "ccontains": val_ccontains,
             "contains_query": val_contains_query,
+            "contains_query_params": val_contains_query_params,
             "contains_query_source": val_contains_query_source,
             "empty_as_false": val_empty_as_false,
         }

@@ -1,16 +1,18 @@
+from abc import ABC
 from typing import Any, Optional, Union
 
 from easydata.parsers.text import Text
 from easydata.utils import price
 
 __all__ = (
+    "BasePriceFloat",
     "PriceFloat",
     "PriceInt",
     "PriceText",
 )
 
 
-class PriceFloat(Text):
+class BasePriceFloat(Text, ABC):
     def __init__(
         self,
         *args,
@@ -34,15 +36,27 @@ class PriceFloat(Text):
         if self.__decimals is False or isinstance(self.__decimals, int):
             return self.__decimals
 
-        return self.__decimals or self.config["ED_PRICE_DECIMALS"]
+        return self.__decimals or self._decimals_config
 
     @property
     def _min_value(self):
-        return self.__min_value or self.config["ED_PRICE_MIN_VALUE"]
+        return self.__min_value or self._min_value_config
 
     @property
     def _max_value(self):
-        return self.__max_value or self.config["ED_PRICE_MAX_VALUE"]
+        return self.__max_value or self._max_value_config
+
+    @property
+    def _decimals_config(self):
+        return None
+
+    @property
+    def _min_value_config(self):
+        return None
+
+    @property
+    def _max_value_config(self):
+        return None
 
     def _parse_value(
         self,
@@ -76,6 +90,20 @@ class PriceFloat(Text):
             return None
 
         return value
+
+
+class PriceFloat(BasePriceFloat):
+    @property
+    def _decimals_config(self):
+        return self.config["ED_PRICE_DECIMALS"]
+
+    @property
+    def _min_value_config(self):
+        return self.config["ED_PRICE_MIN_VALUE"]
+
+    @property
+    def _max_value_config(self):
+        return self.config["ED_PRICE_MAX_VALUE"]
 
 
 class PriceInt(PriceFloat):

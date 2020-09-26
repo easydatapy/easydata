@@ -83,6 +83,9 @@ class DateTime(Text):
 
         value = super(DateTime, self)._parse_value(value, data)
 
+        if not value:
+            return None
+
         datetime_obj = self._get_datetime_obj_from_value(value)
 
         if not datetime_obj:

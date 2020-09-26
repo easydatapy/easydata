@@ -44,7 +44,8 @@ class ConfigLoader(dict):
     def from_dict(self, config_dict: dict):
         if config_dict:
             for key, value in config_dict.items():
-                self[key] = value
+                if key.isupper() and key.startswith("ED_"):
+                    self[key] = value
 
     def copy(self):
         config_dict_copy = super(ConfigLoader, self).copy()

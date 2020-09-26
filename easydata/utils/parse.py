@@ -2,16 +2,16 @@ from typing import Any, Optional
 
 from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
-from easydata.types import RequiredQuerySearch
 
 
 def query_search(
-    query: RequiredQuerySearch,
+    query: QuerySearch,
     data: Any,
-    source: str = "data",
+    source: str = "main",
+    query_params: Optional[dict] = None,
 ) -> Any:
 
-    return _query_to_value(query, data, source)
+    return query.get(data=data, source=source, query_params=query_params)
 
 
 def default_data_value(
@@ -22,15 +22,16 @@ def default_data_value(
     return data[source] if isinstance(data, DataBag) else data
 
 
-def _query_to_value(
-    query: RequiredQuerySearch,
-    data: Any,
-    source: str = "data",
-) -> Any:
+def variants_data(data: DataBag, source: str):
+    original_variants_data: dict = data[source]
 
-    query = [query] if isinstance(query, QuerySearch) else query
+    for variant_key, variant_multi_data in original_variants_data.items():
+        data_copy = data.copy()
 
-    for query_obj in query:
-        data = query_obj.get(data, source)
+        variant_data = variant_multi_data[0]
 
-    return data
+        data_copy[source] = variant_data
+        data_copy["{}_variants".format(source)] = variant_multi_data
+        data_copy["{}_key".format(source)] = variant_key
+
+        yield data_copy

@@ -19,11 +19,12 @@ _attr_shortcut_mappings = {
 class PyQuerySearch(QuerySearch):
     def __init__(
         self,
-        query: Optional[str] = None,
+        query: Optional[str],
         remove_query: Optional[str] = None,
     ):
 
-        self._query = query
+        super().__init__(query)
+
         self._remove_query = remove_query
 
         self._first: bool = True
@@ -31,6 +32,7 @@ class PyQuerySearch(QuerySearch):
         self._text: bool = False
         self._ntext: bool = False
         self._html: bool = False
+        self._outer_html: bool = False
         self._items: bool = False
 
         if self._query and "::" in self._query:
@@ -39,21 +41,23 @@ class PyQuerySearch(QuerySearch):
     def _parse(
         self,
         pq: PyQuery,
+        query: Optional[str],
     ) -> Any:
 
         if self._items:
-            return [i for i in self._iter_parse(pq)]
+            return [i for i in self._iter_parse(pq, query=query)]
         else:
-            pq = self._parse_pq(pq, self._first)
+            pq = self._parse_pq(pq, query=query, first=self._first)
 
             return self._extract_data_from_pq(pq)
 
     def _iter_parse(
         self,
         pq: PyQuery,
+        query: Optional[str],
     ) -> Iterable[Any]:
 
-        pq = self._parse_pq(pq, first=False)
+        pq = self._parse_pq(pq, query=query, first=False)
 
         for spq in pq.items():
             yield self._extract_data_from_pq(spq)
@@ -86,6 +90,8 @@ class PyQuerySearch(QuerySearch):
             return normalize(pq.text()) if pq else None
         elif self._html:
             return pq.html()
+        elif self._outer_html:
+            return pq.outer_html()
         elif self._attr:
             return pq.attr(self._attr)
 
@@ -94,11 +100,12 @@ class PyQuerySearch(QuerySearch):
     def _parse_pq(
         self,
         pq: PyQuery,
+        query: Optional[str],
         first: bool = True,
     ) -> PyQuery:
 
-        if self._query:
-            pq = pq(self._query)
+        if query:
+            pq = pq(query)
 
         if pq and first:
             pq = pq.eq(0)
@@ -145,12 +152,14 @@ class PyQuerySearch(QuerySearch):
             self._ntext = True
         elif pseudo_key == "html":
             self._html = True
+        elif pseudo_key == "ohtml":
+            self._outer_html = True
         elif pseudo_key == "items":
             self._items = True
         else:
             raise ValueError(
                 "Pseudo key '{}' is not supported. Currently supported are: text,"
-                "ntext,html,items, attr(<value>),{}".format(
+                "ntext,html,ohtml,items, attr(<value>),{}".format(
                     pseudo_key, ",".join(_attr_shortcut_mappings.keys())
                 )
             )

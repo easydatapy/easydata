@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import jmespath
 
@@ -9,11 +9,12 @@ class JMESPathSearch(KeyQuery):
     def _parse(
         self,
         data: Any,
+        query: Optional[str],
     ):
 
-        if self._query:
+        if query:
             data = jmespath.search(
-                expression=self._query,
+                expression=query,
                 data=data,
             )
 

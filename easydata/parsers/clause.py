@@ -6,9 +6,9 @@ from easydata.parsers.base import Base, BaseData
 __all__ = (
     "Union",
     "With",
-    "JoinText",
+    "ConcatText",
     "JoinList",
-    "JoinDict",
+    "MergeDict",
     "ItemDict",
     "ItemList",
 )
@@ -74,7 +74,7 @@ class With(Union):
         return value
 
 
-class JoinText(Union):
+class ConcatText(Union):
     def __init__(
         self,
         *args: UnionType[Base, BaseData],
@@ -142,7 +142,7 @@ class JoinList(Union):
         return values
 
 
-class JoinDict(Union):
+class MergeDict(Union):
     def parse(
         self,
         data: Any,
