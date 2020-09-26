@@ -1,8 +1,9 @@
-from easydata.queries import jp, key
+from easydata.data import DataBag
+from easydata.queries import jp
 from easydata.utils import parse
-from tests.factory import load_data_bag_with_json
+from tests.factory import data_dict
 
-dict_db = load_data_bag_with_json("product")
+dict_db = DataBag(main=data_dict.variants_data_multi)
 
 
 def test_query_search():
@@ -13,15 +14,6 @@ def test_query_search():
 
 def test_query_search_data_bag():
     assert (
-        parse.query_search(query=jp("prices.price"), data=dict_db, source="data")
-        == 899.99
-    )
-
-
-def test_query_search_queries_list():
-    assert (
-        parse.query_search(
-            query=[key("prices"), jp("price")], data=dict_db, source="data"
-        )
-        == 899.99
+        parse.query_search(query=jp("data.title"), data=dict_db, source="main")
+        == "EasyData Pro"
     )

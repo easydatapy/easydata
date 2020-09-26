@@ -5,6 +5,9 @@ from easydata.parsers import Url
 test_url_with_qs = "https://demo.com/?home=true"
 test_url_partial = "/product/1122"
 test_url_missing_protocol = "//demo.com/product/1122"
+test_url_nested = (
+    "https://app.link?url=https%3A%2F%2Fwww.demo.com" "%2Fproduct%2F1122%3Fcolor%3Dgray"
+)
 
 
 @pytest.mark.parametrize(
@@ -70,14 +73,32 @@ def test_url_domain(domain, test_data, result):
 
 
 @pytest.mark.parametrize(
-    "test_data, result",
+    "test_url, result",
     [
         (test_url_missing_protocol, "https://demo.com/product/1122"),
     ],
 )
-def test_url_normalize(test_data, result):
+def test_url_normalize(test_url, result):
     url_parser = Url(normalize=True)
-    assert url_parser.parse(test_data) == result
+    assert url_parser.parse(test_url) == result
+
+
+@pytest.mark.parametrize(
+    "test_url, query_key, qs, result",
+    [
+        ("https://demo.com/?country=SI", "country", None, "SI"),
+        (test_url_nested, "url", None, "https://www.demo.com/product/1122?color=gray"),
+        (
+            test_url_nested,
+            "url",
+            {"color": "black"},
+            "https://www.demo.com/product/1122?color=black",
+        ),
+    ],
+)
+def test_url_from_qs(test_url, query_key, qs, result):
+    url_parser = Url(from_qs=query_key, qs=qs)
+    assert url_parser.parse(test_url) == result
 
 
 @pytest.mark.parametrize(

@@ -1,23 +1,21 @@
 import pytest
 
+from easydata.data import DataBag
 from easydata.models import ItemModel
 from easydata.parsers.data import Data
-from easydata.queries import jp, key
-from tests.factory import load_data_bag_with_json
+from easydata.queries import jp
+from tests.factory import data_dict
 
-db = load_data_bag_with_json("product")
-db["additional_data"] = {"proc": "i7"}
-
-test_dict_data = {"title": "Easybook Pro 13"}
+db = DataBag(main=data_dict.item_with_options, additional_data=data_dict.stock)
 
 
 def process_raw_value(value, data):
-    return "{} {}".format(value, data["additional_data"]["proc"])
+    return "{} {}".format(value, str(data["additional_data"]["stock"]))
 
 
-def test_base_data_field_query():
+def test_base_data_query():
     item_data = Data(query=jp("info.name"))
-    assert item_data.parse(db) == "Easybook Pro 13"
+    assert item_data.parse(db) == "EasyBook pro 15"
 
 
 def test_base_data_from_item():
@@ -25,35 +23,20 @@ def test_base_data_from_item():
     item_model.item_name = Data(query=jp("title"))
     item_model.item_brand = Data(from_item="name")
 
-    result = item_model.parse(test_dict_data)
+    result = item_model.parse_item(data_dict.title)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
 def test_base_data_field_query_as_first_parameter():
     item_data = Data(jp("info.name"))
-    assert item_data.parse(db) == "Easybook Pro 13"
-
-
-@pytest.mark.parametrize(
-    "query, query2, test_data, result",
-    [
-        (jp("info"), key("name"), db, "Easybook Pro 13"),
-        # Test that None is returned if first query in list returns None
-        (jp("infowrong"), key("name"), db, None),
-        # Test that None is returned if last query in list returns None
-        (jp("info"), key("namewrong"), db, None),
-    ],
-)
-def test_base_data_field_query_chain(query, query2, test_data, result):
-    item_data = Data([query, query2])
-    assert item_data.parse(test_data) == result
+    assert item_data.parse(db) == "EasyBook pro 15"
 
 
 @pytest.mark.parametrize(
     "query, default, test_data, result",
     [
         (jp("info.namewrong"), "Easybook Def 13", db, "Easybook Def 13"),
-        (jp("info.name"), "Easybook Def 13", db, "Easybook Pro 13"),
+        (jp("info.name"), "Easybook Def 13", db, "EasyBook pro 15"),
     ],
 )
 def test_base_data_default(query, default, test_data, result):
@@ -66,15 +49,15 @@ def test_base_data_default_from_item():
     item_model.item_name = Data(query=jp("title"))
     item_model.item_brand = Data(query=jp("brandwrong"), default_from_item="name")
 
-    result = item_model.parse(test_dict_data)
+    result = item_model.parse_item(data_dict.title)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
 @pytest.mark.parametrize(
     "query, source, test_data, result",
     [
-        (jp("proc"), "additional_data", db, "i7"),
-        (None, "additional_data", db, {"proc": "i7"}),
+        (jp("stock"), "additional_data", db, True),
+        (None, "additional_data", db, {"stock": True}),
     ],
 )
 def test_base_data_field_different_source(query, source, test_data, result):
@@ -87,11 +70,11 @@ def test_base_data_field_different_source(query, source, test_data, result):
     [
         (
             jp("info.name"),
-            lambda value, data: value.replace("13", "15"),
+            lambda value, data: value.replace("15", "13"),
             db,
-            "Easybook Pro 15",
+            "EasyBook pro 13",
         ),
-        (jp("info.name"), process_raw_value, db, "Easybook Pro 13 i7"),
+        (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
 )
 def test_base_data_field_process_raw_value(
@@ -107,11 +90,13 @@ def test_base_data_field_process_raw_value(
     [
         (
             jp("info.name"),
-            lambda value, data: "{} {}".format(value, data["additional_data"]["proc"]),
+            lambda value, data: "{} {}".format(
+                value, str(data["additional_data"]["stock"])
+            ),
             db,
-            "Easybook Pro 13 i7",
+            "EasyBook pro 15 True",
         ),
-        (jp("info.name"), process_raw_value, db, "Easybook Pro 13 i7"),
+        (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
 )
 def test_base_data_field_process_value(

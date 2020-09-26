@@ -3,19 +3,7 @@ import pytest
 from easydata import models, parsers
 from easydata.data import DataBag
 from easydata.queries import jp, pq
-
-test_html = """
-    <div id="notebook">
-        <p class="type">Laptop</p>
-        <p class="name">EasyBook Pro 15</p>
-    </div>
-    <div id="accessory">
-        <p class="type">Accessory</p>
-        <p class="name">Phone case 15</p>
-    </div>
-"""
-
-test_dict = {"name": "EasyCELL 15"}
+from tests.factory import data_dict, data_html
 
 
 @pytest.mark.parametrize(
@@ -80,7 +68,7 @@ def test_choice_lookup_queries_choice_bool_parser_source(
             **kwargs
         )
 
-    data_bag = DataBag(data=test_html, json_data=test_dict)
+    data_bag = DataBag(main=data_html.categories, json_data=data_dict.name)
 
     # Test lookup queries
     choice_parser = generate_choice_parser(lookup_queries=[pq(pq_query)])
@@ -107,4 +95,4 @@ def test_choice_lookup_items():
             ],
         )
 
-    assert ProductModel().parse(test_html) == {"type": "accessory"}
+    assert ProductModel().parse_item(data_html.categories) == {"type": "accessory"}

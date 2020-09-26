@@ -2,25 +2,7 @@ import pytest
 
 from easydata import parsers
 from easydata.queries import jp, pq
-
-test_html = """
-    <ul id="size-variants">
-        <li size-stock="true" class="in-stock">
-            <input class="size-variant" value="l">
-            l
-        </li>
-        <li size-stock="false">
-            <input class="size-variant" value="xl">
-            xl
-        </li>
-        <li size-stock="true" class="in-stock">
-            <input class="size-variant" value="xxl">
-            xxl
-        </li>
-    </ul>
-"""
-
-test_dict_sizes = {"sizes": {"l": True, "xl": False, "xxl": True}}
+from tests.factory import data_dict, data_html
 
 
 def test_dict():
@@ -31,7 +13,7 @@ def test_dict():
     )
 
     expected_result = {"l": True, "xl": False, "xxl": True}
-    assert dict_parser.parse(test_html) == expected_result
+    assert dict_parser.parse(data_html.sizes) == expected_result
 
     dict_parser = parsers.Dict(
         pq("#size-variants li::items"),
@@ -39,7 +21,7 @@ def test_dict():
         val_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
     )
 
-    assert dict_parser.parse(test_html) == expected_result
+    assert dict_parser.parse(data_html.sizes) == expected_result
 
     dict_parser = parsers.Dict(
         pq("#size-variants li::items"),
@@ -48,32 +30,32 @@ def test_dict():
     )
 
     expected_text_result = {"l": "true", "xl": "false", "xxl": "true"}
-    assert dict_parser.parse(test_html) == expected_text_result
+    assert dict_parser.parse(data_html.sizes) == expected_text_result
 
     dict_parser = parsers.Dict(
         jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Bool()
     )
 
-    assert dict_parser.parse(test_dict_sizes) == expected_result
+    assert dict_parser.parse(data_dict.sizes) == expected_result
 
     dict_parser = parsers.Dict(jp("sizes"))
 
-    assert dict_parser.parse(test_dict_sizes) == expected_result
+    assert dict_parser.parse(data_dict.sizes) == expected_result
 
     dict_parser = parsers.Dict(jp("sizes"), key_parser=parsers.Text())
 
-    assert dict_parser.parse(test_dict_sizes) == expected_result
+    assert dict_parser.parse(data_dict.sizes) == expected_result
 
     dict_parser = parsers.Dict(jp("sizes"), val_parser=parsers.Bool())
 
-    assert dict_parser.parse(test_dict_sizes) == expected_result
+    assert dict_parser.parse(data_dict.sizes) == expected_result
 
     dict_parser = parsers.Dict(
         jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Text()
     )
 
     expected_result = {"l": "True", "xl": "False", "xxl": "True"}
-    assert dict_parser.parse(test_dict_sizes) == expected_result
+    assert dict_parser.parse(data_dict.sizes) == expected_result
 
 
 def test_dict_config():
@@ -155,7 +137,7 @@ def test_bool_dict():
     )
 
     expected_text_result = {"l": True, "xl": False, "xxl": True}
-    assert bool_dict_parser.parse(test_html) == expected_text_result
+    assert bool_dict_parser.parse(data_html.sizes) == expected_text_result
 
 
 @pytest.mark.parametrize(

@@ -1,34 +1,36 @@
+import json
+
 from easydata.data import DataBag
 from easydata.managers import ModelManager
-from tests.factory import load_json
-from tests.factory.parsers import SimpleJsonItemModel
-
-jd = load_json("product")
+from tests.factory import data_dict
+from tests.factory.models import ProductJsonModel
 
 
 def load_data_bag_with_model():
-    model_manager = ModelManager(SimpleJsonItemModel())
+    model_manager = ModelManager(ProductJsonModel())
 
-    return DataBag(model_manager, data=jd)
+    data_bag = DataBag(main=json.dumps(data_dict.item_with_options))
+    data_bag.init_model_manager(model_manager)
+    return data_bag
 
 
 def test_item_parser():
-    data_bag = DataBag(None, data="groove")
+    data_bag = DataBag(main="groove")
 
-    assert data_bag["data"] == "groove"
+    assert data_bag["main"] == "groove"
 
-    data_bag.add("data_new", "peach")
+    data_bag.add("main_new", "peach")
 
-    assert data_bag["data_new"] == "peach"
+    assert data_bag["main_new"] == "peach"
 
 
 def test_data_bag_get():
     data_bag = load_data_bag_with_model()
 
-    assert data_bag.get("name") == "Easybook Pro 13"
+    assert data_bag.get("name") == "EasyBook pro 15"
 
     # Test if results get cached
-    assert data_bag.cached_results == {"name": "Easybook Pro 13"}
+    assert data_bag.cached_results == {"name": "EasyBook pro 15"}
 
     data_bag_copy = data_bag.copy()
 
@@ -39,12 +41,14 @@ def test_data_bag_get():
 def test_data_bag_get_multi():
     data_bag = load_data_bag_with_model()
 
-    req_params = ["brand", "currency", "name", "tags"]
+    req_params = ["currency", "name", "price", "sale_price", "tags"]
+
     assert data_bag.get_multi(req_params) == {
-        "brand": "Groove",
         "currency": "USD",
-        "name": "Easybook Pro 13",
-        "tags": ["phones", "ecommerce"],
+        "name": "EasyBook pro 15",
+        "price": 99.99,
+        "sale_price": 49.99,
+        "tags": ["notebook", "ecommerce"],
     }
 
     # Test if multiple results gets cached

@@ -2,16 +2,10 @@ import pytest
 
 from easydata.parsers import Text
 
-test_text_normal = "Easybook Pro 13"
-test_text_lower = "easybook pro 13"
-test_text_lower_spaces = " easybook pro   13"
-test_text_upper = "EASYBOOK PRO 13"
-test_text_uni_issues = "Easybook Pro 13 &lt;3 uÌˆnicode"
-
 
 @pytest.mark.parametrize(
     "test_data, result",
-    [(test_text_normal, "Easybook Pro 13"), (test_text_lower, "easybook pro 13")],
+    [("Easybook Pro 13", "Easybook Pro 13"), ("easybook pro 13", "easybook pro 13")],
 )
 def test_text_parser(test_data, result):
     assert Text().parse(test_data) == result
@@ -20,8 +14,8 @@ def test_text_parser(test_data, result):
 @pytest.mark.parametrize(
     "test_data, result",
     [
-        (test_text_uni_issues, "Easybook Pro 13 <3 ünicode"),
-        (test_text_lower_spaces, "easybook pro 13"),
+        ("Easybook Pro 13 &lt;3 uÌˆnicode", "Easybook Pro 13 <3 ünicode"),
+        (" easybook pro   13", "easybook pro 13"),
         (" Easybook Pro 13    ", "Easybook Pro 13"),
         ("Easybook Pro\n13", "Easybook Pro 13"),
     ],
@@ -34,7 +28,7 @@ def test_text_normalize_false():
     text_parser = Text(normalize=False)
 
     expected_text = "Easybook Pro 13 &lt;3 uÌˆnicode"
-    assert text_parser.parse(test_text_uni_issues) == expected_text
+    assert text_parser.parse("Easybook Pro 13 &lt;3 uÌˆnicode") == expected_text
 
 
 def test_text_replace_keys():
@@ -130,8 +124,8 @@ def test_text_parser_default(default, test_data, result):
 @pytest.mark.parametrize(
     "take, test_data, result",
     [
-        (8, test_text_normal, "Easybook"),
-        (30, test_text_normal, "Easybook Pro 13"),
+        (8, "Easybook Pro 13", "Easybook"),
+        (30, "Easybook Pro 13", "Easybook Pro 13"),
     ],
 )
 def test_text_take(take, test_data, result):
@@ -142,8 +136,8 @@ def test_text_take(take, test_data, result):
 @pytest.mark.parametrize(
     "skip, test_data, result",
     [
-        (8, test_text_normal, "Pro 13"),
-        (30, test_text_normal, None),
+        (8, "Easybook Pro 13", "Pro 13"),
+        (30, "Easybook Pro 13", None),
     ],
 )
 def test_text_skip(skip, test_data, result):
@@ -153,19 +147,19 @@ def test_text_skip(skip, test_data, result):
 
 def test_text_parser_uppercase():
     text_parser = Text(uppercase=True)
-    assert text_parser.parse(test_text_normal) == "EASYBOOK PRO 13"
+    assert text_parser.parse("Easybook Pro 13") == "EASYBOOK PRO 13"
 
 
 def test_text_parser_lowercase():
     text_parser = Text(lowercase=True)
-    assert text_parser.parse(test_text_normal) == "easybook pro 13"
+    assert text_parser.parse("Easybook Pro 13") == "easybook pro 13"
 
 
 def test_text_parser_title():
     text_parser = Text(title=True)
-    assert text_parser.parse(test_text_lower) == "Easybook Pro 13"
+    assert text_parser.parse("Easybook Pro 13") == "Easybook Pro 13"
 
 
 def test_text_parser_capitalize():
     text_parser = Text(capitalize=True)
-    assert text_parser.parse(test_text_lower) == "Easybook pro 13"
+    assert text_parser.parse("Easybook pro 13") == "Easybook pro 13"

@@ -2,11 +2,6 @@ import pytest
 
 from easydata import parsers
 
-data_test_was_price = "Was 99.9€"
-data_test_was_price_comma = "Was 99,90"
-data_test_was_price_big_dot = "Was 3.330,90"
-data_test_was_price_big_comma = "Was 3,330.90"
-
 
 @pytest.mark.parametrize(
     "test_data, result",

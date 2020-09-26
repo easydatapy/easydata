@@ -4,22 +4,25 @@ import pytest
 from pyquery import PyQuery
 
 from easydata import parsers, processors
-from easydata.data import VariantsData
 from easydata.queries import jp, key, pq
-from tests.factory import dict_data, html_data
+from tests.factory import data_dict, data_html
+
+html_paragraph_text = "<p>Sample text</p>"
 
 
 @pytest.mark.parametrize(
     "source, data_type",
     [
-        ("data", PyQuery),
-        ("data_raw", str),
+        ("main", PyQuery),
+        ("main_raw", str),
     ],
 )
 def test_data_processor(source, data_type):
-    db = processors.DataProcessor(
-        process_source_data=lambda source_data: PyQuery(source_data)
-    ).parse_data(html_data.with_paragraph_text)
+    db = next(
+        processors.DataProcessor(
+            process_source_data=lambda source_data: PyQuery(source_data)
+        ).parse_data(html_paragraph_text)
+    )
 
     assert isinstance(db[source], data_type)
 
@@ -27,12 +30,12 @@ def test_data_processor(source, data_type):
 @pytest.mark.parametrize(
     "source, data_type",
     [
-        ("data", PyQuery),
-        ("data_raw", str),
+        ("main", PyQuery),
+        ("main_raw", str),
     ],
 )
 def test_data_to_pq_processor(source, data_type):
-    db = processors.DataToPqProcessor().parse_data(html_data.with_paragraph_text)
+    db = next(processors.DataToPqProcessor().parse_data(html_paragraph_text))
 
     assert isinstance(db[source], data_type)
 
@@ -40,14 +43,16 @@ def test_data_to_pq_processor(source, data_type):
 @pytest.mark.parametrize(
     "new_source, source, data_type",
     [
-        ("data_pq", "data_pq", PyQuery),
-        ("data_pq", "data", str),
+        ("main_pq", "main_pq", PyQuery),
+        ("main_pq", "main", str),
     ],
 )
 def test_data_to_pq_processor_new_source(new_source, source, data_type):
-    db = processors.DataToPqProcessor(
-        new_source=new_source,
-    ).parse_data(html_data.with_paragraph_text)
+    db = next(
+        processors.DataToPqProcessor(
+            new_source=new_source,
+        ).parse_data(html_paragraph_text)
+    )
 
     assert isinstance(db[source], data_type)
 
@@ -55,9 +60,9 @@ def test_data_to_pq_processor_new_source(new_source, source, data_type):
 def test_data_from_query_processor():
     test_dict = {"info": {"title": "EasyBook"}}
 
-    db = processors.DataFromQueryProcessor(jp("info")).parse_data(test_dict)
+    db = next(processors.DataFromQueryProcessor(jp("info")).parse_data(test_dict))
 
-    assert db["data"]["title"] == "EasyBook"
+    assert db["main"]["title"] == "EasyBook"
 
 
 def test_data_from_re_processor():
@@ -68,7 +73,7 @@ def test_data_from_re_processor():
         new_source="config_json",
     )
 
-    db = data_processor.parse_data(test_text)
+    db = next(data_processor.parse_data(test_text))
 
     assert json.loads(db["config_json"])["title"] == "EasyBook"
 
@@ -101,14 +106,14 @@ def test_data_from_re_processor_dotall_ignore_case(
         none_if_empty=True,
     )
 
-    db = data_processor.parse_data(json_text)
+    db = next(data_processor.parse_data(json_text))
 
-    if db["data"]:
-        json_data = json.loads(db["data"])
+    if db["main"]:
+        json_data = json.loads(db["main"])
 
         assert json_data["basePrice"] == result
     else:
-        assert db["data"] == result
+        assert db["main"] == result
 
 
 def test_data_from_re_processor_none():
@@ -120,9 +125,32 @@ def test_data_from_re_processor_none():
         none_if_empty=True,
     )
 
-    json_dict = data_processor.parse_data(test_text)
+    json_dict = next(data_processor.parse_data(test_text))
 
     assert json_dict["config_json"] is None
+
+
+def test_data_json_to_dict_processors():
+    data_processor = processors.DataJsonToDictProcessor()
+
+    json_dict = next(data_processor.parse_data('{"title": "EasyBook"}'))
+
+    assert json_dict["main"]["title"] == "EasyBook"
+
+
+def test_data_yaml_to_dict_processors():
+    test_text = """
+    name: 'Item data'
+    info:
+      title: 'Macbook Pro 13'
+      price: 999.8989
+    """
+
+    data_processor = processors.DataYamlToDictProcessor()
+
+    json_dict = next(data_processor.parse_data(test_text))
+
+    assert json_dict["main"]["info"]["title"] == "Macbook Pro 13"
 
 
 def test_data_json_from_re_to_dict_processor():
@@ -133,57 +161,59 @@ def test_data_json_from_re_to_dict_processor():
         new_source="config_json",
     )
 
-    json_dict = data_processor.parse_data(test_text)
+    json_dict = next(data_processor.parse_data(test_text))
 
     assert json_dict["config_json"]["title"] == "EasyBook"
 
 
 def test_data_variants_processor():
-    db = processors.DataVariantsProcessor(
-        query=jp("variants"), key_query=key("color")
-    ).parse_data(dict_data.with_variants_data)
+    iter_db = processors.DataVariantsProcessor(
+        query=jp("variants"),
+        key_query=key("color"),
+    ).parse_data(data_dict.variants_data)
 
-    assert isinstance(db["variant_data"], VariantsData)
+    db_list = list(iter_db)
 
-    assert len(db["variant_data"]) == 2
+    assert len(db_list) == 2
 
-    assert list(db["variant_data"].keys())[0] == "Black"
+    assert list(db_list[0]["main"].values())[0] == "Black"
 
-    assert list(db["variant_data"].variants())[0] == {"color": "Black", "stock": True}
+    assert db_list[0]["main"] == {"color": "Black", "stock": True}
 
 
 def test_data_variants_processor_html():
     # Lets test with HTML data and pq selector
-    db = processors.DataVariantsProcessor(
+    iter_db = processors.DataVariantsProcessor(
         query=pq("#color-variants .color::items"),
         key_parser=parsers.Text(pq("::text"), uppercase=True),
-    ).parse_data(html_data.with_prices_and_variants)
+        new_source="color_data",
+    ).parse_data(data_html.prices_and_variants)
 
-    assert isinstance(db["variant_data"], VariantsData)
+    db_list = list(iter_db)
 
-    assert len(db["variant_data"]) == 2
+    assert len(db_list) == 2
 
-    assert list(db["variant_data"].keys())[0] == "BLACK"
+    assert db_list[0]["color_data"].text() == "Black"
+
+    assert db_list[0]["color_data_key"] == "BLACK"
 
 
 def test_data_variants_processor_multi_values():
     # Lets test with multi_values set to True
-    db = processors.DataVariantsProcessor(
-        query=jp("variants"), key_query=key("color")
-    ).parse_data(dict_data.with_variants_data_multi)
+    iter_db = processors.DataVariantsProcessor(
+        query=jp("data.variants"),
+        key_query=key("color"),
+        new_source="color_data",
+    ).parse_data(data_dict.variants_data_multi)
 
-    assert isinstance(db["variant_data"], VariantsData)
+    db_list = list(iter_db)
 
-    assert len(db["variant_data"]) == 2
+    assert len(db_list) == 2
 
-    assert list(db["variant_data"].keys())[0] == "Black"
+    assert list(db_list[0]["color_data"].values())[0] == "Black"
 
     expected_values_result = [
         {"color": "Black", "size": "13", "stock": True},
         {"color": "Black", "size": "15", "stock": True},
     ]
-    assert db["variant_data"]["Black"] == expected_values_result
-
-    assert list(db["variant_data"].values())[0] == expected_values_result
-
-    assert db["variant_data"].variants()[0] == expected_values_result[0]
+    assert db_list[0]["color_data_variants"] == expected_values_result

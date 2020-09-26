@@ -3,9 +3,7 @@ import pytest
 from easydata import parsers
 from easydata.data import DataBag
 from easydata.queries import jp, pq
-from tests import factory
-
-db = factory.load_data_bag_with_pq("product")
+from tests.factory import data_html
 
 
 def test_union():
@@ -46,28 +44,18 @@ def test_union_none():
 
 
 def test_with():
-    test_html = """
-        <div id="description">
-            <ul class="features">
-                <li>Material: aluminium <span>MATERIAL</span></li>
-                <li>style: <strong>elegant</strong> is this</li>
-                <li>Date added: Fri, 12 Dec 2018 10:55</li>
-            </ul>
-        </div>
-    """
-
     with_parser = parsers.With(
         parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
         parsers.DateTimeSearch(),
     )
-    assert with_parser.parse(test_html) == "12/12/2018 10:55:00"
+    assert with_parser.parse(data_html.features) == "12/12/2018 10:55:00"
 
     with_parser = parsers.With(
         parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
         parsers.Text(split_key=("added:", -1)),
         parsers.DateTime(),
     )
-    assert with_parser.parse(test_html) == "12/12/2018 10:55:00"
+    assert with_parser.parse(data_html.features) == "12/12/2018 10:55:00"
 
 
 def test_join_text():
@@ -76,12 +64,12 @@ def test_join_text():
         <p id="name">Easybook Pro 13</p>
     """
 
-    join_text_parser = parsers.JoinText(
+    join_text_parser = parsers.ConcatText(
         parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text"))
     )
     assert join_text_parser.parse(test_html) == "EasyData Easybook Pro 13"
 
-    join_text_parser = parsers.JoinText(
+    join_text_parser = parsers.ConcatText(
         parsers.Text(pq(".brand-wrong-selector::text")), parsers.Text(pq("#name::text"))
     )
     assert join_text_parser.parse(test_html) == "Easybook Pro 13"
@@ -93,7 +81,7 @@ def test_join_text_custom_separator():
         <p id="name">Easybook Pro 13</p>
     """
 
-    join_text_parser = parsers.JoinText(
+    join_text_parser = parsers.ConcatText(
         parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text")), separator="-"
     )
     assert join_text_parser.parse(test_html) == "EasyData-Easybook Pro 13"
@@ -117,7 +105,7 @@ def test_join_dict():
         "specs": {"proc": "i7", "ram": "16 gb"},
     }
 
-    join_dict_parser = parsers.JoinDict(
+    join_dict_parser = parsers.MergeDict(
         parsers.Dict(
             jp("features"), key_parser=parsers.Text(), val_parser=parsers.Text()
         ),
@@ -151,7 +139,7 @@ def test_item_dict(ignore_non_values, result):
         brand=parsers.Text(jp("features.brand")),
     )
 
-    data_bag = DataBag(data=test_features_dict, specs=test_specs_dict)
+    data_bag = DataBag(main=test_features_dict, specs=test_specs_dict)
     assert item_dict_parser.parse(data_bag) == result
 
 
@@ -174,5 +162,5 @@ def test_item_list(ignore_non_values, result):
         ignore_non_values=ignore_non_values,
     )
 
-    data_bag = DataBag(data=test_features_dict, specs=test_specs_dict)
+    data_bag = DataBag(main=test_features_dict, specs=test_specs_dict)
     assert item_list_parser.parse(data_bag) == result
