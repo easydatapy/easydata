@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'easydata'
-copyright = '2020, Rok Grabnar'
+copyright = '2020, EasyData developers'
 author = 'Rok Grabnar'
 
 # The full version, including alpha/beta/rc tags
