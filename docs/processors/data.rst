@@ -104,8 +104,8 @@ DataFromQueryProcessor
 .. autoclass:: easydata.processors.data::DataFromQueryProcessor
 
 
-.. _processors-data-variant-processor:
+.. _processors-data-variants-processor:
 
-DataVariantProcessor
-====================
-.. autoclass:: easydata.processors.data::DataVariantProcessor
+DataVariantsProcessor
+=====================
+.. autoclass:: easydata.processors.data::DataVariantsProcessor

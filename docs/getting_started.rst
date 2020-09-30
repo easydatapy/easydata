@@ -339,7 +339,7 @@ EasyData ships with multiple data processors to handle different case scenarios:
 * :ref:`processors-data-text-from-re-processor`
 * :ref:`processors-data-json-from-re-to-dict-processor`
 * :ref:`processors-data-from-query-processor`
-* :ref:`processors-data-variant-processor`
+* :ref:`processors-data-variants-processor`
 
 
 Adding Item Processor
