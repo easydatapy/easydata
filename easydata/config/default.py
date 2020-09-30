@@ -1,7 +1,11 @@
 from typing import List, Optional, Union
 
+from easydata.exceptions import DropItem
+
 # Config attributes used by multiple parsers
 ED_LANGUAGE: str = "en"
+
+ED_DROP_ITEM_EXCEPTION = DropItem
 
 # Config attributes used by date time parsers
 ED_DATETIME_FORMAT: str = "%m/%d/%Y %H:%M:%S"
