@@ -3,6 +3,7 @@ import json
 import pytest
 
 from easydata import parsers, processors
+from easydata.exceptions import DropItem
 from easydata.models import StackedModel
 from easydata.queries import jp
 from tests.factory import data_dict, data_html
@@ -12,6 +13,7 @@ from tests.factory.models import (
     ProductHtmlModelWithVariantItems,
     ProductJsonModelWithComplexVariantItems,
     ProductJsonModelWithMultiItems,
+    ProductJsonModelWithVariantDropItems,
     ProductJsonModelWithVariantItems,
     ProductModel,
     SettingsBlockModel,
@@ -82,6 +84,35 @@ def test_item_model_with_variant_items_multi():
 
     test_data = json.dumps(data_dict.variants_data_multi)
     assert list(product_model.parse_items(test_data)) == result_variants
+
+
+def test_item_model_with_variant_drop_items_multi():
+    product_model = ProductJsonModelWithVariantDropItems()
+
+    test_data = json.dumps(data_dict.variants_data_multi)
+
+    with pytest.raises(DropItem) as excinfo:
+        list(product_model.parse_items(test_data))
+
+    assert "matched key: black" in str(excinfo.value).lower()
+
+
+def test_item_model_with_variant_drops_items_multi():
+    class TestMultipleDropsModel(ProductJsonModelWithVariantDropItems):
+        _item_drop_color = parsers.DropContains(
+            from_item="color", contains=["black", "gray"]
+        )
+
+    product_model = TestMultipleDropsModel()
+
+    test_data = json.dumps(data_dict.variants_data_multi)
+
+    with pytest.raises(DropItem) as excinfo:
+        list(product_model.parse_items(test_data))
+
+    exception_msgs = ["matched key: black", "matched key: gray"]
+
+    assert all(em in str(excinfo.value).lower() for em in exception_msgs)
 
 
 def test_item_model_with_complex_variant_items_multi():
