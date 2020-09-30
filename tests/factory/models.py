@@ -46,9 +46,9 @@ class ProductHtmlModelWithVariantItems(ItemModel):
 
 
 class ProductJsonModel(ItemModel):
-    item_currency = 'USD'
+    item_currency = "USD"
 
-    item_tags = ['notebook', 'ecommerce']
+    item_tags = ["notebook", "ecommerce"]
 
     item_name = parsers.Text(jp("title"))
 
@@ -79,6 +79,22 @@ class ProductJsonModelWithVariantItems(ItemModel):
         val_query=key("stock"),
         source="color_data_variants",
     )
+
+
+class ProductJsonModelWithVariantDropItems(ItemModel):
+    data_processors = [
+        processors.DataJsonToDictProcessor(),
+        processors.DataFromQueryProcessor(jp("data")),
+        processors.DataVariantsProcessor(
+            query=jp("variants"),
+            key_parser=parsers.Text(jp("color")),
+            new_source="color_data",
+        ),
+    ]
+
+    _item_drop_color = parsers.DropContains(from_item="color", contains=["black"])
+
+    item_color = parsers.Text(jp("color"), source="color_data")
 
 
 class ProductJsonModelWithComplexVariantItems(ItemModel):
