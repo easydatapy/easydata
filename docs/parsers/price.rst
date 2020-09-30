@@ -53,6 +53,62 @@ this limit is ``2``, but we can change this value with a ``decimals`` parameter.
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=3).transform(test_dict)
+    999.913
+
+Now lets set it to 0 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=0).parse(test_dict)
+    1000
+
+We can completely disable number rounding to decimals by settings
+
+In this example lets set our value output to 3 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=3).transform(test_dict)
+    999.913
+
+Now lets set it to 0 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=0).parse(test_dict)
+    1000
+
+We can completely disable number rounding to decimals by settings
+
+In this example lets set our value output to 3 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
+    999.913
+
+Now lets set it to 0 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=0).transform(test_dict)
+    1000
+
+We can completely disable number rounding to decimals by settings
+
+In this example lets set our value output to 3 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
+    999.913
+
+Now lets set it to 0 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
+    >>> parsers.PriceFloat(jp('price'), decimals=0).transform(test_dict)
+    1000
+
+We can completely disable number rounding to decimals by settings
+
+In this example lets set our value output to 3 decimals.
+
+    >>> test_dict = {'price': '999.91264'}
     >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
     999.913
 
@@ -64,6 +120,14 @@ Now lets set it to 0 decimals.
 
 We can completely disable number rounding to decimals by settings
 ``decimals`` parameter to ``None``.
+
+    >>> test_text = '999.91264'
+    >>> parsers.PriceFloat(decimals=None).transform(test_text)
+    999.91264
+
+    >>> test_text = '999.91264'
+    >>> parsers.PriceFloat(decimals=None).transform(test_text)
+    999.91264
 
     >>> test_text = '999.91264'
     >>> parsers.PriceFloat(decimals=None).parse(test_text)

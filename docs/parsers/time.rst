@@ -114,11 +114,33 @@ that can extract date time from sentences that have other content besides date t
 Lets try first to extract date from a sentence with a ``DateTime`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateTime().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateTime().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
     >>> parsers.DateTime().parse(test_text)
     None
 
 As we can see ... ordinary ``DateTime`` parser cannot handle text if there is some
 other text besides date time and in situations like this ``DateTimeSearch`` parser
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateTimeSearch().transform(test_text)
+    '12/10/2018 10:55:50'
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateTimeSearch().transform(test_text)
+    '12/10/2018 10:55:50'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
@@ -187,11 +209,33 @@ that can extract date from sentences that have other content besides date.
 Lets try first to extract date from a sentence with a ``Date`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Date().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Date().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
     >>> parsers.Date().parse(test_text)
     None
 
 As we can see ... ordinary ``Date`` parser cannot handle text if there is some
 other text besides date and in situations like this ``DateSearch`` parser
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateSearch().transform(test_text)
+    '12/10/2018'
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.DateSearch().transform(test_text)
+    '12/10/2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
@@ -260,11 +304,33 @@ that can extract time from sentences that have other content besides time.
 Lets try first to extract date from a sentence with a ``Time`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Time().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Time().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
     >>> parsers.Time().parse(test_text)
     None
 
 As we can see ... ordinary ``Time`` parser cannot handle text if there is some
 other text besides date and in situations like this ``TimeSearch`` parser
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.TimeSearch().transform(test_text)
+    '10:55:50'
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.TimeSearch().transform(test_text)
+    '10:55:50'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
@@ -315,11 +381,33 @@ that can extract time from sentences that have other content besides date.
 Lets try first to extract date from a sentence with a ``Year`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Year().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.Year().transform(test_text)
+    None
+
+As we can see ... ordinary
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
     >>> parsers.Year().parse(test_text)
     None
 
 As we can see ... ordinary ``Year`` parser cannot handle text if there is some
 other text besides date and in situations like this ``YearSearch`` parser
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.YearSearch().transform(test_text)
+    '2018'
+will work.
+
+    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
+    >>> parsers.YearSearch().transform(test_text)
+    '2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'

@@ -36,6 +36,14 @@ In this case if ``jp`` returns ``None``, then bool parser will also return ``Fal
 Use of query selectors is not required, as we can see bellow.
 
     >>> test_data = True
+    >>> parsers.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> parsers.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
     >>> parsers.Bool().parse(test_data)
     True
 

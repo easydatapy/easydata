@@ -104,6 +104,13 @@ DataFromQueryProcessor
 .. autoclass:: easydata.processors.data::DataFromQueryProcessor
 
 
+.. _processors-data-from-iter_query-processor:
+
+DataFromIterQueryProcessor
+==========================
+.. autoclass:: easydata.processors.data::DataFromIterQueryProcessor
+
+
 .. _processors-data-variants-processor:
 
 DataVariantsProcessor

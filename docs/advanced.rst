@@ -583,9 +583,9 @@ Output:
     ``process_item``.*
 
 
-Variants
-========
-*Coming soon ...*
+With items
+==========
+``ItemModel`` has an option to retrieve multiple items from a provided data.
 
 
 Item Validation

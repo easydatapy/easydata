@@ -122,11 +122,11 @@ Now lets parse ``test_html`` data and print our result.
     '12/12/2018 10:55:00'
 
 
-JoinText
-========
-.. autoclass:: easydata.parsers.clause::JoinText
+ConcatText
+==========
+.. autoclass:: easydata.parsers.clause::ConcatText
 
-``JoinText`` will combine string values of two or more parsers.
+``ConcatText`` will combine string values of two or more parsers.
 
 **Example:**
 
@@ -137,7 +137,7 @@ Lets import first ``parsers`` module and ``pq`` instance from ``queries`` module
     >>> from easydata import parsers
     >>> from easydata.queries import pq
 
-Lets write our ``JoinText`` parser.
+Lets write our ``ConcatText`` parser.
 
 .. code-block:: python
 
@@ -146,7 +146,7 @@ Lets write our ``JoinText`` parser.
         <p id="name">Easybook Pro 13</p>
     '''
 
-    join_text_parser = parsers.JoinText(
+    concat_text_parser = parsers.ConcatText(
         parsers.Text(pq('#name::text')),
         parsers.Text(pq('.brand::text'))
     )
@@ -155,7 +155,7 @@ Now lets parse ``test_html`` data and print our result.
 
 .. code-block:: python
 
-    print(join_text_parser.parse(test_html))
+    print(concat_text_parser.parse(test_html))
 
 .. code-block:: python
 
@@ -215,12 +215,12 @@ Now lets parse ``test_dict`` data and print our result.
     ['gold color', 'retina', 'i7 proc', '16 gb']
 
 
-JoinDict
-========
-.. autoclass:: easydata.parsers.clause::JoinDict
+MergeDict
+=========
+.. autoclass:: easydata.parsers.clause::MergeDict
 
-``JoinDict`` is similar to ``JoinList`` but instead of joining two ``list``
-types together, it will join two ``dict`` types together.
+``MergeDict`` is similar to ``JoinList`` but instead of joining two ``list``
+types together, it will merge two ``dict`` types together.
 
 **Example:**
 
@@ -231,7 +231,7 @@ Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
     >>> from easydata import parsers
     >>> from easydata.queries import jp
 
-Lets write our ``JoinDict`` parser.
+Lets write our ``MergeDict`` parser.
 
 .. code-block:: python
 
@@ -246,7 +246,7 @@ Lets write our ``JoinDict`` parser.
         }
     }
 
-    join_dict_parser = parsers.JoinDict(
+    merge_dict_parser = parsers.MergeDict(
         parsers.Dict(
             jp('features'),
             key_parser=parsers.Text(),
@@ -263,7 +263,7 @@ Now lets parse ``test_dict`` data and print our result.
 
 .. code-block:: python
 
-    print(join_dict_parser.parse(test_dict))
+    print(merge_dict_parser.parse(test_dict))
 
 .. code-block:: python
 

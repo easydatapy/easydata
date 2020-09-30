@@ -29,6 +29,18 @@ the hood.
 In our first example we will show how to parse badly structured text.
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
+    >>> parsers.Sentences().transform(test_text)
+    ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
+
+Now lets try with simple
+
+    >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
+    >>> parsers.Sentences().transform(test_text)
+    ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
+
+Now lets try with simple
+
+    >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
     >>> parsers.Sentences().parse(test_text)
     ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
 
@@ -52,6 +64,18 @@ Lets assume that we loaded ``HTML`` above into ``test_html`` variable.
     ['This is description.', 'Next-generation Thunderbolt.', 'FaceTime HD camera.']
 
 Now lets use ``pq`` selector to select specific html nodes in order to
+be processed.
+
+    >>> parsers.Sentences(pq('#features').html()).transform(test_html)
+    ['Next-generation Thunderbolt.', 'FaceTime HD camera.']
+
+Another example with
+be processed.
+
+    >>> parsers.Sentences(pq('#features').html()).transform(test_html)
+    ['Next-generation Thunderbolt.', 'FaceTime HD camera.']
+
+Another example with
 be processed.
 
     >>> parsers.Sentences(pq('#features').html()).parse(test_html)
