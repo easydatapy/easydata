@@ -95,8 +95,26 @@ class ModelManager(ConfigMixin):
         if not data.has_model_manger_instance():
             data.init_model_manager(self)
 
+        drop_item_exceptions = []
+
         for iter_data in self._apply_data_processors(data):
-            yield self._data_to_item(iter_data)
+            try:
+                yield self._data_to_item(iter_data)
+            except self._drop_item_exception as drop_item_exception:
+                # we store drop item exceptions so that other variations could
+                # get processed and we throw stored exceptions after iteration
+                # has ended
+                drop_item_exceptions.append(drop_item_exception)
+
+        if drop_item_exceptions:
+            if len(drop_item_exceptions) > 1:
+                raise self._drop_item_exception(drop_item_exceptions)
+
+            raise drop_item_exceptions[0]
+
+    @property
+    def _drop_item_exception(self):
+        return self.config["ED_DROP_ITEM_EXCEPTION"]
 
     def _apply_data_processors(self, data: DataBag) -> Iterator[DataBag]:
         data = self._process_models_preprocess_data(data)
