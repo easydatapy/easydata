@@ -2,7 +2,12 @@ from typing import Any
 
 from easydata.parsers.price import BasePriceFloat
 
-__all__ = ("Float", "Int", "FloatText", "IntText")
+__all__ = (
+    "Float",
+    "Int",
+    "FloatText",
+    "IntText",
+)
 
 
 class Float(BasePriceFloat):
