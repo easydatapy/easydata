@@ -44,7 +44,7 @@ class BaseModel(ABC):
         **kwargs,
     ):
 
-        return self.model_manager.parse_data_to_items(data, **kwargs)
+        yield from self.model_manager.parse_data_to_items(data, **kwargs)
 
 
 class ItemModel(BaseModel):
@@ -54,7 +54,7 @@ class ItemModel(BaseModel):
         **kwargs,
     ) -> dict:
 
-        return self._parse_items(data, **kwargs)
+        yield from self._parse_items(data, **kwargs)
 
     def parse_item(
         self,
