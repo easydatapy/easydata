@@ -1,5 +1,6 @@
 from abc import ABC
 from functools import lru_cache
+from typing import Iterator
 
 from easydata.data import DataBag
 from easydata.managers import ModelManager
@@ -52,7 +53,7 @@ class ItemModel(BaseModel):
         self,
         data=None,
         **kwargs,
-    ) -> dict:
+    ) -> Iterator[dict]:
 
         yield from self._parse_items(data, **kwargs)
 
