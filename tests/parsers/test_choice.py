@@ -71,12 +71,12 @@ def test_choice_lookup_queries_choice_bool_parser_source(
     data_bag = DataBag(main=data_html.categories, json_data=data_dict.name)
 
     # Test lookup queries
-    choice_parser = generate_choice_parser(lookup_queries=[pq(pq_query)])
+    choice_parser = generate_choice_parser(lookups=[pq(pq_query)])
 
     assert choice_parser.parse(data_bag) == result
 
     # Test lookup parsers
-    choice_parser = generate_choice_parser(lookup_parsers=[parsers.Text(pq(pq_query))])
+    choice_parser = generate_choice_parser(lookups=[parsers.Text(pq(pq_query))])
 
     assert choice_parser.parse(data_bag) == result
 
@@ -88,7 +88,7 @@ def test_choice_lookup_items():
         _item_name = parsers.Text(pq("#accessory .type::text"))
 
         item_type = parsers.Choice(
-            lookup_items=["name", "category"],
+            lookups=["name", "category"],
             choices=[
                 ("phone", ["mobile"]),
                 ("accessory", ["phone case"]),
