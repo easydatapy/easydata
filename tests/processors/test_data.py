@@ -197,6 +197,8 @@ def test_data_variants_processor_html():
 
     assert db_list[0]["color_data_key"] == "BLACK"
 
+    assert db_list[0]["color_data_variants_len"] == 2
+
 
 def test_data_variants_processor_multi_values():
     # Lets test with multi_values set to True
