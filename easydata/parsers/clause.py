@@ -1,11 +1,13 @@
-from typing import Any, Dict
-from typing import Union as UnionType
+from typing import Any, Dict, Tuple
 
-from easydata.parsers.base import Base, BaseData
+from easydata.parsers.base import Base
+from easydata.typing import Parser
+from easydata.utils import parse
 
 __all__ = (
     "Union",
     "With",
+    "Conditional",
     "ConcatText",
     "JoinList",
     "MergeDict",
@@ -19,7 +21,7 @@ class Union(Base):
 
     def __init__(
         self,
-        *args: UnionType[Base, BaseData],
+        *args: Parser,
     ):
 
         self.parsers = args
@@ -33,10 +35,12 @@ class Union(Base):
     ) -> Any:
 
         for parser in self.parsers:
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if value is not None:
@@ -74,10 +78,61 @@ class With(Union):
         return value
 
 
+class Conditional(Base):
+    def __init__(
+        self,
+        *args: Tuple[Parser, Parser],
+        default: Parser = None,
+    ):
+
+        self._condition_parsers = args
+        self._default_parser = default
+
+    def parse(
+        self,
+        data: Any,
+        parent_data: Any = None,
+        with_parent_data: bool = False,
+    ) -> Any:
+
+        for condition_parser_tuple in self._condition_parsers:
+            condition_parser, parser = condition_parser_tuple
+
+            condition_value = parse.value_from_parser(
+                parser=condition_parser,
+                data=data,
+                parent_data=parent_data,
+                with_parent_data=with_parent_data,
+                config=self.config,
+            )
+
+            if condition_value:
+                value = parse.value_from_parser(
+                    parser=parser,
+                    data=data,
+                    parent_data=parent_data,
+                    with_parent_data=with_parent_data,
+                    config=self.config,
+                )
+
+                return value
+
+        if self._default_parser:
+            return parse.value_from_parser(
+                parser=self._default_parser,
+                data=data,
+                parent_data=parent_data,
+                with_parent_data=with_parent_data,
+                config=self.config,
+            )
+
+        return None
+
+
 class ConcatText(Union):
     def __init__(
         self,
-        *args: UnionType[Base, BaseData],
+        *args: Parser,
         separator: str = " ",
     ):
 
@@ -95,10 +150,12 @@ class ConcatText(Union):
         values = []
 
         for parser in self.parsers:
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if value is None:
@@ -124,10 +181,12 @@ class JoinList(Union):
         values = []
 
         for parser in self.parsers:
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if not value:
@@ -153,10 +212,12 @@ class MergeDict(Union):
         joined_dictionary: Dict[Any, Any] = {}
 
         for parser in self.parsers:
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if not value:
@@ -191,10 +252,12 @@ class ItemDict(Base):
         parser_dict = {}
 
         for name, parser in self._parser_dict.items():
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if self._ignore_non_values and value is None:
@@ -208,7 +271,7 @@ class ItemDict(Base):
 class ItemList(Base):
     def __init__(
         self,
-        *args: UnionType[Base, BaseData],
+        *args: Parser,
         ignore_non_values: bool = True,
     ):
 
@@ -225,10 +288,12 @@ class ItemList(Base):
         parser_list = []
 
         for parser in self._parser_list:
-            value = parser.init_config(self.config).parse(
+            value = parse.value_from_parser(
+                parser=parser,
                 data=data,
                 parent_data=parent_data,
                 with_parent_data=with_parent_data,
+                config=self.config,
             )
 
             if self._ignore_non_values and value is None:
