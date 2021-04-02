@@ -15,6 +15,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+.mypy_cache/
 
 # Installer logs
 pip-log.txt
