@@ -1,3 +1,4 @@
+from types import FunctionType
 from typing import Any, Optional
 
 from easydata.data import DataBag
@@ -11,7 +12,11 @@ def query_search(
     query_params: Optional[dict] = None,
 ) -> Any:
 
-    return query.get(data=data, source=source, query_params=query_params)
+    return query.get(
+        data=data,
+        source=source,
+        query_params=query_params,
+    )
 
 
 def default_data_value(
@@ -25,6 +30,8 @@ def default_data_value(
 def variants_data(data: DataBag, source: str):
     original_variants_data: dict = data[source]
 
+    total_variants = len(original_variants_data)
+
     for variant_key, variant_multi_data in original_variants_data.items():
         data_copy = data.copy()
 
@@ -32,6 +39,25 @@ def variants_data(data: DataBag, source: str):
 
         data_copy[source] = variant_data
         data_copy["{}_variants".format(source)] = variant_multi_data
+        data_copy["{}_variants_len".format(source)] = total_variants
         data_copy["{}_key".format(source)] = variant_key
 
         yield data_copy
+
+
+def value_from_parser(
+        parser: Any,
+        data: Any,
+        parent_data: DataBag,
+        with_parent_data: bool,
+        config,
+):
+
+    if isinstance(parser, FunctionType):
+        return parser(data)
+    else:
+        return parser.init_config(config).parse(
+            data=data,
+            parent_data=parent_data,
+            with_parent_data=with_parent_data,
+        )
