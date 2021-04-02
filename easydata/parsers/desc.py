@@ -130,7 +130,7 @@ class Description(BaseDescription):
         data: Any,
     ) -> Optional[str]:
 
-        return self._get_text_parser(value).text
+        return self._get_text_parser(value).text or None
 
 
 class Sentences(BaseDescription):
