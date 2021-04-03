@@ -48,7 +48,7 @@ jobs:
         if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
           export TWINE_REPOSITORY_URL="https://test.pypi.org/legacy/"
           export TWINE_PASSWORD="${{ secrets.TEST_PYPI_UPLOAD_TOKEN }}"
-        elif [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
+        elif [[ "$GITHUB_EVENT_NAME" == "release" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
           export TWINE_REPOSITORY="pypi"
           export TWINE_PASSWORD="${{ secrets.PYPI_UPLOAD_TOKEN }}"
         else
