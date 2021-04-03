@@ -46,11 +46,11 @@ def variants_data(data: DataBag, source: str):
 
 
 def value_from_parser(
-        parser: Any,
-        data: Any,
-        parent_data: DataBag,
-        with_parent_data: bool,
-        config,
+    parser: Any,
+    data: Any,
+    parent_data: Any,
+    with_parent_data: bool,
+    config,
 ):
 
     if isinstance(parser, FunctionType):

@@ -21,7 +21,7 @@ class Union(Base):
 
     def __init__(
         self,
-        *args: Parser,
+        *args,
     ):
 
         self.parsers = args
