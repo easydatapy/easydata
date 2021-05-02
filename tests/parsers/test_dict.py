@@ -122,6 +122,11 @@ def test_dict_config_override():
             {"sm": "true", None: "false", "lg": "true"},
             {"ignore_non_keys": False},
         ),
+        (
+            {"sm": "true", "md": "false", "lg": "true"},
+            {"sm": "sm", "md": "md", "lg": "lg"},
+            {"dict_val_from_key": True},
+        ),
     ],
 )
 def test_dict_variations(test_data, result, properties):
