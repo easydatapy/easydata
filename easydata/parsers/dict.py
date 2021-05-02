@@ -30,6 +30,7 @@ class Dict(BaseData):
         val_parser: Base = None,
         key_query: Optional[QuerySearch] = None,
         val_query: Optional[QuerySearch] = None,
+        dict_val_from_key: bool = False,
         ignore_non_values: bool = False,
         ignore_non_keys: bool = True,
         key_normalize: bool = True,
@@ -67,6 +68,7 @@ class Dict(BaseData):
 
         self._key_query = key_query
         self._value_query = val_query
+        self._dict_val_from_key = dict_val_from_key
         self._ignore_non_values = ignore_non_values
         self._ignore_non_keys = ignore_non_keys
         self._key_allow = key_allow
@@ -133,7 +135,7 @@ class Dict(BaseData):
             for s_key, s_value in value.items():
                 parsed_key = self._key_parser.parse(data, s_key, True)  # type: ignore
                 parsed_value = self._value_parser.parse(  # type: ignore
-                    data, s_value, True
+                    data, s_key if self._dict_val_from_key else s_value, True
                 )
 
                 values[parsed_key] = parsed_value
