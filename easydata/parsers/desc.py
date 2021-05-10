@@ -47,6 +47,8 @@ class BaseDescription(BaseData, ABC):
         feature_split_keys: Optional[List[str]] = None,
         text_num_to_numeric: bool = False,
         autodetect_html: bool = True,
+        css_query: Optional[str] = None,
+        exclude_css: Optional[Union[List[str], str]] = None,
         **kwargs,
     ):
 
@@ -78,6 +80,8 @@ class BaseDescription(BaseData, ABC):
         self._feature_split_keys = feature_split_keys
         self._text_num_to_numeric = text_num_to_numeric
         self._autodetect_html = autodetect_html
+        self._css_query = css_query
+        self._exclude_css = exclude_css
 
         self.__language = language
 
@@ -120,6 +124,8 @@ class BaseDescription(BaseData, ABC):
             feature_split_keys=self._feature_split_keys,
             text_num_to_numeric=self._text_num_to_numeric,
             autodetect_html=self._autodetect_html,
+            css_query=self._css_query,
+            exclude_css=self._exclude_css,
         )
 
 
