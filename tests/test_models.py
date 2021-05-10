@@ -2,10 +2,8 @@ import json
 
 import pytest
 
-from easydata import parsers, processors
+import easydata as ed
 from easydata.exceptions import DropItem
-from easydata.models import StackedModel
-from easydata.queries import jp
 from tests.factory import data_dict, data_html
 from tests.factory.models import (
     PricingBlockModel,
@@ -99,7 +97,7 @@ def test_item_model_with_variant_drop_items_multi():
 
 def test_item_model_with_variant_drops_items_multi():
     class TestMultipleDropsModel(ProductJsonModelWithVariantDropItems):
-        _item_drop_color = parsers.DropContains(
+        _item_drop_color = ed.DropContains(
             from_item="color", contains=["black", "gray"]
         )
 
@@ -225,36 +223,36 @@ def test_item_model_with_multi_items():
     [
         (
             data_dict.item_with_options,
-            StackedModel(
-                processors.ItemDiscountProcessor(),
+            ed.StackedModel(
+                ed.ItemDiscountProcessor(),
                 ED_PRICE_DECIMALS=1,
-                name=parsers.Text(jp("title")),
-                price=parsers.PriceFloat(jp("price")),
-                _sale_price=parsers.PriceFloat(jp("sale_price")),
+                name=ed.Text(ed.jp("title")),
+                price=ed.PriceFloat(ed.jp("price")),
+                _sale_price=ed.PriceFloat(ed.jp("sale_price")),
             ),
             [{"discount": 50.0, "name": "EasyBook pro 15", "price": 100.0}],
         ),
         (
             data_dict.variants_data_multi,
-            StackedModel(
-                processors.DataFromQueryProcessor(jp("data")),
-                processors.DataVariantsProcessor(
-                    query=jp("variants"),
-                    key_parser=parsers.Text(jp("color")),
+            ed.StackedModel(
+                ed.DataFromQueryProcessor(ed.jp("data")),
+                ed.DataVariantsProcessor(
+                    query=ed.jp("variants"),
+                    key_parser=ed.Text(ed.jp("color")),
                     new_source="color_data",
                 ),
-                name=parsers.Text(jp("title")),
-                color=parsers.Text(
-                    jp("color"),
+                name=ed.Text(ed.jp("title")),
+                color=ed.Text(
+                    ed.jp("color"),
                     source="color_data",
                 ),
-                key=parsers.Text(
+                key=ed.Text(
                     source="color_data_key",
                     uppercase=True,
                 ),
-                screen_sizes=parsers.BoolDict(
-                    key_parser=parsers.Text(jp("size")),
-                    val_query=jp("stock"),
+                screen_sizes=ed.BoolDict(
+                    key_parser=ed.Text(ed.jp("size")),
+                    val_query=ed.jp("stock"),
                     source="color_data_variants",
                 ),
             ),

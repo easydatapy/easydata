@@ -1,162 +1,161 @@
-from easydata import ItemModel, parsers, processors
-from easydata.queries import jp, key, pq
+import easydata as ed
 
 
-class ProductModel(ItemModel):
+class ProductModel(ed.ItemModel):
     item_language = "en"
 
     item_tags = ["phones", "ecommerce"]
 
-    _item_brand = parsers.Text(jp("brand"), source="json_data")
+    _item_brand = ed.Text(ed.jp("brand"), source="json_data")
 
-    item_designer = parsers.Text(from_item="brand")
+    item_designer = ed.Text(from_item="brand")
 
-    item_name = parsers.Text(pq(".name::text"))
+    item_name = ed.Text(ed.pq(".name::text"))
 
     def item_stock(self, data):
         return data["json_data"]["info"]["stock"]
 
 
-class ProductHtmlModelWithItems(ItemModel):
+class ProductHtmlModelWithItems(ed.ItemModel):
     data_processors = [
-        processors.DataVariantsProcessor(
-            query=pq("#color-variants .color::items"), new_source="color_data"
+        ed.DataVariantsProcessor(
+            query=ed.pq("#color-variants .color::items"), new_source="color_data"
         )
     ]
 
-    item_name = parsers.Text(pq(".name::text"))
+    item_name = ed.Text(ed.pq(".name::text"))
 
-    item_color = parsers.Text(pq(".color-name::text"), source="color_data")
+    item_color = ed.Text(ed.pq(".color-name::text"), source="color_data")
 
 
-class ProductHtmlModelWithVariantItems(ItemModel):
+class ProductHtmlModelWithVariantItems(ed.ItemModel):
     data_processors = [
-        processors.DataVariantsProcessor(
-            query=pq("#color-variants .color::items"),
-            key_parser=parsers.Text(pq(".color-name::text")),
+        ed.DataVariantsProcessor(
+            query=ed.pq("#color-variants .color::items"),
+            key_parser=ed.Text(ed.pq(".color-name::text")),
             new_source="color_data",
         )
     ]
 
-    item_name = parsers.Text(pq(".name::text"))
+    item_name = ed.Text(ed.pq(".name::text"))
 
-    item_color = parsers.Text(pq(".color-name::text"), source="color_data")
+    item_color = ed.Text(ed.pq(".color-name::text"), source="color_data")
 
-    item_key = parsers.Text(source="color_data_key", uppercase=True)
+    item_key = ed.Text(source="color_data_key", uppercase=True)
 
 
-class ProductJsonModel(ItemModel):
+class ProductJsonModel(ed.ItemModel):
     item_currency = "USD"
 
     item_tags = ["notebook", "ecommerce"]
 
-    item_name = parsers.Text(jp("title"))
+    item_name = ed.Text(ed.jp("title"))
 
-    item_price = parsers.PriceFloat(jp("price"))
+    item_price = ed.PriceFloat(ed.jp("price"))
 
-    item_sale_price = parsers.PriceFloat(jp("sale_price"))
+    item_sale_price = ed.PriceFloat(ed.jp("sale_price"))
 
 
-class ProductJsonModelWithVariantItems(ItemModel):
+class ProductJsonModelWithVariantItems(ed.ItemModel):
     data_processors = [
-        processors.DataJsonToDictProcessor(),
-        processors.DataFromQueryProcessor(jp("data")),
-        processors.DataVariantsProcessor(
-            query=jp("variants"),
-            key_parser=parsers.Text(jp("color")),
+        ed.DataJsonToDictProcessor(),
+        ed.DataFromQueryProcessor(ed.jp("data")),
+        ed.DataVariantsProcessor(
+            query=ed.jp("variants"),
+            key_parser=ed.Text(ed.jp("color")),
             new_source="color_data",
         ),
     ]
 
-    item_name = parsers.Text(jp("title"))
+    item_name = ed.Text(ed.jp("title"))
 
-    item_color = parsers.Text(jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color"), source="color_data")
 
-    item_key = parsers.Text(source="color_data_key", uppercase=True)
+    item_key = ed.Text(source="color_data_key", uppercase=True)
 
-    item_screen_sizes = parsers.BoolDict(
-        key_parser=parsers.Text(jp("size")),
-        val_query=key("stock"),
+    item_screen_sizes = ed.BoolDict(
+        key_parser=ed.Text(ed.jp("size")),
+        val_query=ed.key("stock"),
         source="color_data_variants",
     )
 
 
-class ProductJsonModelWithVariantDropItems(ItemModel):
+class ProductJsonModelWithVariantDropItems(ed.ItemModel):
     data_processors = [
-        processors.DataJsonToDictProcessor(),
-        processors.DataFromQueryProcessor(jp("data")),
-        processors.DataVariantsProcessor(
-            query=jp("variants"),
-            key_parser=parsers.Text(jp("color")),
+        ed.DataJsonToDictProcessor(),
+        ed.DataFromQueryProcessor(ed.jp("data")),
+        ed.DataVariantsProcessor(
+            query=ed.jp("variants"),
+            key_parser=ed.Text(ed.jp("color")),
             new_source="color_data",
         ),
     ]
 
-    _item_drop_color = parsers.DropContains(from_item="color", contains=["black"])
+    _item_drop_color = ed.DropContains(from_item="color", contains=["black"])
 
-    item_color = parsers.Text(jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color"), source="color_data")
 
 
-class ProductJsonModelWithComplexVariantItems(ItemModel):
+class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
     data_processors = [
-        processors.DataVariantsProcessor(
-            query=jp("variants"),
-            key_parser=parsers.Text(jp("color")),
+        ed.DataVariantsProcessor(
+            query=ed.jp("variants"),
+            key_parser=ed.Text(ed.jp("color")),
             new_source="color_data",
         )
     ]
 
-    item_name = parsers.Text(jp("title"))
+    item_name = ed.Text(ed.jp("title"))
 
-    item_color = parsers.Text(jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color"), source="color_data")
 
-    item_images = parsers.UrlList(
-        jp("images.{color}[].assetId"),
-        query_params={"color": parsers.Data(jp("color"), source="color_data")},
+    item_images = ed.UrlList(
+        ed.jp("images.{color}[].assetId"),
+        query_params={"color": ed.Data(ed.jp("color"), source="color_data")},
         domain="https://demo.com/is/image/easydata/",
     )
 
-    item_sizes = parsers.Dict(
+    item_sizes = ed.Dict(
         source="color_data_variants",
-        key_parser=parsers.Text(jp("size")),
-        val_parser=parsers.Bool(
-            jp("stock_data[?id==`{stock_id}`] | [0].stock"),
-            query_params={"stock_id": parsers.Int(jp("stock_id"))},
+        key_parser=ed.Text(ed.jp("size")),
+        val_parser=ed.Bool(
+            ed.jp("stock_data[?id==`{stock_id}`] | [0].stock"),
+            query_params={"stock_id": ed.Int(ed.jp("stock_id"))},
             source="main",
         ),
     )
 
 
-class ProductJsonModelWithMultiItems(ItemModel):
+class ProductJsonModelWithMultiItems(ed.ItemModel):
     data_processors = [
-        processors.DataFromQueryProcessor(jp("data")),
-        processors.DataFromIterQueryProcessor(jp("items")),
-        processors.DataVariantsProcessor(
-            query=jp("variants"),
-            key_parser=parsers.Text(jp("color")),
+        ed.DataFromQueryProcessor(ed.jp("data")),
+        ed.DataFromIterQueryProcessor(ed.jp("items")),
+        ed.DataVariantsProcessor(
+            query=ed.jp("variants"),
+            key_parser=ed.Text(ed.jp("color")),
             new_source="color_data",
         ),
     ]
 
-    item_name = parsers.Text(jp("title"))
+    item_name = ed.Text(ed.jp("title"))
 
-    item_color = parsers.Text(jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color"), source="color_data")
 
-    item_key = parsers.Text(source="color_data_key", uppercase=True)
+    item_key = ed.Text(source="color_data_key", uppercase=True)
 
-    item_screen_sizes = parsers.BoolDict(
-        key_parser=parsers.Text(jp("size")),
-        val_query=jp("stock"),
+    item_screen_sizes = ed.BoolDict(
+        key_parser=ed.Text(ed.jp("size")),
+        val_query=ed.jp("stock"),
         source="color_data_variants",
     )
 
 
-class ProductSimpleWithProcessDataModel(ItemModel):
-    data_processors = [processors.DataJsonToDictProcessor()]
+class ProductSimpleWithProcessDataModel(ed.ItemModel):
+    data_processors = [ed.DataJsonToDictProcessor()]
 
-    item_brand = parsers.Text(jp("brand"))
+    item_brand = ed.Text(ed.jp("brand"))
 
-    item_brand_type = parsers.Text(source="brand_type")
+    item_brand_type = ed.Text(source="brand_type")
 
     def preprocess_data(self, data):
         data["main"] = data["main"] + "}"
@@ -172,12 +171,12 @@ class ProductSimpleWithProcessDataModel(ItemModel):
         return data
 
 
-class ProductSimpleWithProcessItemModel(ItemModel):
-    item_price = parsers.PriceFloat(jp("price"))
+class ProductSimpleWithProcessItemModel(ed.ItemModel):
+    item_price = ed.PriceFloat(ed.jp("price"))
 
-    _item_sale_price = parsers.PriceFloat(jp("sale_price"))
+    _item_sale_price = ed.PriceFloat(ed.jp("sale_price"))
 
-    item_processors = [processors.ItemDiscountProcessor()]
+    item_processors = [ed.ItemDiscountProcessor()]
 
     def preprocess_item(self, item):
         if item["sale_price"] <= 1:
@@ -191,15 +190,15 @@ class ProductSimpleWithProcessItemModel(ItemModel):
         return item
 
 
-class PricingBlockModel(ItemModel):
-    item_price = parsers.PriceFloat(pq("#price::text"))
+class PricingBlockModel(ed.ItemModel):
+    item_price = ed.PriceFloat(ed.pq("#price::text"))
 
-    item_sale_price = parsers.PriceFloat(pq("#sale-price::text"))
+    item_sale_price = ed.PriceFloat(ed.pq("#sale-price::text"))
 
-    item_processors = [("discount", processors.ItemDiscountProcessor())]
+    item_processors = [("discount", ed.ItemDiscountProcessor())]
 
 
-class SettingsBlockModel(ItemModel):
+class SettingsBlockModel(ed.ItemModel):
     item_calling_code = 44
 
     item_country = "UK"

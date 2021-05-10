@@ -4,29 +4,60 @@ from easydata.parsers import Description, Feature, Features, FeaturesDict, Sente
 from tests.factory import data_text
 
 
-def test_description():
-    description_parser = Description()
-    expected_text = "Ignored text. Color: Black. Material: Aluminium."
-    assert description_parser.parse(data_text.raw_sentences) == expected_text
+@pytest.mark.parametrize(
+    "test_text, result",
+    [
+        (data_text.raw_sentences, "Ignored text. Color: Black. Material: Aluminium."),
+    ],
+)
+def test_description(test_text, result):
+    assert Description().parse(test_text) == result
 
 
-def test_sentences():
-    sentences_parser = Sentences()
-    expected_sentences = ["Ignored text.", "Color: Black.", "Material: Aluminium."]
-    assert sentences_parser.parse(data_text.raw_sentences) == expected_sentences
+@pytest.mark.parametrize(
+    "test_text, result, params",
+    [
+        (data_text.html_sentences, "Title. Hello World! How are u?", {}),
+        (data_text.html_sentences, "Hello World!", {"css_query": "p"}),
+        (data_text.html_sentences, "Hello World! How are u?", {"exclude_css": "h4"}),
+        (data_text.html_sentences, "How are u?", {"exclude_css": ["h4", "p"]}),
+    ],
+)
+def test_description_html(test_text, result, params):
+    assert Description(**params).parse(test_text) == result
 
 
-def test_features():
-    features_parser = Features()
-    expected_features = [("Color", "Black"), ("Material", "Aluminium")]
-    assert features_parser.parse(data_text.raw_sentences) == expected_features
+@pytest.mark.parametrize(
+    "test_text, result",
+    [
+        (
+            data_text.raw_sentences,
+            ["Ignored text.", "Color: Black.", "Material: Aluminium."],
+        ),
+    ],
+)
+def test_sentences(test_text, result):
+    assert Sentences().parse(test_text) == result
 
 
-def test_features_dict():
-    features_dict_parser = FeaturesDict()
-    expected_features_dict = {"Color": "Black", "Material": "Aluminium"}
-    result = features_dict_parser.parse(data_text.raw_sentences)
-    assert result == expected_features_dict
+@pytest.mark.parametrize(
+    "test_text, result",
+    [
+        (data_text.raw_sentences, [("Color", "Black"), ("Material", "Aluminium")]),
+    ],
+)
+def test_features(test_text, result):
+    assert Features().parse(test_text) == result
+
+
+@pytest.mark.parametrize(
+    "test_text, result",
+    [
+        (data_text.raw_sentences, {"Color": "Black", "Material": "Aluminium"}),
+    ],
+)
+def test_features_dict(test_text, result):
+    assert FeaturesDict().parse(test_text) == result
 
 
 @pytest.mark.parametrize(
