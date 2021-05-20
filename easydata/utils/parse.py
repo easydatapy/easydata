@@ -54,7 +54,10 @@ def value_from_parser(
 ):
 
     if isinstance(parser, FunctionType):
-        return parser(data)
+        if with_parent_data:
+            return parser(data, parent_data)
+        else:
+            return parser(data)
     else:
         return parser.init_config(config).parse(
             data=data,
