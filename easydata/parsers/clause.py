@@ -22,9 +22,13 @@ class Union(Base):
     def __init__(
         self,
         *args,
+        strict_none=False,
     ):
 
         self.parsers = args
+
+        self._strict_none = strict_none
+
         self._validate_fields()
 
     def parse(
@@ -43,7 +47,9 @@ class Union(Base):
                 config=self.config,
             )
 
-            if value is not None:
+            if self._strict_none and value is not None:
+                return value
+            elif not self._strict_none and value:
                 return value
 
     def _validate_fields(self):
