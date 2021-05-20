@@ -51,8 +51,8 @@ def test_url_remove_qs(remove_qs, test_data, result):
 @pytest.mark.parametrize(
     "default, test_data, result",
     [
-        ("http://demo.com", None, "http://demo.com"),
-        ("http://demo.com", "", "http://demo.com"),
+        ("https://demo.com", None, "https://demo.com"),
+        ("https://demo.com", "", "https://demo.com"),
     ],
 )
 def test_url_default_value(default, test_data, result):
@@ -64,7 +64,7 @@ def test_url_default_value(default, test_data, result):
     "domain, test_data, result",
     [
         ("demo.com", test_url_partial, "https://demo.com/product/1122"),
-        ("http://demo.com", test_url_partial, "http://demo.com/product/1122"),
+        ("https://demo.com", test_url_partial, "https://demo.com/product/1122"),
     ],
 )
 def test_url_domain(domain, test_data, result):

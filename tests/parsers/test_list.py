@@ -65,10 +65,10 @@ def test_list_config():
 
 def test_list_config_override():
     # Lets test if config settings can get overriden
-    list_parser = parsers.List(parser=parsers.Url(domain="http://demo.net"))
+    list_parser = parsers.List(parser=parsers.Url(domain="https://demo.net"))
     list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
-    assert list_parser.parse(["/imgs/1.jpg"]) == ["http://demo.net/imgs/1.jpg"]
+    assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.net/imgs/1.jpg"]
 
 
 def test_list_unique_true():
@@ -284,10 +284,10 @@ def test_url_list_config():
 
 def test_url_list_config_override():
     # Lets test if config settings can get overriden
-    url_list_parser = parsers.UrlList(domain="http://demo.net")
+    url_list_parser = parsers.UrlList(domain="https://demo.net")
     url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
-    assert url_list_parser.parse(["/imgs/1.jpg"]) == ["http://demo.net/imgs/1.jpg"]
+    assert url_list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.net/imgs/1.jpg"]
 
 
 @pytest.mark.parametrize(

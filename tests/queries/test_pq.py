@@ -4,14 +4,21 @@ from easydata.queries import pq
 from tests.factory import data_html
 
 exp_result_images = [
-    "http://demo.com/img1.jpg",
-    "http://demo.com/img2.jpg",
-    "http://demo.com/img3.jpg",
+    "https://demo.com/img1.jpg",
+    "https://demo.com/img2.jpg",
+    "https://demo.com/img3.jpg",
 ]
 
 
-def test_pq_query_text():
-    assert pq(".brand::text").get(data_html.item_with_breadcrumbs) == "EasyData"
+@pytest.mark.parametrize(
+    "query, test_html, result",
+    [
+        ('[itemprop="name"]::text', data_html.prices_and_variants, "EasyBook Pro 15"),
+        (".name .brand::text", data_html.item_with_breadcrumbs, "EasyData"),
+    ],
+)
+def test_pq_query_text(query, test_html, result):
+    assert pq(query).get(test_html) == result
 
 
 @pytest.mark.parametrize(
@@ -63,12 +70,12 @@ def test_pq_query_attr_content():
 
 def test_pq_query_attr_src():
     result = pq(".images img::src").get(data_html.item_with_breadcrumbs)
-    assert result == "http://demo.com/img1.jpg"
+    assert result == "https://demo.com/img1.jpg"
 
 
 def test_pq_query_attr_href():
     result = pq("#url::href").get(data_html.item_with_breadcrumbs)
-    assert result == "http://demo.com/product/123"
+    assert result == "https://demo.com/product/123"
 
 
 def test_pq_query_remove_query():

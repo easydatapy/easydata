@@ -8,6 +8,8 @@ from tests.factory import data_text
     "test_text, result",
     [
         (data_text.raw_sentences, "Ignored text. Color: Black. Material: Aluminium."),
+        (None, None),
+        ("", None),
     ],
 )
 def test_description(test_text, result):
@@ -21,6 +23,8 @@ def test_description(test_text, result):
         (data_text.html_sentences, "Hello World!", {"css_query": "p"}),
         (data_text.html_sentences, "Hello World! How are u?", {"exclude_css": "h4"}),
         (data_text.html_sentences, "How are u?", {"exclude_css": ["h4", "p"]}),
+        (None, None, {"exclude_css": ["h4", "p"]}),
+        ("", None, {"exclude_css": ["h4", "p"]}),
     ],
 )
 def test_description_html(test_text, result, params):
@@ -34,6 +38,8 @@ def test_description_html(test_text, result, params):
             data_text.raw_sentences,
             ["Ignored text.", "Color: Black.", "Material: Aluminium."],
         ),
+        (None, None),
+        ("", None),
     ],
 )
 def test_sentences(test_text, result):
@@ -44,6 +50,8 @@ def test_sentences(test_text, result):
     "test_text, result",
     [
         (data_text.raw_sentences, [("Color", "Black"), ("Material", "Aluminium")]),
+        (None, None),
+        ("", None),
     ],
 )
 def test_features(test_text, result):
@@ -54,6 +62,8 @@ def test_features(test_text, result):
     "test_text, result",
     [
         (data_text.raw_sentences, {"Color": "Black", "Material": "Aluminium"}),
+        (None, None),
+        ("", None),
     ],
 )
 def test_features_dict(test_text, result):

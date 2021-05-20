@@ -1,7 +1,7 @@
 prices_and_variants = """
     <html>
         <body>
-            <h2 class="name">EasyBook Pro 15</h2>
+            <h2 class="name" itemprop="name">EasyBook Pro 15</h2>
             <div id="price">Was 999.9</div>
             <div id="sale-price">499.9</div>
             <div id="color-variants">
@@ -32,11 +32,11 @@ item_with_breadcrumbs = """
                 Test Product Item
             </h2>
             <input value="smartphone" content="phone" name="category" />
-            <a id="url" href="http://demo.com/product/123">Item Link</a>
+            <a id="url" href="https://demo.com/product/123">Item Link</a>
             <div class="images">
-                <img src="http://demo.com/img1.jpg" />
-                <img src="http://demo.com/img2.jpg" />
-                <img src="http://demo.com/img3.jpg" />
+                <img src="https://demo.com/img1.jpg" />
+                <img src="https://demo.com/img2.jpg" />
+                <img src="https://demo.com/img3.jpg" />
             </div>
         </body>
     </html>
