@@ -96,12 +96,19 @@ def test_list_unique_false():
     assert list_parser.parse(data_html.images) == expected_urls_non_unique
 
 
-def test_list_max_num():
-    list_parser = parsers.List(
-        pq("#image-container img::items"), parsers.Url(pq("::src")), max_num=2
-    )
+@pytest.mark.parametrize(
+    "max_num, result",
+    [
+        (2, ["one", "two"]),
+        (4, ["one", "two", "three", "four"]),
+        (5, ["one", "two", "three", "four"]),
+        (-1, ["one", "two", "three"]),
+    ],
+)
+def test_list_max_num(max_num, result):
+    list_parser = parsers.List(max_num=max_num)
 
-    assert list_parser.parse(data_html.images) == expected_urls_max_2
+    assert list_parser.parse(["one", "two", "three", "four"]) == result
 
 
 def test_list_split_key():
