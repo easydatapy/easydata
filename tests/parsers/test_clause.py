@@ -52,7 +52,7 @@ def test_union_strict_none_is_default_false():
         parsers.List(pq(".brand-wrong::text-items")),
         parsers.Text(pq(".brand::text")),
     )
-    assert union_parser.parse(test_html) == 'EasyData'
+    assert union_parser.parse(test_html) == "EasyData"
 
 
 def test_union_strict_none_is_true():
