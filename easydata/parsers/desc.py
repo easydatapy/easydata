@@ -135,6 +135,8 @@ class Description(BaseDescription):
         value: Any,
         data: Any,
     ) -> Optional[str]:
+        if not value:
+            return None
 
         return self._get_text_parser(value).text or None
 
@@ -145,6 +147,8 @@ class Sentences(BaseDescription):
         value: Any,
         data: Any,
     ) -> Optional[list]:
+        if not value:
+            return None
 
         return self._get_text_parser(value).sentences
 
@@ -155,6 +159,8 @@ class Features(BaseDescription):
         value: Any,
         data: Any,
     ) -> Optional[list]:
+        if not value:
+            return None
 
         return self._get_text_parser(value).features
 
@@ -165,6 +171,8 @@ class FeaturesDict(BaseDescription):
         value: Any,
         data: Any,
     ) -> Optional[list]:
+        if not value:
+            return None
 
         return self._get_text_parser(value).features_dict
 
@@ -190,6 +198,8 @@ class Feature(BaseDescription):
         )
 
     def _parse_value(self, value: Any, data: Any) -> Optional[list]:
+        if not value:
+            return None
 
         text_parser = self._get_text_parser(value)
 
