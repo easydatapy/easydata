@@ -43,6 +43,31 @@ def test_union_none():
     assert union_parser.parse(test_html) is None
 
 
+def test_union_strict_none_is_default_false():
+    test_html = """
+        <p class="brand">EasyData</p>
+    """
+
+    union_parser = parsers.Union(
+        parsers.List(pq(".brand-wrong::text-items")),
+        parsers.Text(pq(".brand::text")),
+    )
+    assert union_parser.parse(test_html) == 'EasyData'
+
+
+def test_union_strict_none_is_true():
+    test_html = """
+        <p class="brand">EasyData</p>
+    """
+
+    union_parser = parsers.Union(
+        parsers.List(pq(".brand-wrong::text-items")),
+        parsers.Text(pq(".brand::text")),
+        strict_none=True,
+    )
+    assert union_parser.parse(test_html) == []
+
+
 def test_with():
     with_parser = parsers.With(
         parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
