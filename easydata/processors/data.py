@@ -322,6 +322,9 @@ class DataVariantsProcessor(DataBaseProcessor):
             data = parser.init_config(self.config).parse(data)  # type: ignore
 
         for data_index, data_info in enumerate(data):
+            if not data_info:
+                continue
+
             if self._key_parser:
                 variant_group_key = self._key_parser.parse(data_info)
             elif self._key_query:
