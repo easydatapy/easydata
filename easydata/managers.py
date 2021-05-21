@@ -161,14 +161,21 @@ class ModelManager(ConfigMixin):
 
         return data
 
-    def _apply_item_processors(self, item: dict) -> dict:
+    def _apply_item_processors(self, item: dict):
         for model in self._models:
             item = model.preprocess_item(item)
+
+            if not item:
+                return None
 
         item = mix.apply_processors(
             value=item,
             processors=list(self._item_processors_loader.values()),
+            return_on_none=True,
         )
+
+        if not item:
+            return None
 
         for model in self._models:
             item = model.process_item(item)
@@ -189,6 +196,9 @@ class ModelManager(ConfigMixin):
         item = data.get_all()
 
         item = self._apply_item_processors(item)
+
+        if not item:
+            return None
 
         return self._remove_protected_item_keys(item)
 

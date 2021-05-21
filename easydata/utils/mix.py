@@ -80,6 +80,7 @@ def init_processors_config(
 def apply_processors(
     value: Any,
     processors: list,
+    return_on_none: bool = False,
 ) -> Any:
 
     for processor in processors:
@@ -87,6 +88,9 @@ def apply_processors(
             value = processor.parse(value)
         else:
             value = processor(value)
+
+        if not value and return_on_none:
+            return None
 
     return value
 
