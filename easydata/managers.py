@@ -227,9 +227,11 @@ class ModelManager(ConfigMixin):
 
     def _init_processors_config(self):
         for item_processor in self._item_processors_loader.values():
+            item_processor.init_model(self._model)
             item_processor.init_config(self.config)
 
         for data_processor in self._data_processors_loader.values():
+            data_processor.init_model(self._model)
             data_processor.init_config(self.config)
 
     def _load_item_parsers_from_model(self, model):
