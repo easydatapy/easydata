@@ -46,6 +46,8 @@ class ModelManager(ConfigMixin):
 
         self._init_parsers_config()
 
+        self._init_processors_config()
+
     @property
     def data_processors(self) -> ObjectLoader:
         return self._data_processors_loader
@@ -222,6 +224,13 @@ class ModelManager(ConfigMixin):
         for parser_instance in self._item_parsers.values():
             if isinstance(parser_instance, BaseParser):
                 parser_instance.init_config(self.config)
+
+    def _init_processors_config(self):
+        for item_processor in self._item_processors_loader.values():
+            item_processor.init_config(self.config)
+
+        for data_processor in self._data_processors_loader.values():
+            data_processor.init_config(self.config)
 
     def _load_item_parsers_from_model(self, model):
         item_attr_items = mix.iter_attr_data_from_obj(
