@@ -36,6 +36,24 @@ def test_bool_various_types(test_data, result):
 
 
 @pytest.mark.parametrize(
+    "test_data, result",
+    [
+        (123, False),
+        (123.45, False),
+        (0.15, False),
+        (-0.15, False),
+        (0, True),
+        ("True", False),
+        ("False", True),
+        ("true", False),
+        ("false", True),
+    ],
+)
+def test_ibool_various_types(test_data, result):
+    assert parsers.IBool().parse(test_data) is result
+
+
+@pytest.mark.parametrize(
     "contains_keys, test_data, result",
     [
         (["pro 13"], data_text.title, True),
