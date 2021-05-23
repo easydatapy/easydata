@@ -15,6 +15,8 @@ class SettingsBaseModel(ItemModel):
 
     item_currency = "EUR"
 
+    item_stock = False
+
 
 class SettingsModel(ItemModel):
     ED_DATA_VARIANTS_NAME = "variants_test"
@@ -59,6 +61,7 @@ def test_model_manager_block_models():
         "country",
         "currency",
         "language",
+        "stock",
         "domain",
         "brand",
         "designer",
@@ -110,6 +113,7 @@ def test_model_manager_block_models_reverse_order(item_key, item_value):
         ("country", ["FR"]),
         ("language", "en"),
         ("domain", "us.demo.com"),
+        ("stock", False),
     ],
 )
 def test_model_manager_block_models_nested(item_key, item_value):
