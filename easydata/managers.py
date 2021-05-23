@@ -68,10 +68,10 @@ class ModelManager(ConfigMixin):
     def process_item_parser(self, item_key: str, data: DataBag):
         item_parser = self._item_parsers[item_key]
 
-        if not item_parser:
+        if item_parser is None:
             return None
 
-        if isinstance(item_parser, (str, float, int, list, dict)):
+        if isinstance(item_parser, (str, bool, float, int, list, dict)):
             return item_parser
         elif isinstance(item_parser, models.ItemModel):
             data = data.copy(item_parser.model_manager)
