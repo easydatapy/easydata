@@ -5,7 +5,7 @@ from easytxt import text
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearch
 
-__all__ = ("Bool",)
+__all__ = ("Bool", "IBool")
 
 
 class Bool(Text):
@@ -17,6 +17,7 @@ class Bool(Text):
         contains_query: Optional[QuerySearch] = None,
         contains_query_params: Optional[dict] = None,
         contains_query_source: str = "main",
+        has_value: bool = False,
         empty_as_false: bool = True,
         **kwargs,
     ):
@@ -25,6 +26,7 @@ class Bool(Text):
         self._contains_query = contains_query
         self._contains_query_params = contains_query_params
         self._contains_query_source = contains_query_source
+        self._has_value = has_value
         self._contains_case = bool(ccontains)
         self._empty_as_false = empty_as_false
 
@@ -80,4 +82,21 @@ class Bool(Text):
                 keys=contains_values,
             )
 
+        if self._has_value:
+            return bool(value)
+
         return False
+
+
+class IBool(Bool):
+    def _parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+        value = super(IBool, self)._parse_value(value, data)
+
+        if value is None:
+            return value
+
+        return False if value else True
