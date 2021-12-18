@@ -119,7 +119,7 @@ class DataYamlToDictProcessor(DataBaseProcessor):
         if self._safe_load:
             return yaml.safe_load(source_data)
 
-        return yaml.load(source_data)
+        return yaml.load(source_data)  # type: ignore
 
 
 class DataXmlToDictProcessor(DataBaseProcessor):
