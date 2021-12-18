@@ -72,7 +72,7 @@ Applications:
 
 Requirements
 ============
-* Python 3.6+
+* Python 3.8+
 * Works on Linux, Windows, macOS, BSD
 
 
