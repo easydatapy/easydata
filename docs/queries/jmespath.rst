@@ -53,67 +53,67 @@ Through this tutorial we will use following json *dict*:
         ]
     }
 
-Lets import first our ``jp`` query selector.
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 
 **Basic examples**
 .. code-block:: python
 
-    >>> jp('title').get(test_dict)
+    >>> ed.jp('title').get(test_dict)
     'EasyBook pro 15'
 
-    >>> jp('brand.name').get(test_dict)
+    >>> ed.jp('brand.name').get(test_dict)
     'EasyData'
 
 
 **Examples of list**
 .. code-block:: python
 
-    >>> jp('images[]').get(test_dict)
+    >>> ed.jp('images[]').get(test_dict)
     ['https://demo.com/img1.jpg', 'https://demo.com/img2.jpg', 'https://demo.com/img3.jpg']
 
 
 **Examples of list and slice index**
 .. code-block:: python
 
-    >>> jp('images[0:2]').get(test_dict)
+    >>> ed.jp('images[0:2]').get(test_dict)
     ['https://demo.com/img1.jpg', 'https://demo.com/img2.jpg']
 
-    >>> jp('images[:2]').get(test_dict)
+    >>> ed.jp('images[:2]').get(test_dict)
     ['https://demo.com/img1.jpg', 'https://demo.com/img2.jpg']
 
-    >>> jp('images[1:]').get(test_dict)
+    >>> ed.jp('images[1:]').get(test_dict)
     ['https://demo.com/img2.jpg', 'https://demo.com/img3.jpg']
 
-    >>> jp('images[:2]').get(test_dict)
+    >>> ed.jp('images[:2]').get(test_dict)
     ['https://demo.com/img1.jpg', 'https://demo.com/img2.jpg']
 
 
 **Example of selecting single value from a list by index**
 .. code-block:: python
 
-    >>> jp('images[1]').get(test_dict)
+    >>> ed.jp('images[1]').get(test_dict)
     'https://demo.com/img2.jpg'
 
 
 **Examples of selecting values from a dict list**
 .. code-block:: python
 
-    >>> jp('image_data[].zoom').get(test_dict)
+    >>> ed.jp('image_data[].zoom').get(test_dict)
     ['https://demo.com/img1.jpg', 'https://demo.com/img2.jpg']
 
-    >>> jp('image_data[0].zoom').get(test_dict)
+    >>> ed.jp('image_data[0].zoom').get(test_dict)
     'https://demo.com/img1.jpg'
 
 
 **Example of list with custom dict values**
 .. code-block:: python
 
-    >>> jp('options[].{name: name, stock: availability.value}').get(test_dict)
+    >>> ed.jp('options[].{name: name, stock: availability.value}').get(test_dict)
     [{'name': 'Monitor', 'stock': 'yes'}, {'name': 'Mouse', 'stock': 'no'}]
 
 
@@ -133,14 +133,14 @@ and returned as a list.
 **Example without *::values* pseudo key**
 .. code-block:: python
 
-    >>> jp('brand').get(test_dict)
+    >>> ed.jp('brand').get(test_dict)
     {'name': 'EasyData'}
 
 
 **Example with *::values* pseudo key**
 .. code-block:: python
 
-    >>> jp('brand::values').get(test_dict)
+    >>> ed.jp('brand::values').get(test_dict)
     ['EasyData', 'Slovenia']
 
 
@@ -151,7 +151,7 @@ and returned as a list.
 
 .. code-block:: python
 
-    >>> jp('brand::keys').get(test_dict)
+    >>> ed.jp('brand::keys').get(test_dict)
     ['name', 'origin']
 
 
@@ -164,14 +164,14 @@ list of dictionaries.
 **Example without *::dict* pseudo key**
 .. code-block:: python
 
-    >>> jp('options[].{name: name, stock: availability.value}').get(test_dict)
+    >>> ed.jp('options[].{name: name, stock: availability.value}').get(test_dict)
     [{'name': 'Monitor', 'stock': 'yes'}, {'name': 'Mouse', 'stock': 'no'}]
 
 
 **Example with *::dict* pseudo key**
 .. code-block:: python
 
-    >>> jp('options[].{name: name, stock: availability.value}::dict(name:stock)').get(test_dict)
+    >>> ed.jp('options[].{name: name, stock: availability.value}::dict(name:stock)').get(test_dict)
     {'Monitor': 'yes', 'Mouse': 'no'}
 
 .. option:: ::str
@@ -180,14 +180,14 @@ With ``::str`` pseudo key we can convert selected value into a *str* format.
 
 .. code-block:: python
 
-    >>> jp('brand::str').get(test_dict)
+    >>> ed.jp('brand::str').get(test_dict)
     "{'name': 'EasyData', 'origin': 'Slovenia'}"
 
 ``::str`` pseudo key can be even used as an extension to another pseudo key.
 
 .. code-block:: python
 
-    >>> jp('brand::values-str').get(test_dict)
+    >>> ed.jp('brand::values-str').get(test_dict)
     "['EasyData', 'Slovenia']"
 
 ``-str`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.
@@ -198,14 +198,14 @@ With ``::json`` pseudo key we can convert selected value into a *json* str forma
 
 .. code-block:: python
 
-    >>> jp('brand::json').get(test_dict)
+    >>> ed.jp('brand::json').get(test_dict)
     '{"name": "EasyData", "origin": "Slovenia"}'
 
 ``::json`` pseudo key can be even used as an extension to another pseudo key.
 
 .. code-block:: python
 
-    >>> jp('brand::values-json').get(test_dict)
+    >>> ed.jp('brand::values-json').get(test_dict)
     '["EasyData", "Slovenia"]'
 
 ``-json`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.
@@ -216,14 +216,14 @@ With ``::yaml`` pseudo key we can convert selected value into a *yaml* str forma
 
 .. code-block:: python
 
-    >>> jp('brand::yaml').get(test_dict)
+    >>> ed.jp('brand::yaml').get(test_dict)
     'name: EasyData\norigin: Slovenia\n'
 
 ``::yaml`` pseudo key can be even used as an extension to another pseudo key.
 
 .. code-block:: python
 
-    >>> jp('brand::keys-yaml').get(test_dict)
+    >>> ed.jp('brand::keys-yaml').get(test_dict)
     '- name\n- origin\n'
 
 ``-yaml`` as an extension will work with following pseudo keys: ``keys``, ``values``, ``dict``.

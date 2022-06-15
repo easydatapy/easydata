@@ -17,44 +17,46 @@ Lets try to parser various text samples and see the results.
 
 .. code-block:: python
 
-    >>> parsers.Email().parse("easydatapy@gmail.com")
+    >>> import easydata as ed
+
+    >>> ed.Email().parse("easydatapy@gmail.com")
     'easydatapy@gmail.com'
 
-    >>> parsers.Email().parse("easy.datapy@gmail.co.uk")
+    >>> ed.Email().parse("easy.datapy@gmail.co.uk")
     'easy.datapy@gmail.co.uk'
 
-    >>> parsers.Email().parse("Contact please easydatapy@gmail.com!!!")
+    >>> ed.Email().parse("Contact please easydatapy@gmail.com!!!")
     'easydatapy@gmail.com'
 
-    >>> parsers.Email().parse("easy.datapy@gmail.com")
+    >>> ed.Email().parse("easy.datapy@gmail.com")
     'easy.datapy@gmail.com'
 
-    >>> parsers.Email().parse("Various chars 1ea-12sy.da_ta4.py99@gmail.com :)")
+    >>> ed.Email().parse("Various chars 1ea-12sy.da_ta4.py99@gmail.com :)")
     '1ea-12sy.da_ta4.py99@gmail.com'
 
-    >>> parsers.Email().parse('<input value="easydatapy@gmail.com">')
+    >>> ed.Email().parse('<input value="easydatapy@gmail.com">')
     'easydatapy@gmail.com'
 
-    >>> parsers.Email().parse('<a href="mailto:easydatapy@gmail.com">Here</a>')
+    >>> ed.Email().parse('<a href="mailto:easydatapy@gmail.com">Here</a>')
     'easydatapy@gmail.com'
 
-    >>> parsers.Email().parse("Uppercase works also EASYdatapy@GMAIL.COM")
+    >>> ed.Email().parse("Uppercase works also EASYdatapy@GMAIL.COM")
     'EASYdatapy@GMAIL.COM'
 
-    >>> parsers.Email(lowercase=True).parse("Will become lowercase EASYdatapy@GMAIL.COM")
+    >>> ed.Email(lowercase=True).parse("Will become lowercase EASYdatapy@GMAIL.COM")
     'easydatapy@gmail.com'
 
 Lets try to parse some invalid emails and see what happens.
 
 .. code-block:: python
 
-    >>> parsers.Email().parse("easydatapy@gmail")
+    >>> ed.Email().parse("easydatapy@gmail")
     None
 
-    >>> parsers.Email().parse("easydatapy@")
+    >>> ed.Email().parse("easydatapy@")
     None
 
-    >>> parsers.Email().parse("@gmail.com")
+    >>> ed.Email().parse("@gmail.com")
     None
 
 Parameters
@@ -68,14 +70,14 @@ Lets try to parser various samples and see the results.
 
 .. code-block:: python
 
-    >>> parsers.Email(domain="gmail.com").parse("easydatapy")
+    >>> ed.Email(domain="gmail.com").parse("easydatapy")
     'easydatapy@gmail.com'
 
-    >>> parsers.Email(domain="gmail.com").parse("easydatapy@")
+    >>> ed.Email(domain="gmail.com").parse("easydatapy@")
     'easydatapy@gmail.com'
 
-    >>> parsers.Email(domain="gmail.com").parse("Contact please easydatapy@")
+    >>> ed.Email(domain="gmail.com").parse("Contact please easydatapy@")
     'easydatapy@gmail.com'
 
-    >>> parsers.Email(domain="gmail.com").parse("Contact please easydatapy@ !!")
+    >>> ed.Email(domain="gmail.com").parse("Contact please easydatapy@ !!")
     None

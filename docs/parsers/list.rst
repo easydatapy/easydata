@@ -15,13 +15,11 @@ examples.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` together with ``pq`` from
-``queries`` selector module.
+Lets import first ``easydata`` module and use ``jp`` selector together with ``pq``.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 **EXAMPLE WITH JSON DATA SOURCE:**
 
@@ -45,9 +43,9 @@ json text into python ``dictionary`` or ``list``.
 
 .. code-block:: python
 
-    list_parser = List(
-        jp('images.src')
-        parser=parsers.Url()
+    list_parser = ed.List(
+        ed.jp('images.src')
+        parser=ed.Url()
     )
 
     print(list_parser.parse(test_json_text))
@@ -68,10 +66,10 @@ example bellow. Lets assume we use same ``test_json_text`` variable as before.
 
 .. code-block:: python
 
-    list_parser = List(
-        jp('images')
-        parser=parsers.Url(
-            jp('src')
+    list_parser = ed.List(
+        ed.jp('images')
+        parser=ed.Url(
+            ed.jp('src')
         )
     )
 
@@ -110,9 +108,9 @@ object through which we can use css selectors.
 
 .. code-block:: python
 
-    list_parser = parsers.List(
-        pq('#images img::items'),
-        parser=parsers.Url(pq('::src'))
+    list_parser = ed.List(
+        ed.pq('#images img::items'),
+        parser=ed.Url(ed.pq('::src'))
     )
 
 Please note that ``pq('#images img::items')`` will be iterated through our ``List``
@@ -161,9 +159,9 @@ parameter set to ``True``.
 
 .. code-block:: python
 
-    list_parser = List(
-        jp('images')
-        parser=parsers.Url()
+    list_parser = ed.List(
+        ed.jp('images')
+        parser=ed.Url()
     )
 
 Now lets parse ``test_json_text`` data and print our result.
@@ -185,9 +183,9 @@ parameter to ``False`` and see what happens.
 
 .. code-block:: python
 
-    list_parser = List(
-        jp('images')
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        ed.jp('images')
+        parser=ed.Url(),
         unique=False
     )
 
@@ -221,8 +219,8 @@ values we want in our end ``list`` result.
         'https://demo.com/imgs/3.jpg'
     ]
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         max_num=2
     )
 
@@ -254,8 +252,8 @@ Example:
 
     test_text = 'https://demo.com/imgs/1.jpg,https://demo.com/imgs/2.jpg'
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         split_key=','
     )
 
@@ -292,8 +290,8 @@ pattern as a key is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         allow=['.com', '.eu']
     )
 
@@ -319,8 +317,8 @@ are case sensitive. Regex pattern as a key is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         callow=['.COM', '.eu']
     )
 
@@ -345,8 +343,8 @@ Keys are not case sensitive and regex pattern is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         from_allow=['.net']
     )
 
@@ -372,8 +370,8 @@ provided keys are case sensitive. Regex pattern as a key is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         from_callow=['.net']
     )
 
@@ -396,8 +394,8 @@ Lets recreate same example as before but with uppercase key.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         from_callow=['.net']
     )
 
@@ -421,8 +419,8 @@ sensitive and regex pattern is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         to_allow=['.eu']
     )
 
@@ -448,8 +446,8 @@ provided keys are case sensitive. Regex pattern is also supported.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         to_callow=['.eu']
     )
 
@@ -472,8 +470,8 @@ Lets recreate same example as before but with a uppercase key.
 
     test_list = ['http://demo.com', 'http://demo.net', 'http://demo.eu']
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         to_callow=['.EU']
     )
 
@@ -501,8 +499,8 @@ better understanding.
 
     test_url = 'https://demo.com/imgs/1.jpg'
 
-    list_parser = List(
-        parser=parsers.Url(),
+    list_parser = ed.List(
+        parser=ed.Url(),
         multiply_keys=[('1.jpg', ['1.jpg', '2.jpg', '3.jpg', '4.jpg'])]
     )
 

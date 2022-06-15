@@ -42,17 +42,16 @@ data from the *HTML* above.
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class PricingBlockModel(ItemModel):
-        item_price = parsers.PriceFloat(
-            pq('#price::text')
+    class PricingBlockModel(ed.ItemModel):
+        item_price = ed.PriceFloat(
+            ed.pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloat(
-            pq('#sale-price::text')
+        item_sale_price = ed.PriceFloat(
+            ed.pq('#sale-price::text')
         )
 
         item_processors = [
@@ -65,25 +64,24 @@ Now lets create ``ItemModel`` which will utilize ``block_models`` property with
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
 
-        item_name = parsers.Text(
-            pq('.name::text'),
+        item_name = ed.Text(
+            ed.pq('.name::text'),
         )
 
-        item_brand = parsers.Text(
-            pq('.brand::text')
+        item_brand = ed.Text(
+            ed.pq('.brand::text')
         )
 
-        item_stock = parsers.Bool(
-            pq('.stock::attr(available)'),
+        item_stock = ed.Bool(
+            ed.pq('.stock::attr(available)'),
             contains=['yes']
         )
 
@@ -115,7 +113,7 @@ If needed, we can easily disable ``ItemDiscountProcessor`` within our ``ProductI
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
@@ -130,13 +128,13 @@ We can also override ``item_price`` from the ``PricingBlockModel`` in our ``Prod
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
 
-        item_price = parsers.PriceFloat(
-            pq('#price::text')
+        item_price = ed.PriceFloat(
+            ed.pq('#price::text')
         )
 
         ...
@@ -151,35 +149,34 @@ Example:
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class PricingCssBlockModel(ItemModel):
+    class PricingCssBlockModel(ed.ItemModel):
         def __init__(self,
             price_css,
             sale_price_css,
             calculate_discount = True
         ):
 
-            self.item_price = parsers.PriceFloat(
-                pq(price_css)
+            self.item_price = ed.PriceFloat(
+                ed.pq(price_css)
             )
 
-            self.item_sale_price = parsers.PriceFloat(
-                pq(price_css)
+            self.item_sale_price = ed.PriceFloat(
+                ed.pq(price_css)
             )
 
             if calculate_discount:
                 self.item_processors.append(
-                    ('discount', ItemDiscountProcessor())
+                    ('discount', ed.ItemDiscountProcessor())
                 )
 
 Now lets use ``PricingCssBlockModel`` in our ``ProductItemModel``.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingCssBlockModel(
                 price_css='#price::text',
@@ -220,17 +217,16 @@ In example bellow we will reuse ``PricingCssBlockModel`` from previous section.
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(
-            pq('.name::text'),
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(
+            ed.pq('.name::text'),
         )
 
-        item_brand = parsers.Text(
-            pq('.brand::text')
+        item_brand = ed.Text(
+            ed.pq('.brand::text')
         )
 
         item_pricing = PricingCssBlockModel(
@@ -238,8 +234,8 @@ In example bellow we will reuse ``PricingCssBlockModel`` from previous section.
             sale_price_css='#sale-price::text'
         )
 
-        item_stock = parsers.Bool(
-            pq('.stock::attr(available)'),
+        item_stock = ed.Bool(
+            ed.pq('.stock::attr(available)'),
             contains=['yes']
         )
 
@@ -280,17 +276,17 @@ For starters lets create *block models* without named item processors.
 
 .. code-block:: python
 
-    class PricingBlockModel(ItemModel):
-        item_price = parsers.PriceFloat(
-            pq('#price::text')
+    class PricingBlockModel(ed.ItemModel):
+        item_price = ed.PriceFloat(
+            ed.pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloat(
-            pq('#sale-price::text')
+        item_sale_price = ed.PriceFloat(
+            ed.pq('#sale-price::text')
         )
 
         item_processors = [
-            ItemDiscountProcessor()
+            ed.ItemDiscountProcessor()
         ]
 
 Now if we wanted to override ``ItemDiscountProcessor`` in our item model, that
@@ -299,13 +295,13 @@ with custom parameters in our model.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
 
         item_processors = [
-            ItemDiscountProcessor(no_decimals=True)
+            ed.ItemDiscountProcessor(no_decimals=True)
         ]
 
         ...
@@ -317,8 +313,8 @@ lets just show a list how ``item_processors`` behind the scene look like now.
 .. code-block:: python
 
     [
-        ItemDiscountProcessor(),
-        ItemDiscountProcessor(no_decimals=True)
+        ed.ItemDiscountProcessor(),
+        ed.ItemDiscountProcessor(no_decimals=True)
     ]
 
 As we see there are two ``ItemDiscountProcessor`` while we want only
@@ -329,17 +325,17 @@ To solve this issue, named processors are the solution. Lets recreate our
 
 .. code-block:: python
 
-    class PricingBlockModel(ItemModel):
-        item_price = parsers.PriceFloat(
-            pq('#price::text')
+    class PricingBlockModel(ed.ItemModel):
+        item_price = ed.PriceFloat(
+            ed.pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloat(
-            pq('#sale-price::text')
+        item_sale_price = ed.PriceFloat(
+            ed.pq('#sale-price::text')
         )
 
         item_processors = [
-            ('discount', ItemDiscountProcessor())
+            ('discount', ed.ItemDiscountProcessor())
         ]
 
 Now if we want to override in our model, discount item processor from the ``PricingBlockModel``,
@@ -347,13 +343,13 @@ we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingB
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
 
         item_processors = [
-            ('discount', ItemDiscountProcessor(no_decimals=True))
+            ('discount', ed.ItemDiscountProcessor(no_decimals=True))
         ]
 
         ...
@@ -365,7 +361,7 @@ adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         block_models = [
             PricingBlockModel()
         ]
@@ -389,17 +385,17 @@ Lets demonstrate this in example below.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
-        _item_price = parsers.PriceFloat(
+    class ProductItemModel(ed.ItemModel):
+        _item_price = ed.PriceFloat(
             pq('#price::text')
         )
 
-        _item_sale_price = parsers.PriceFloat(
+        _item_sale_price = ed.PriceFloat(
             pq('#sale-price::text')
         )
 
         item_processors = [
-            ItemDiscountProcessor()
+            ed.ItemDiscountProcessor()
         ]
 
 
@@ -434,15 +430,15 @@ Lets demonstrate first with a parser instance on a model property to get more cl
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
-        item_brand = parsers.Text(jp('brand'))
+    class ProductItemModel(ed.ItemModel):
+        item_brand = ed.Text(ed.jp('brand'))
 
 Now in this example instead of defining ``Text`` parser on an item property, we
 will create item method which will produce exact same end result.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         def item_brand(data: DataBag):
             return data['data']['brand']
 
@@ -473,13 +469,13 @@ will create new data source called ``brand_type``.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
-        item_brand = parsers.Text(jp('brand'))
+    class ProductItemModel(ed.ItemModel):
+        item_brand = ed.Text(ed.jp('brand'))
 
-        item_brand_type = parsers.Text(source='brand_type')
+        item_brand_type = ed.Text(source='brand_type')
 
         data_processors = [
-            DataJsonToDictProcessor()
+            ed.DataJsonToDictProcessor()
         ]
 
         def preprocess_data(self, data):
@@ -538,13 +534,13 @@ with bool value, which is determined if price is discounted or not.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
-        item_price = parsers.PriceFloat(jp('price'))
+    class ProductItemModel(ed.ItemModel):
+        item_price = ed.PriceFloat(ed.jp('price'))
 
-        _item_sale_price = parsers.PriceFloat(jp('sale_price'))
+        _item_sale_price = ed.PriceFloat(ed.jp('sale_price'))
 
         item_processors = [
-            ItemDiscountProcessor()
+            ed.ItemDiscountProcessor()
         ]
 
         def preprocess_item(self, item):

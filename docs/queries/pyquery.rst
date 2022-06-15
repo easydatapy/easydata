@@ -38,17 +38,17 @@ Through this tutorial we will use following *HTML*:
         </html>
     """
 
-Lets import our ``pq`` query selector. ``pq`` is shortcut for a ``PyQuerySearch`` class.
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata.queries import pq
+    >>> import easydata as ed
 
 Now lets select brand name from our *HTML* and pass ``test_html`` to our ``pq`` instance.
 
 .. code-block:: python
 
-    >>> pq('.brand::text').get(test_html)
+    >>> ed.pq('.brand::text').get(test_html)
     'EasyData'
 
 If we wouldn't add pseudo key ``::text`` at the end of our *css* selector, then we would get
@@ -66,7 +66,7 @@ Lets select in example bellow ``h2`` element which has a child node ``div``.
 
 .. code-block:: python
 
-    >>> pq('h2::text').get(test_html)
+    >>> ed.pq('h2::text').get(test_html)
     'EasyData Test Product Item'
 
 .. option:: ::ntext
@@ -78,7 +78,7 @@ cases.
 .. code-block:: python
 
     >>> bad_html = "<div>uÌˆnicode</div>"
-    >>> pq('div::ntext').get(test_html)
+    >>> ed.pq('div::ntext').get(test_html)
     'uÌˆnicode'
 
 .. option:: ::attr(<attr-name>)
@@ -87,7 +87,7 @@ With pseudo key ``::attr`` we can select *attributes* in *HTML* elements.
 
 .. code-block:: python
 
-    >>> pq('.brand::attr(content)').get(test_html)
+    >>> ed.pq('.brand::attr(content)').get(test_html)
     'EasyData'
 
 .. option:: ::content
@@ -96,7 +96,7 @@ Pseudo key ``::content`` is a shortcut for a ``::attr(content)``.
 
 .. code-block:: python
 
-    >>> pq('.brand::content').get(test_html)
+    >>> ed.pq('.brand::content').get(test_html)
     'EasyData'
 
 .. option:: ::href
@@ -105,7 +105,7 @@ Pseudo key ``::href`` is a shortcut for a ``::attr(href)``.
 
 .. code-block:: python
 
-    >>> pq('.link::href').get(test_html)
+    >>> ed.pq('.link::href').get(test_html)
     'EasyData'
 
 .. option:: ::src
@@ -114,7 +114,7 @@ Pseudo key ``::src`` is a shortcut for a ``::attr(src)``.
 
 .. code-block:: python
 
-    >>> pq('img::src').get(test_html)
+    >>> ed.pq('img::src').get(test_html)
     'http://demo.com/img1.jpg'
 
 .. option:: ::val
@@ -123,7 +123,7 @@ Pseudo key ``::val`` is a shortcut for a ``::attr(value)``.
 
 .. code-block:: python
 
-    >>> pq('#stock-quantity::val').get(test_html)
+    >>> ed.pq('#stock-quantity::val').get(test_html)
     'EasyData'
 
 .. option:: ::val
@@ -132,7 +132,7 @@ Pseudo key ``::name`` is a shortcut for a ``::attr(name)``.
 
 .. code-block:: python
 
-    >>> pq('#stock-quantity::name').get(test_html)
+    >>> ed.pq('#stock-quantity::name').get(test_html)
     'quantity'
 
 
@@ -145,7 +145,7 @@ Lets try to select them and output it's value with pseudo key ``::text``.
 
 .. code-block:: python
 
-    >>> pq('.breadcrumb::text').get(test_html)
+    >>> ed.pq('.breadcrumb::text').get(test_html)
     'Home > '
 
 Pseudo keys will always by default output only first of the selected *HTML* element.
@@ -155,7 +155,7 @@ to our ``::text`` pseudo key. Lets try that in example bellow.
 
 .. code-block:: python
 
-    >>> pq('.breadcrumb::text-all').get(test_html)
+    >>> ed.pq('.breadcrumb::text-all').get(test_html)
     'Home > Items'
 
 ``-all`` extension currently works only with ``::text`` and ``::ntext`` pseudo keys.
@@ -168,7 +168,7 @@ a *css* selector.
 
 .. code-block:: python
 
-    >>> pq('.images img::src-items').get(test_html)
+    >>> ed.pq('.images img::src-items').get(test_html)
     ['http://demo.com/img1.jpg', 'http://demo.com/img1.jpg']
 
 ``-items`` works with all other pseudo keys such as ``::text``, ``::ntext``, ``src``, ``val``,
@@ -178,7 +178,7 @@ We can also use ``items`` as a pseudo key and  it will return list of ``PyQuery`
 This is especially useful when it's used inside ``List`` or ``Dict`` parsers where it needs
 further processing by a child parsers.
 
-    >>> pq('img::items').get(test_html)
+    >>> ed.pq('img::items').get(test_html)
     [[<img>], [<img>]]
 
 
@@ -201,11 +201,11 @@ element that we want to be excluded from end result.
 
 .. code-block:: python
 
-    >>> pq('h2::text', remove_query='span').get(test_html)
+    >>> ed.pq('h2::text', remove_query='span').get(test_html)
     'Test Product Item'
 
 We can also exclude multiple nested *HTML* elements by separating them with a *comma* if needed.
 
 .. code-block:: python
 
-    >>> pq('.made-up-class::text', remove_query='span,#some-id,.some-class').get(test_html)
+    >>> ed.pq('.made-up-class::text', remove_query='span,#some-id,.some-class').get(test_html)

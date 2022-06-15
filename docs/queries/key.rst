@@ -7,11 +7,11 @@ KeyQuery (key)
 
 ``KeyQuery`` (shortcut: ``key``) allows you to select a value from a dictionary by key.
 
-Lets import first our ``key`` query selector.
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata.queries import key
+    >>> import easydata as ed
 
 
 Examples
@@ -22,12 +22,12 @@ Examples
 
 .. code-block:: python
 
-    >>> key('title').get(test_dict)
+    >>> ed.key('title').get(test_dict)
     'EasyBook pro 15'
 
 .. code-block:: python
 
-    >>> key('brand').get(test_dict)
+    >>> ed.key('brand').get(test_dict)
     {'name': 'EasyData'}
 
 
@@ -43,7 +43,7 @@ and returned as a list.
 .. code-block:: python
 
     >>> {'brand': {'name': 'EasyData', 'origin': 'Slovenia'}}
-    >>> key('brand').get(test_dict)
+    >>> ed.key('brand').get(test_dict)
     {'name': 'EasyData', 'origin': 'Slovenia'}
 
 
@@ -52,7 +52,7 @@ and returned as a list.
 .. code-block:: python
 
     >>> {'brand': {'name': 'EasyData', 'origin': 'Slovenia'}}
-    >>> key('brand::values').get(test_dict)
+    >>> ed.key('brand::values').get(test_dict)
     ['EasyData', 'Slovenia']
 
 
@@ -63,7 +63,7 @@ and returned as a list.
 
 .. code-block:: python
 
-    >>> key('brand::keys').get(test_dict)
+    >>> ed.key('brand::keys').get(test_dict)
     ['name', 'origin']
 
 .. option:: ::dict(<key>:<value>)
@@ -82,7 +82,7 @@ We will use following option dictionary in examples bellow:
 
 .. code-block:: python
 
-    >>> key('options').get(odict)
+    >>> ed.key('options').get(odict)
     [{'name': 'Monitor', 'stock': 'y'}, {'name': 'Mouse', 'stock': 'n'}]
 
 
@@ -90,5 +90,5 @@ We will use following option dictionary in examples bellow:
 
 .. code-block:: python
 
-    >>> key('options::dict(name:stock)').get(odict)
+    >>> ed.key('options::dict(name:stock)').get(odict)
     {'Monitor': 'y', 'Mouse': 'n'}

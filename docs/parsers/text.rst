@@ -13,20 +13,18 @@ texts like titles or similar.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``key`` instance from ``queries``
-selector module.
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import key
+    >>> import easydata as ed
 
 ``Text`` supports query selectors for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'title': 'Easybook pro 13'}
-    >>> parsers.Text(key('title')).parse(test_dict)
+    >>> ed.Text(ed.key('title')).parse(test_dict)
     'Easybook pro 13'
 
 In this example lets process text with bad encoding and multiple spaces
@@ -35,7 +33,7 @@ between chars.
 .. code-block:: python
 
     >>> test_text = 'Easybook    Pro 13 &lt;3 uÌˆnicode'
-    >>> parsers.Text().parse(test_text)
+    >>> ed.Text().parse(test_text)
     Easybook Pro 13 <3 ünicode
 
 Floats, integers will get transformed to string automatically.
@@ -43,11 +41,11 @@ Floats, integers will get transformed to string automatically.
 .. code-block:: python
 
     >>> test_int = 123
-    >>> parsers.Text().parse(test_int)
+    >>> ed.Text().parse(test_int)
     '123'
 
     >>> test_float = 123.12
-    >>> parsers.Text().parse(test_float)
+    >>> ed.Text().parse(test_float)
     '123.12'
 
 Parameters
@@ -61,7 +59,7 @@ parameter to ``False`` to disable text normalization.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 13 &lt;3 uÌˆnicode'
-    >>> parsers.Text(normalize=False).parse(test_text)
+    >>> ed.Text(normalize=False).parse(test_text)
     Easybook Pro 13 &lt;3 uÌˆnicode
 
 .. option:: capitalize
@@ -72,7 +70,7 @@ to ``True``. By default is set to ``False``.
 .. code-block:: python
 
     >>> test_text = 'easybook PRO 15'
-    >>> parsers.Text(capitalize=True).parse(test_text)
+    >>> ed.Text(capitalize=True).parse(test_text)
     Easybook PRO 15
 
 .. option:: title
@@ -83,7 +81,7 @@ become lowercase with ``title`` parameter set to ``True``.
 .. code-block:: python
 
     >>> test_text = 'easybook PRO 15'
-    >>> parsers.Text(title=True).parse(test_text)
+    >>> ed.Text(title=True).parse(test_text)
     Easybook Pro 15
 
 .. option:: uppercase
@@ -94,7 +92,7 @@ parameter set to ``True``.
 .. code-block:: python
 
     >>> test_text = 'easybook PRO 15'
-    >>> parsers.Text(uppercase=True).parse(test_text)
+    >>> ed.Text(uppercase=True).parse(test_text)
     EASYBOOK PRO 15
 
 .. option:: lowercase
@@ -105,7 +103,7 @@ parameter set to ``True``.
 .. code-block:: python
 
     >>> test_text = 'easybook PRO 15'
-    >>> parsers.Text(lowercase=True).parse(test_text)
+    >>> ed.Text(lowercase=True).parse(test_text)
     easybook pro 15
 
 .. option:: replace_keys
@@ -117,7 +115,7 @@ case sensitive.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 15'
-    >>> parsers.Text(replace_keys=[('pro', 'Air'), ('15', '13')]).parse(test_text)
+    >>> ed.Text(replace_keys=[('pro', 'Air'), ('15', '13')]).parse(test_text)
     Easybook Air 13
 
 
@@ -130,7 +128,7 @@ case sensitive.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 15'
-    >>> parsers.Text(remove_keys=['easy', 'pro']).parse(test_text)
+    >>> ed.Text(remove_keys=['easy', 'pro']).parse(test_text)
     book 15
 
 
@@ -141,7 +139,7 @@ Text can be split by ``split_key``. By default split index is ``0``.
 .. code-block:: python
 
     >>> test_text = 'easybook-pro_13'
-    >>> parsers.Text(split_key='-').parse(test_text)
+    >>> ed.Text(split_key='-').parse(test_text)
     easybook
 
 Lets specify split index through tuple.
@@ -149,7 +147,7 @@ Lets specify split index through tuple.
 .. code-block:: python
 
     >>> test_text = 'easybook-pro_13'
-    >>> parsers.Text(split_key=('-', -1)).parse(test_text)
+    >>> ed.Text(split_key=('-', -1)).parse(test_text)
     pro_13
 
 .. option:: split_keys
@@ -160,7 +158,7 @@ split key it accepts list of keys.
 .. code-block:: python
 
     >>> test_text = 'easybook-pro_13'
-    >>> parsers.Text(split_keys=[('-', -1), '_']).parse(test_text)
+    >>> ed.Text(split_keys=[('-', -1), '_']).parse(test_text)
     pro
 
 .. option:: take
@@ -171,7 +169,7 @@ shown at the end result. Lets see how it works in example bellow.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 13'
-    >>> parsers.Text(max_chars=8).parse(test_text)
+    >>> ed.Text(max_chars=8).parse(test_text)
     Easybook
 
 .. option:: skip
@@ -182,7 +180,7 @@ Lets see how it works in example bellow.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro 13'
-    >>> parsers.Text(skip=8).parse(test_text)
+    >>> ed.Text(skip=8).parse(test_text)
     Pro 13
 
 .. option:: text_num_to_numeric
@@ -193,7 +191,7 @@ numbers by setting ``text_num_to_numeric`` parameter to ``True``.
 .. code-block:: python
 
     >>> test_text = 'two thousand and three words for the first time'
-    >>> parsers.Text(text_num_to_numeric=True).parse(test_text)
+    >>> ed.Text(text_num_to_numeric=True).parse(test_text)
     2003 words for the 1 time
 
 If our text is in different language we need to change language value in
@@ -208,7 +206,7 @@ one between chars. Lets test it in our bellow example:
 .. code-block:: python
 
     >>> test_text = 'Easybook   Pro  15'
-    >>> parsers.Text().parse(test_text)
+    >>> ed.Text().parse(test_text)
     Easybook Pro 15
 
 Now lets change ``fix_spaces`` parameter to ``False`` and see what happens.
@@ -216,7 +214,7 @@ Now lets change ``fix_spaces`` parameter to ``False`` and see what happens.
 .. code-block:: python
 
     >>> test_text = 'Easybook   Pro  15'
-    >>> parsers.Text(fix_spaces=False).parse(test_text)
+    >>> ed.Text(fix_spaces=False).parse(test_text)
     Easybook   Pro  15
 
 .. option:: escape_new_lines
@@ -227,7 +225,7 @@ see in example bellow:
 .. code-block:: python
 
     >>> test_text = 'Easybook\nPro\n15'
-    >>> parsers.Text().parse(test_text)
+    >>> ed.Text().parse(test_text)
     Easybook Pro 15
 
 Now lets change ``escape_new_lines`` parameter to ``False`` and see what happens.
@@ -235,7 +233,7 @@ Now lets change ``escape_new_lines`` parameter to ``False`` and see what happens
 .. code-block:: python
 
     >>> test_text = 'Easybook\nPro\n15'
-    >>> parsers.Text(escape_new_lines=False).parse(test_text)
+    >>> ed.Text(escape_new_lines=False).parse(test_text)
     Easybook\nPro\n15
 
 .. option:: new_line_replacement
@@ -247,7 +245,7 @@ default setting by changing value of ``new_line_replacement`` parameter.
 .. code-block:: python
 
     >>> test_text = 'Easybook\nPro\n15'
-    >>> parsers.Text(new_line_replacement='<br>').parse(test_text)
+    >>> ed.Text(new_line_replacement='<br>').parse(test_text)
     Easybook<br>Pro<br>15
 
 .. option:: add_stop
@@ -258,7 +256,7 @@ parameter to ``True``.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro  15'
-    >>> parsers.Text(add_stop=True).parse(test_text)
+    >>> ed.Text(add_stop=True).parse(test_text)
     Easybook Pro 15.
 
 By default ``.`` is added but we can provide our custom char if needed. Instead
@@ -268,5 +266,5 @@ provide char as we can see in example bellow.
 .. code-block:: python
 
     >>> test_text = 'Easybook Pro  15'
-    >>> parsers.Text(add_stop='!').parse(test_text)
+    >>> ed.Text(add_stop='!').parse(test_text)
     Easybook Pro 15!

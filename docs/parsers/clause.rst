@@ -10,12 +10,11 @@ Union
 
 **Example:**
 
-Lets import first ``parsers`` module and ``pq`` instance from ``queries`` module
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import pq
+    >>> import easydata as ed
 
 Lets write our ``Union`` parser.
 
@@ -25,9 +24,9 @@ Lets write our ``Union`` parser.
         <p class="brand">EasyData</p>
     '''
 
-    union_parser = parsers.Union(
-        parsers.Text(pq('.brand-wrong-selector::text')),
-        parsers.Text(pq('.brand::text'))
+    union_parser = ed.Union(
+        ed.Text(ed.pq('.brand-wrong-selector::text')),
+        ed.Text(ed.pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -56,9 +55,9 @@ Please note that even if query selector found a match and it's content was still
         <p id="name">Easybook Pro 13</p>
     '''
 
-    union_parser = parsers.Union(
-        parsers.Text(pq('#name::text')),
-        parsers.Text(pq('.brand::text'))
+    union_parser = ed.Union(
+        ed.Text(ed.pq('#name::text')),
+        ed.Text(ed.pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -82,12 +81,11 @@ With
 
 **Example:**
 
-Lets import first ``parsers`` module and ``pq`` instance from ``queries`` module
+Lets import our easydata module
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import pq
+    >>> import easydata as ed
 
 Lets write our ``With`` parser.
 
@@ -103,12 +101,12 @@ Lets write our ``With`` parser.
         </div>
     '''
 
-    with_parser = parsers.With(
-        parsers.Sentences(
-            pq('#description .features::text'),
+    with_parser = ed.With(
+        ed.Sentences(
+            ed.pq('#description .features::text'),
             allow=['date added']
         ),
-        parsers.DateTimeSearch()
+        ed.DateTimeSearch()
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -130,12 +128,9 @@ ConcatText
 
 **Example:**
 
-Lets import first ``parsers`` module and ``pq`` instance from ``queries`` module.
-
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import pq
+    >>> import easydata as ed
 
 Lets write our ``ConcatText`` parser.
 
@@ -146,9 +141,9 @@ Lets write our ``ConcatText`` parser.
         <p id="name">Easybook Pro 13</p>
     '''
 
-    concat_text_parser = parsers.ConcatText(
-        parsers.Text(pq('#name::text')),
-        parsers.Text(pq('.brand::text'))
+    concat_text_parser = ed.ConcatText(
+        ed.Text(ed.pq('#name::text')),
+        ed.Text(ed.pq('.brand::text'))
     )
 
 Now lets parse ``test_html`` data and print our result.
@@ -171,12 +166,9 @@ together, it will join two ``list`` types together.
 
 **Example:**
 
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
-
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 Lets write our ``JoinList`` parser.
 
@@ -193,13 +185,13 @@ Lets write our ``JoinList`` parser.
         ]
     }
 
-    join_list_parser = parsers.JoinList(
-        parsers.List(
-            jp('features'),
+    join_list_parser = ed.JoinList(
+        ed.List(
+            ed.jp('features'),
             parser=parsers.Text()
         ),
-        parsers.List(
-            jp('specs'),
+        ed.List(
+            ed.jp('specs'),
             parser=parsers.Text()
         ),
     )
@@ -224,12 +216,9 @@ types together, it will merge two ``dict`` types together.
 
 **Example:**
 
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
-
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 Lets write our ``MergeDict`` parser.
 
@@ -246,16 +235,16 @@ Lets write our ``MergeDict`` parser.
         }
     }
 
-    merge_dict_parser = parsers.MergeDict(
-        parsers.Dict(
-            jp('features'),
-            key_parser=parsers.Text(),
-            value_parser=parsers.Text()
+    merge_dict_parser = ed.MergeDict(
+        ed.Dict(
+            ed.jp('features'),
+            key_parser=ed.Text(),
+            value_parser=ed.Text()
         ),
-        parsers.Dict(
-            jp('specs'),
-            key_parser=parsers.Text(),
-            value_parser=parsers.Text()
+        ed.Dict(
+            ed.jp('specs'),
+            key_parser=ed.Text(),
+            value_parser=ed.Text()
         ),
     )
 

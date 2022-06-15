@@ -20,19 +20,18 @@ date time format.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``DateTime`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'datetime': 'Fri, 10 Dec 2018 10:55:50'}
-    >>> parsers.DateTime(jp('datetime')).parse(test_dict)
+    >>> ed.DateTime(ed.jp('datetime')).parse(test_dict)
     '12/10/2018 10:55:50'
 
 Any invalid string without datetime will cause ``DateTime`` parser to return None.
@@ -40,7 +39,7 @@ Any invalid string without datetime will cause ``DateTime`` parser to return Non
 .. code-block:: python
 
     >>> test_dict = {'datetime': 'n/a'}
-    >>> parsers.DateTime(jp('datetime')).parse(test_dict)
+    >>> ed.DateTime(ed.jp('datetime')).parse(test_dict)
     None
 
 Parameters
@@ -53,7 +52,7 @@ We can change our date time output in any valid str format that we want through 
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
-    >>> parsers.DateTime(datetime_format='%d.%m.%Y %H:%M:%S').parse(test_date_text)
+    >>> ed.DateTime(datetime_format='%d.%m.%Y %H:%M:%S').parse(test_date_text)
     '10.12.2018 10:55:50'
 
 .. note::
@@ -71,7 +70,7 @@ Lets try first with a valid year.
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
-    >>> parsers.DateTime(min_year='2015').parse(test_date_text)
+    >>> ed.DateTime(min_year='2015').parse(test_date_text)
     '12/10/2018 10:55:50'
 
 Now with a year that it's bellow our ``min_year`` limit.
@@ -79,7 +78,7 @@ Now with a year that it's bellow our ``min_year`` limit.
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2010 10:55:50'
-    >>> parsers.DateTime(min_year='2015').parse(test_date_text)
+    >>> ed.DateTime(min_year='2015').parse(test_date_text)
     None
 
 .. option:: max_year
@@ -92,7 +91,7 @@ Lets try first with a valid year.
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
-    >>> parsers.DateTime(max_year='2020').parse(test_date_text)
+    >>> ed.DateTime(max_year='2020').parse(test_date_text)
     '12/10/2018 10:55:50'
 
 Now with a year that it's over our ``max_year`` limit.
@@ -100,7 +99,7 @@ Now with a year that it's over our ``max_year`` limit.
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2022 10:55:50'
-    >>> parsers.DateTime(max_year='2020').parse(test_date_text)
+    >>> ed.DateTime(max_year='2020').parse(test_date_text)
     None
 
 
@@ -113,20 +112,10 @@ that can extract date time from sentences that have other content besides date t
 
 Lets try first to extract date from a sentence with a ``DateTime`` parser.
 
-    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTime().transform(test_text)
-    None
-
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTime().transform(test_text)
-    None
-
-As we can see ... ordinary
-
-    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTime().parse(test_text)
+    >>> ed.DateTime().parse(test_text)
     None
 
 As we can see ... ordinary ``DateTime`` parser cannot handle text if there is some
@@ -134,19 +123,8 @@ other text besides date time and in situations like this ``DateTimeSearch`` pars
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTimeSearch().transform(test_text)
+    >>> ed.DateTimeSearch().parse(test_text)
     '12/10/2018 10:55:50'
-will work.
-
-    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTimeSearch().transform(test_text)
-    '12/10/2018 10:55:50'
-will work.
-
-    >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateTimeSearch().parse(test_text)
-    '12/10/2018 10:55:50'
-
 
 Date
 ====
@@ -157,19 +135,18 @@ date and it's has it's own ``date_format`` parameter to format date output.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``Date`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'datetime': 'Fri, 10 Dec 2018 10:55:50'}
-    >>> parsers.Date(jp('datetime')).parse(test_dict)
+    >>> ed.Date(ed.jp('datetime')).parse(test_dict)
     '12/10/2018'
 
 Any invalid string without a date will cause ``Date`` parser to return None.
@@ -177,7 +154,7 @@ Any invalid string without a date will cause ``Date`` parser to return None.
 .. code-block:: python
 
     >>> test_dict = {'date': 'n/a'}
-    >>> parsers.DateTime(jp('date')).parse(test_dict)
+    >>> ed.DateTime(ed.jp('date')).parse(test_dict)
     None
 
 Parameters
@@ -190,7 +167,7 @@ We can change our date time output in any valid str format that we want through 
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
-    >>> parsers.DateTime(date_format='%d.%m.%Y').parse(test_date_text)
+    >>> ed.DateTime(date_format='%d.%m.%Y').parse(test_date_text)
     '10.12.2018'
 
 .. note::
@@ -209,19 +186,19 @@ that can extract date from sentences that have other content besides date.
 Lets try first to extract date from a sentence with a ``Date`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Date().transform(test_text)
+    >>> ed.Date().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Date().transform(test_text)
+    >>> ed.Date().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Date().parse(test_text)
+    >>> ed.Date().parse(test_text)
     None
 
 As we can see ... ordinary ``Date`` parser cannot handle text if there is some
@@ -229,17 +206,17 @@ other text besides date and in situations like this ``DateSearch`` parser
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateSearch().transform(test_text)
+    >>> ed.DateSearch().transform(test_text)
     '12/10/2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateSearch().transform(test_text)
+    >>> ed.DateSearch().transform(test_text)
     '12/10/2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.DateSearch().parse(test_text)
+    >>> ed.DateSearch().parse(test_text)
     '12/10/2018'
 
 
@@ -252,19 +229,18 @@ time and it's has it's own ``time_format`` parameter to format time output.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``Time`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'datetime': 'Fri, 10 Dec 2018 10:55:50'}
-    >>> parsers.Time(jp('datetime')).parse(test_dict)
+    >>> ed.Time(ed.jp('datetime')).parse(test_dict)
     '10:55:50'
 
 Any invalid string without a date will cause ``Time`` parser to return None.
@@ -272,7 +248,7 @@ Any invalid string without a date will cause ``Time`` parser to return None.
 .. code-block:: python
 
     >>> test_dict = {'time': 'n/a'}
-    >>> parsers.Time(jp('time')).parse(test_dict)
+    >>> ed.Time(ed.jp('time')).parse(test_dict)
     None
 
 Parameters
@@ -285,7 +261,7 @@ We can change our date time output in any valid str format that we want through 
 .. code-block:: python
 
     >>> test_date_text = 'Fri, 10 Dec 2018 10:55:50'
-    >>> parsers.Time(time_format='%H-%M-%S').parse(test_date_text)
+    >>> ed.Time(time_format='%H-%M-%S').parse(test_date_text)
     '10-55-50'
 
 .. note::
@@ -304,19 +280,19 @@ that can extract time from sentences that have other content besides time.
 Lets try first to extract date from a sentence with a ``Time`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Time().transform(test_text)
+    >>> ed.Time().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Time().transform(test_text)
+    >>> ed.Time().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Time().parse(test_text)
+    >>> ed.Time().parse(test_text)
     None
 
 As we can see ... ordinary ``Time`` parser cannot handle text if there is some
@@ -324,17 +300,17 @@ other text besides date and in situations like this ``TimeSearch`` parser
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.TimeSearch().transform(test_text)
+    >>> ed.TimeSearch().transform(test_text)
     '10:55:50'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.TimeSearch().transform(test_text)
+    >>> ed.TimeSearch().transform(test_text)
     '10:55:50'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.TimeSearch().parse(test_text)
+    >>> ed.TimeSearch().parse(test_text)
     '10:55:50'
 
 
@@ -347,19 +323,18 @@ year.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``Year`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'datetime': 'Fri, 10 Dec 2018 10:55:50'}
-    >>> parsers.Year(jp('datetime')).parse(test_dict)
+    >>> ed.Year(ed.jp('datetime')).parse(test_dict)
     '2018'
 
 Any invalid string without a date will cause ``Year`` parser to return None.
@@ -367,7 +342,7 @@ Any invalid string without a date will cause ``Year`` parser to return None.
 .. code-block:: python
 
     >>> test_dict = {'date': 'n/a'}
-    >>> parsers.Year(jp('date')).parse(test_dict)
+    >>> ed.Year(ed.jp('date')).parse(test_dict)
     None
 
 
@@ -381,19 +356,19 @@ that can extract time from sentences that have other content besides date.
 Lets try first to extract date from a sentence with a ``Year`` parser.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Year().transform(test_text)
+    >>> ed.Year().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Year().transform(test_text)
+    >>> ed.Year().transform(test_text)
     None
 
 As we can see ... ordinary
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.Year().parse(test_text)
+    >>> ed.Year().parse(test_text)
     None
 
 As we can see ... ordinary ``Year`` parser cannot handle text if there is some
@@ -401,15 +376,15 @@ other text besides date and in situations like this ``YearSearch`` parser
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.YearSearch().transform(test_text)
+    >>> ed.YearSearch().transform(test_text)
     '2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.YearSearch().transform(test_text)
+    >>> ed.YearSearch().transform(test_text)
     '2018'
 will work.
 
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
-    >>> parsers.YearSearch().parse(test_text)
+    >>> ed.YearSearch().parse(test_text)
     '2018'

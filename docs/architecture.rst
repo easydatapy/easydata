@@ -36,20 +36,23 @@ through other components.
 
 .. code-block:: python
 
-    class ProductItemModel(ItemModel):
+    import easydata as ed
+
+
+    class ProductItemModel(ed.ItemModel):
         data_processors = [
-            DataJsonToDictProcessor()
+            ed.DataJsonToDictProcessor()
         ]
 
-        item_price = parsers.PriceFloat(jp('price'))
+        item_price = ed.PriceFloat(ed.jp('price'))
 
-        _item_sale_price = parsers.PriceFloat(
-            pq('sale_price::text'),
+        _item_sale_price = ed.PriceFloat(
+            ed.pq('sale_price::text'),
             source='html'
         )
 
         item_processors = [
-            ItemDiscountProcessor()
+            ed.ItemDiscountProcessor()
         ]
 
 
@@ -58,18 +61,18 @@ through other components.
     >> product_model = ProductItemModel()
 
 When we initialize our ``ProductItemModel`` nothing happens. Initialization of processors
-and other core components is done after we call ``parse`` method for a first time.
+and other core components is done after we call ``parse_item`` method for a first time.
 
 .. note::
 
     Design decision not to use ``__init__`` for class initialization is in order to add
     ``ItemModel`` as a mixin to your existing class if needed.
 
-Now lets pass our variables with different types of data to ``parse`` method.
+Now lets pass our variables with different types of data to ``parse_item`` method.
 
 .. code-block:: python
 
-    >> product_model.parse(data=json_text, html=html_text)
+    >> product_model.parse_item(data=json_text, html=html_text)
     {'price': 999.9, 'discount': 50.01}
 
 .. note::
@@ -77,9 +80,9 @@ Now lets pass our variables with different types of data to ``parse`` method.
     In a result we are missing ``sale_price`` in our dictionary. This is intentionally
     since all properties that start with ``_item`` will be deleted before final output.
 
-When we pass our ``json_text`` and ``html_text`` to ``parse``, our model will get registered
+When we pass our ``json_text`` and ``html_text`` to ``parse_item``, our model will get registered
 with *model manager* which basically handles are components specified in our model. Model
-is registered within *model manager* only when we call ``parse`` for the first time. In next
+is registered within *model manager* only when we call ``parse_item`` for the first time. In next
 step through *model manager* our passed ``json_text`` and ``html_text`` data will be stored
 into a ``DataBag`` object dictionary under ``data`` and ``html`` keys respectively. All parsers
 and processors will by default look in a ``DataBag`` for a ``data`` key, unless specified
@@ -95,7 +98,7 @@ data processors.
     a model. All other components (except ``item_processors``) have access to it in
     order to extract, create, modify or delete data in a ``DataBag`` dictionary.
 
-When ``DataBag`` is created under the hood on a ``parse`` call, it will be passed
+When ``DataBag`` is created under the hood on a ``parse_item`` call, it will be passed
 first through **data processors**, where it will be modified or transformed and in next
 step will be passed further to item parsers. In item parsers, data will be extracted from
 a ``DataBag`` and it's values stored in a item dictionary.

@@ -20,19 +20,18 @@ To read docs regarding other parameters than the one described here, please go t
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``PriceFloat`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'price': 'Was 99.9€'}
-    >>> parsers.PriceFloat(jp('price')).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price')).parse(test_dict)
     99.9
 
 Another example with a ``float`` data source.
@@ -40,7 +39,7 @@ Another example with a ``float`` data source.
 .. code-block:: python
 
     >>> test_dict = {'price': 3330.90}
-    >>> parsers.PriceFloat(jp('price')).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price')).parse(test_dict)
     3330.9
 
 Parameters
@@ -53,13 +52,13 @@ this limit is ``2``, but we can change this value with a ``decimals`` parameter.
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=3).transform(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=3).transform(test_dict)
     999.913
 
 Now lets set it to 0 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=0).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=0).parse(test_dict)
     1000
 
 We can completely disable number rounding to decimals by settings
@@ -67,13 +66,13 @@ We can completely disable number rounding to decimals by settings
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=3).transform(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=3).transform(test_dict)
     999.913
 
 Now lets set it to 0 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=0).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=0).parse(test_dict)
     1000
 
 We can completely disable number rounding to decimals by settings
@@ -81,13 +80,13 @@ We can completely disable number rounding to decimals by settings
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=3).parse(test_dict)
     999.913
 
 Now lets set it to 0 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=0).transform(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=0).transform(test_dict)
     1000
 
 We can completely disable number rounding to decimals by settings
@@ -95,13 +94,13 @@ We can completely disable number rounding to decimals by settings
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=3).parse(test_dict)
     999.913
 
 Now lets set it to 0 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=0).transform(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=0).transform(test_dict)
     1000
 
 We can completely disable number rounding to decimals by settings
@@ -109,28 +108,28 @@ We can completely disable number rounding to decimals by settings
 In this example lets set our value output to 3 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=3).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=3).parse(test_dict)
     999.913
 
 Now lets set it to 0 decimals.
 
     >>> test_dict = {'price': '999.91264'}
-    >>> parsers.PriceFloat(jp('price'), decimals=0).parse(test_dict)
+    >>> ed.PriceFloat(ed.jp('price'), decimals=0).parse(test_dict)
     1000
 
 We can completely disable number rounding to decimals by settings
 ``decimals`` parameter to ``None``.
 
     >>> test_text = '999.91264'
-    >>> parsers.PriceFloat(decimals=None).transform(test_text)
+    >>> ed.PriceFloat(decimals=None).transform(test_text)
     999.91264
 
     >>> test_text = '999.91264'
-    >>> parsers.PriceFloat(decimals=None).transform(test_text)
+    >>> ed.PriceFloat(decimals=None).transform(test_text)
     999.91264
 
     >>> test_text = '999.91264'
-    >>> parsers.PriceFloat(decimals=None).parse(test_text)
+    >>> ed.PriceFloat(decimals=None).parse(test_text)
     999.91264
 
 .. note::
@@ -148,19 +147,18 @@ instead ``float``.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
+Lets import first ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``PriceInt`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'price': 'Was 99.9€'}
-    >>> parsers.PriceInt(jp('price')).parse(test_dict)
+    >>> ed.PriceInt(ed.jp('price')).parse(test_dict)
     99
 
 Another example with a ``float`` data source.
@@ -168,7 +166,7 @@ Another example with a ``float`` data source.
 .. code-block:: python
 
     >>> test_dict = {'price': 3330.90}
-    >>> parsers.PriceInt(jp('price')).parse(test_dict)
+    >>> ed.PriceInt(ed.jp('price')).parse(test_dict)
     3330
 
 
@@ -181,19 +179,18 @@ instead ``float``.
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module
+Lets import ``easydata`` module.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``PriceText`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'price': 'Was 99.9€'}
-    >>> parsers.PriceText(jp('price')).parse(test_dict)
+    >>> ed.PriceText(ed.jp('price')).parse(test_dict)
     '99.9'
 
 Another example with decimal limit.
@@ -201,5 +198,5 @@ Another example with decimal limit.
 .. code-block:: python
 
     >>> test_dict = {'price': 'Was 3.330,9246'}
-    >>> parsers.PriceText(jp('price'), decimals=3).parse(test_dict)
+    >>> ed.PriceText(ed.jp('price'), decimals=3).parse(test_dict)
     '3330.925'

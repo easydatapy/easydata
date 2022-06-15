@@ -17,31 +17,29 @@ Sentences
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``pq`` instance from ``queries``
-selector module. ``pq`` is a css query selector using ``PyQuery`` library under
-the hood.
+Lets import first ``easydata`` module and use ``pq`` selector module.
+``pq`` is a css query selector using ``PyQuery`` library under the hood.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import pq
+    >>> import easydata as ed
 
 In our first example we will show how to parse badly structured text.
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
-    >>> parsers.Sentences().transform(test_text)
+    >>> ed.Sentences().transform(test_text)
     ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
 
 Now lets try with simple
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
-    >>> parsers.Sentences().transform(test_text)
+    >>> ed.Sentences().transform(test_text)
     ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
 
 Now lets try with simple
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
 
 Now lets try with simple ``HTML`` text.
@@ -66,26 +64,26 @@ Lets assume that we loaded ``HTML`` above into ``test_html`` variable.
 Now lets use ``pq`` selector to select specific html nodes in order to
 be processed.
 
-    >>> parsers.Sentences(pq('#features').html()).transform(test_html)
+    >>> ed.Sentences(ed.pq('#features').html()).transform(test_html)
     ['Next-generation Thunderbolt.', 'FaceTime HD camera.']
 
 Another example with
 be processed.
 
-    >>> parsers.Sentences(pq('#features').html()).transform(test_html)
+    >>> ed.Sentences(ed.pq('#features').html()).transform(test_html)
     ['Next-generation Thunderbolt.', 'FaceTime HD camera.']
 
 Another example with
 be processed.
 
-    >>> parsers.Sentences(pq('#features').html()).parse(test_html)
+    >>> ed.Sentences(ed.pq('#features').html()).parse(test_html)
     ['Next-generation Thunderbolt.', 'FaceTime HD camera.']
 
 Another example with ``pq`` selector ignoring specific parts od html nodes.
 
 .. code-block:: python
 
-    >>> parsers.Sentences(pq('.description').rm('#features').html()).parse(test_html)
+    >>> ed.Sentences(ed.pq('.description').rm('#features').html()).parse(test_html)
     ['This is description.']
 
 **Description parsers can also process html tables.**
@@ -110,7 +108,7 @@ Another example with ``pq`` selector ignoring specific parts od html nodes.
 
 .. code-block:: python
 
-    >>> parsers.Sentences(pq('.description').html()).parse(test_html)
+    >>> ed.Sentences(ed.pq('.description').html()).parse(test_html)
     ['This is description.', 'Type: Easybook Pro.', 'Operating system: etOS.']
 
 **With a header example:**
@@ -134,7 +132,7 @@ Another example with ``pq`` selector ignoring specific parts od html nodes.
 
 .. code-block:: python
 
-    >>> parsers.Sentences(pq('.description').html()).parse(test_html)
+    >>> ed.Sentences(ed.pq('.description').html()).parse(test_html)
     ['This is description.', 'Height/Width/Depth: 10/12/5.', 'Height/Width/Depth: 2/3/5.']
 
 .. note::
@@ -156,7 +154,7 @@ text belongs to so that sentences are split properly around abbreviations.
 .. code-block:: python
 
     >>> test_text = 'primera oracion? Segunda oración. tercera oración'
-    >>> parsers.Sentences(language='es').parse(test_text)
+    >>> ed.Sentences(language='es').parse(test_text)
     ['Primera oracion?', 'Segunda oración.', 'Tercera oración.']
 
 Please note that currently only ``en`` and ``es`` language parameter values
@@ -175,14 +173,14 @@ keywords into ``allow`` parameter. Provided keys are not case sensitive.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Sentences(allow=['first', 'third']).parse(test_text)
+    >>> ed.Sentences(allow=['first', 'third']).parse(test_text)
     ['First sentence?', 'Third sentence.']
 
 Regex pattern is also supported as parameter value:
 
 .. code-block:: python
 
-    >>> parsers.Sentences(allow=[r'\bfirst']).parse(test_text)
+    >>> ed.Sentences(allow=[r'\bfirst']).parse(test_text)
 
 .. option:: callow
 
@@ -192,7 +190,7 @@ are case sensitive. Regex pattern as a key is also supported.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Sentences(allow=['First', 'Third']).parse(test_text)
+    >>> ed.Sentences(allow=['First', 'Third']).parse(test_text)
     ['Third sentence.']
 
 .. option:: from_allow
@@ -203,7 +201,7 @@ Keys are not case sensitive and regex pattern is also supported.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(from_allow=['second']).parse(test_text)
+    >>> ed.Sentences(from_allow=['second']).parse(test_text)
     ['Second txt.', 'Third Txt.', 'FOUR txt.']
 
 .. option:: from_callow
@@ -214,7 +212,7 @@ provided keys are case sensitive. Regex pattern as a key is also supported.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(from_allow=['Second']).parse(test_text)
+    >>> ed.Sentences(from_allow=['Second']).parse(test_text)
     ['Second txt.', 'Third Txt.', 'FOUR txt.']
 
 Lets recreate same example as before but with lowercase key.
@@ -222,7 +220,7 @@ Lets recreate same example as before but with lowercase key.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(from_allow=['second']).parse(test_text)
+    >>> ed.Sentences(from_allow=['second']).parse(test_text)
     []
 
 .. option:: to_allow
@@ -234,7 +232,7 @@ sensitive and regex pattern is also supported.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(to_allow=['four']).parse(test_text)
+    >>> ed.Sentences(to_allow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.']
 
 .. option:: to_callow
@@ -245,7 +243,7 @@ provided keys are case sensitive. Regex pattern is also supported.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(to_callow=['FOUR']).parse(test_text)
+    >>> ed.Sentences(to_callow=['FOUR']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.']
 
 Lets recreate same example as before but with a lowercase key.
@@ -253,7 +251,7 @@ Lets recreate same example as before but with a lowercase key.
 .. code-block:: python
 
     >>> test_text = 'First txt. Second txt. Third Txt. FOUR txt.'
-    >>> parsers.Sentences(to_callow=['four']).parse(test_text)
+    >>> ed.Sentences(to_callow=['four']).parse(test_text)
     ['First txt.', 'Second txt.', 'Third Txt.', 'FOUR txt.']
 
 .. option:: deny
@@ -265,7 +263,7 @@ regex pattern is also supported.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Sentences(deny=['first', 'third']).parse(test_text)
+    >>> ed.Sentences(deny=['first', 'third']).parse(test_text)
     ['Second sentence.']
 
 .. option:: cdeny
@@ -276,7 +274,7 @@ are case sensitive. Regex pattern as a key is also supported.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Sentences(cdeny=['First', 'Third']).parse(test_text)
+    >>> ed.Sentences(cdeny=['First', 'Third']).parse(test_text)
     ['First sentence?', 'Second sentence.']
 
 .. option:: normalize
@@ -288,7 +286,7 @@ split into sentences.
 .. code-block:: python
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['First sentence...', 'Bad ünicode.', 'HTML entities <3!']
 
 Lets try to set parameter ``normalize`` to ``False`` and see what happens.
@@ -296,7 +294,7 @@ Lets try to set parameter ``normalize`` to ``False`` and see what happens.
 .. code-block:: python
 
     >>> test_text = '  first sentence... Bad uÌˆnicode.   HTML entities &lt;3!'
-    >>> parsers.Sentences(normalize=False).parse(test_text)
+    >>> ed.Sentences(normalize=False).parse(test_text)
     ['First sentence...', 'Bad uÌˆnicode.', 'HTML entities &lt;3!']
 
 .. option:: capitalize
@@ -306,7 +304,7 @@ By default all sentences will get capitalized as we can see bellow.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. third sentence'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['First sentence?', 'Second sentence.', 'third sentence.']
 
 We can disable this behaviour by setting parameter ``capitalize`` to ``False``.
@@ -314,7 +312,7 @@ We can disable this behaviour by setting parameter ``capitalize`` to ``False``.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. third sentence'
-    >>> parsers.Sentences(capitalize=False).parse(test_text)
+    >>> ed.Sentences(capitalize=False).parse(test_text)
     ['first sentence?', 'Second sentence.', 'third sentence.']
 
 .. option:: title
@@ -325,7 +323,7 @@ to ``True``.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. third sentence'
-    >>> parsers.Sentences(title=True).parse(test_text)
+    >>> ed.Sentences(title=True).parse(test_text)
     'First Sentence? Second Sentence. Third Sentence'
 
 .. option:: uppercase
@@ -336,7 +334,7 @@ to ``True``.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. third sentence'
-    >>> parsers.Sentences(uppercase=True).parse(test_text)
+    >>> ed.Sentences(uppercase=True).parse(test_text)
     ['FIRST SENTENCE?', 'SECOND SENTENCE.', 'THIRD SENTENCE.']
 
 .. option:: lowercase
@@ -347,7 +345,7 @@ to ``True``.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. third sentence'
-    >>> parsers.Sentences(lowercase=True).parse(test_text)
+    >>> ed.Sentences(lowercase=True).parse(test_text)
     'first sentence? second sentence. third sentence'
 
 .. option:: min_chars
@@ -366,7 +364,7 @@ also supported and search keys are not case sensitive.
 .. code-block:: python
 
     >>> test_text = 'first sentence! - second sentence.  Third'
-    >>> parsers.Sentences(replace_keys=[('third', 'Last'), ('nce!', 'nce?')]).parse(test_text)
+    >>> ed.Sentences(replace_keys=[('third', 'Last'), ('nce!', 'nce?')]).parse(test_text)
     ['First sentence?', 'Second sentence.', 'Last.']
 
 .. option:: remove_keys
@@ -378,7 +376,7 @@ are not case sensitive.
 .. code-block:: python
 
     >>> test_text = 'first sentence! - second sentence.  Third'
-    >>> parsers.Sentences(remove_keys=['sentence', '!']).parse(test_text)
+    >>> ed.Sentences(remove_keys=['sentence', '!']).parse(test_text)
     ['First.', 'Second.', 'Third.']
 
 .. option:: replace_keys_raw_text
@@ -395,7 +393,7 @@ setting keys into ``replace_keys_raw_text``.
 .. code-block:: python
 
     >>> test_text = 'Easybook pro 15 Color: Gray Material: Aluminium'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['Easybook pro 15 Color: Gray Material: Aluminium.']
 
 As we can see from the result is returned as only one sentence
@@ -407,7 +405,7 @@ happens.
 
     >>> test_text = 'Easybook pro 15 Color: Gray Material: Aluminium'
     >>> replace_keys = [('Color:', '. Color:'), ('Material:', '. Material:')]
-    >>> parsers.Sentences(replace_keys_raw_text=replace_keys).parse(test_text)
+    >>> ed.Sentences(replace_keys_raw_text=replace_keys).parse(test_text)
     ['Easybook pro 15.', 'Color: Gray.', 'Material: Aluminium.']
 
 .. option:: remove_keys_raw_text
@@ -420,7 +418,7 @@ Please note that keys are not case sensitive and regex as key is also accepted.
 .. code-block:: python
 
     >>> test_text = 'Easybook pro 15. Color: Gray'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['Easybook pro 15.', 'Color: Gray.']
 
 Text above due to stop key ``.`` was split into two sentences. Lets prevent this
@@ -429,7 +427,7 @@ by removing color and stop key at the same time and get one sentence instead.
 .. code-block:: python
 
     >>> test_text = 'Easybook pro 15. Color: Gray'
-    >>> parsers.Sentences(remove_keys_raw_text=['. color:']).parse(test_text)
+    >>> ed.Sentences(remove_keys_raw_text=['. color:']).parse(test_text)
     ['Easybook pro 15 Gray.']
 
 .. option:: split_inline_breaks
@@ -442,7 +440,7 @@ Example:
 .. code-block:: python
 
     >>> test_text = '- first param - second param'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['First param.', 'Second param.']
 
 In cases when we want to disable this behaviour, we can set parameter
@@ -451,7 +449,7 @@ In cases when we want to disable this behaviour, we can set parameter
 .. code-block:: python
 
     >>> test_text = '- first param - second param'
-    >>> parsers.Sentences(split_inline_breaks=False).parse(test_text)
+    >>> ed.Sentences(split_inline_breaks=False).parse(test_text)
     ['- first param - second param.']
 
 Please note that chars like ``.``, ``:``, ``?``, ``!`` are not considered
@@ -466,14 +464,14 @@ of chars into ``inline_breaks`` parameter.
 .. code-block:: python
 
     >>> test_text = '> first param > second param'
-    >>> parsers.Sentences(inline_breaks=['>']).parse(test_text)
+    >>> ed.Sentences(inline_breaks=['>']).parse(test_text)
     ['First param.', 'Second param.']
 
 Regex pattern is also supported as a parameter value:
 
 .. code-block:: python
 
-    >>> parsers.Sentences(inline_breaks=[r'\b>']).parse(test_text)
+    >>> ed.Sentences(inline_breaks=[r'\b>']).parse(test_text)
 
 .. option:: stop_key
 
@@ -483,7 +481,7 @@ will automatically be appended ``.``. Let see this in bellow example:
 .. code-block:: python
 
     >>> test_text = 'First feature <br> second feature?'
-    >>> parsers.Sentences().parse(test_text)
+    >>> ed.Sentences().parse(test_text)
     ['First feature.', 'Second feature?']
 
 We can change our default char ``.`` to a custom one by setting our
@@ -492,7 +490,7 @@ desired char in a ``stop_key`` parameter.
 .. code-block:: python
 
     >>> test_text = 'First feature <br> second feature?'
-    >>> parsers.Sentences(stop_key='!').parse(test_text)
+    >>> ed.Sentences(stop_key='!').parse(test_text)
     ['First feature!', 'Second feature?']
 
 .. option:: text_num_to_numeric
@@ -503,7 +501,7 @@ numbers by setting ``text_num_to_numeric`` parameter to ``True``.
 .. code-block:: python
 
     >>> test_text = 'First Sentence. Two thousand and three has it. Three Sentences.'
-    >>> parsers.Sentences(text_num_to_numeric=True).parse(test_text)
+    >>> ed.Sentences(text_num_to_numeric=True).parse(test_text)
     ['1 Sentence.', '2003 has it.', '3 Sentences.']
 
 If our text is in different language we need to change language value in
@@ -532,7 +530,7 @@ Lets see default output in example bellow:
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Description().parse(test_text)
+    >>> ed.Description().parse(test_text)
     First sentence? Second sentence. Third sentence.
 
 Behind the scene simple ``join`` on a list of sentences is performed.
@@ -543,7 +541,7 @@ custom one.
 .. code-block:: python
 
     >>> test_text = 'first sentence? Second sentence. Third sentence'
-    >>> parsers.Description(sentence_separator=' > ').parse(test_text)
+    >>> ed.Description(sentence_separator=' > ').parse(test_text)
     First sentence? > Second sentence. > Third sentence.
 
 
@@ -570,7 +568,7 @@ features. Regular sentences are ignored.
 
 .. code-block:: python
 
-    >>> parsers.Features(test_text).parse(test_text)
+    >>> ed.Features(test_text).parse(test_text)
     [('Color', 'Black'), ('Material', 'Aluminium')]
 
 
@@ -587,5 +585,5 @@ Example:
 .. code-block:: python
 
     >>> test_text = '- color: Black - material: Aluminium. Last Sentence'
-    >>> parsers.FeaturesDict(test_text).parse(test_text)
+    >>> ed.FeaturesDict(test_text).parse(test_text)
     {'Color': 'Black', 'Material': 'Aluminium'}

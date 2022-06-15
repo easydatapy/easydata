@@ -49,19 +49,16 @@ Currently ``EasyData`` has 4 query components, which should cover most of situat
 
 **Example:**
 
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
-
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 Lets parse test data ``dict`` with ``Data`` parser.
 
 .. code-block:: python
 
     >>> test_dict = {'info': {'name': 'EasyBook pro 15'}}
-    >>> parsers.Data(query=jp('info.name')).parse(test_dict)
+    >>> ed.Data(query=ed.jp('info.name')).parse(test_dict)
     'EasyBook pro 15'
 
 Since ``query`` is first parameter (also in other parsers), we can skip ``query`` key as
@@ -69,28 +66,23 @@ we can see bellow.
 
 .. code-block:: python
 
-    >>> parsers.Data(jp('info.name')).parse(test_dict)
+    >>> ed.Data(ed.jp('info.name')).parse(test_dict)
     'EasyBook pro 15'
 
 We can also specify list of queries were each selected data from one query selector is passed
 on to another query selector.
 
-Lets import first ``re`` query which can select content with regex pattern.
-
-.. code-block:: python
-
-    >>> from easydata.queries import jp
-
-Now lets create a ``Data`` parser with multiple queries.
+Now lets create a ``Data`` parser with multiple queries and use ``re`` query which can select
+content with regex pattern.
 
 .. code-block:: python
 
     test_dict = {'info': {'name': 'EasyBook pro 15'}}
 
-    data_parser = parsers.Data(
+    data_parser = ed.Data(
         [
-            jp('info.name'),
-            re(r'\bpro .+'),
+            ed.jp('info.name'),
+            ed.re(r'\bpro .+'),
         ]
     )
 
@@ -129,17 +121,15 @@ Now our model:
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(
-            pq('.name::text'),
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(
+            ed.pq('.name::text'),
         )
 
-        item_signed = parsers.Bool(
+        item_signed = ed.Bool(
             from_item='name',
             contains=['autographed', 'signed']
         )
@@ -159,7 +149,7 @@ by selectors.
 .. code-block:: python
 
     >>> test_dict = {'info': {'brand': ''}}
-    >>> parsers.Data(query=jp('info.brand'), default='EasyData').parse(test_dict)
+    >>> ed.Data(query=ed.jp('info.brand'), default='EasyData').parse(test_dict)
     'EasyData'
 
 .. option:: default_from_item
@@ -184,18 +174,16 @@ Now model:
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
-    from easydata.queries import jp
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(
-            jp('info.name'),
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(
+            ed.jp('info.name'),
         )
 
-        item_description = parsers.Data(
-            jp('info.description'),
+        item_description = ed.Data(
+            ed.jp('info.description'),
             default_from_item='name'
         )
 
@@ -231,14 +219,12 @@ Now we will create a simple ``ItemModel``.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.models import ItemModel
-    from easydata.queries import jp, pq
+    import easydata as ed
 
-    class ProductItemModel(ItemModel):
-        item_brand = parsers.Data(jp('brand'))
+    class ProductItemModel(ed.ItemModel):
+        item_brand = ed.Data(ed.jp('brand'))
 
-        item_name = parsers.Data(pq('.name'), source="html")
+        item_name = ed.Data(ed.pq('.name'), source="html")
 
 Now lets pass our variables, that we created before, with different kind of data to
 ``parse`` method and see the result.
@@ -260,8 +246,8 @@ value will be ``None``.
 .. code-block:: python
 
     test_dict = {'info': {'name': 'EasyBook pro 15'}}
-    data_parser = parsers.Data(
-        jp('info.name'),
+    data_parser = ed.Data(
+        ed.jp('info.name'),
         process_raw_value=lambda value, data: "EasyData " + value
     )
 

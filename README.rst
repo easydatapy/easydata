@@ -128,54 +128,53 @@ item *dict*.
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import pq
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(
-            pq('.name::text'),
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(
+            ed.pq('.name::text'),
         )
 
-        item_brand = parsers.Text(
-            pq('.brand::text')
+        item_brand = ed.Text(
+            ed.pq('.brand::text')
         )
 
-        item_description = parsers.Description(
-            pq('#description::text')
+        item_description = ed.Description(
+            ed.pq('#description::text')
         )
 
-        item_price = parsers.PriceFloat(
-            pq('#price::text')
+        item_price = ed.PriceFloat(
+            ed.pq('#price::text')
         )
 
-        item_sale_price = parsers.PriceFloat(
-            pq('#sale-price::text')
+        item_sale_price = ed.PriceFloat(
+            ed.pq('#sale-price::text')
         )
 
-        item_color = parsers.Feature(
-            pq('#description::text'),
+        item_color = ed.Feature(
+            ed.pq('#description::text'),
             key='color'
         )
 
-        item_stock = parsers.Bool(
-            pq('.stock::attr(available)'),
+        item_stock = ed.Bool(
+            ed.pq('.stock::attr(available)'),
             contains=['yes']
         )
 
-        item_images = parsers.List(
-            pq('.images img::items'),
-            parser=parsers.UrlParser(
-                pq('::src')
+        item_images = ed.List(
+            ed.pq('.images img::items'),
+            parser=ed.UrlParser(
+                ed.pq('::src')
             )
         )
 
         """
         Alternative with selecting src values in a first css query:
 
-            item_images = parsers.ListParser(
-                pq('.images img::src-items'),
-                parser=parsers.UrlParser()
+            item_images = ed.ListParser(
+                ed.pq('.images img::src-items'),
+                parser=ed.UrlParser()
             )
         """
 
@@ -186,7 +185,7 @@ will parse provided *HTML* data into ``dict`` object.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_html)
+    >>> item_model.parse_item(test_html)
 
 Output:
 

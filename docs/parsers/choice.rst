@@ -19,13 +19,12 @@ Lets first create our choice parser.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.queries import jp
+    import easydata as ed
 
 
-    choice_parser = parsers.Choice(
+    choice_parser = ed.Choice(
         lookup_parsers=[
-            parsers.Text(jp('title'))
+            ed.Text(ed.jp('title'))
         ],
         choices = [
             # specified search keys are not case sensitive
@@ -90,21 +89,20 @@ provides different search parameters in order to create more accurate match.
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import jp
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(jp('name'))
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(ed.jp('name'))
 
-        _item_category = parsers.Text(jp('category'))
+        _item_category = ed.Text(ed.jp('category'))
 
-        item_type = parsers.Choice(
+        item_type = ed.Choice(
             lookup_items=['name', 'category'],
             choices = [
                 ("accessory", ["phone case", "watch strap"]),
-                ("watch", parsers.Bool(
-                    jp('description'),  # this lookup will only be used for a watch choice
+                ("watch", ed.Bool(
+                    ed.jp('description'),  # this lookup will only be used for a watch choice
 
                     # our search keys looking for a match are case sensitive
                     ccontains=['TIMEXXX', 'EASYWATCH']
@@ -120,18 +118,18 @@ see bellow.
 .. code-block:: python
 
     ...
-    item_type = parsers.Choice(
+    item_type = ed.Choice(
         lookup_items=['name'],
         lookup_parsers=[
-            parsers.Text(jp('category'))
+            ed.Text(ed.jp('category'))
         ],
         lookup_queries=[
-            jp('breadcrumbs')
+            ed.jp('breadcrumbs')
         ],
         choices = [
             ("accessory", ["phone case", "watch strap"]),
-            ("watch", parsers.Bool(
-                jp('description'),
+            ("watch", ed.Bool(
+                ed.jp('description'),
                 ccontains=['TIMEXXX', 'EASYWATCH']
             )),
             ("phone", ["mobile", "phone"]),
@@ -151,8 +149,8 @@ We can specify one or multiple lookup parsers where search keys will look for a 
 
         ...
         lookup_parsers=[
-            parsers.Text(jp('category')),
-            parsers.Text(jp('title'))
+            ed.Text(ed.jp('category')),
+            ed.Text(ed.jp('title'))
         ]
         ...
 
@@ -165,7 +163,7 @@ to a ``Text`` parser.
 .. code-block:: python
 
         ...
-        lookup_queries=[jp('category'), jp('title')]
+        lookup_queries=[ed.jp('category'), ed.jp('title')]
         ...
 
 .. option:: lookup_items
@@ -176,16 +174,15 @@ which needs to contain list of one or multiple item names from a model.
 
 .. code-block:: python
 
-    from easydata import ItemModel, parsers
-    from easydata.queries import jp
+    import easydata as ed
 
 
-    class ProductItemModel(ItemModel):
-        item_name = parsers.Text(jp('name'))
+    class ProductItemModel(ed.ItemModel):
+        item_name = ed.Text(ed.jp('name'))
 
-        _item_category = parsers.Text(jp('category'))
+        _item_category = ed.Text(ed.jp('category'))
 
-        item_type = parsers.Choice(
+        item_type = ed.Choice(
             lookup_items=['name', 'category'],
             choices = [
                 ("accessory", ["phone case", "watch strap"]),

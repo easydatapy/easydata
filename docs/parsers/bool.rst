@@ -10,19 +10,18 @@ Bool
 
 Getting Started
 ---------------
-Lets import first ``parsers`` module and ``jp`` instance from ``queries`` module.
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata import parsers
-    >>> from easydata.queries import jp
+    >>> import easydata as ed
 
 ``Bool`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'info': {'stock': True}}
-    >>> parsers.Bool(jp('info.stock')).parse(test_dict)
+    >>> ed.Bool(ed.jp('info.stock')).parse(test_dict)
     True
 
 In this case if ``jp`` returns ``None``, then bool parser will also return ``False``.
@@ -30,21 +29,21 @@ In this case if ``jp`` returns ``None``, then bool parser will also return ``Fal
 .. code-block:: python
 
     >>> test_dict = {}
-    >>> parsers.Bool(jp('invalid-key')).parse(test_dict)
+    >>> ed.Bool(ed.jp('invalid-key')).parse(test_dict)
     False
 
 Use of query selectors is not required, as we can see bellow.
 
     >>> test_data = True
-    >>> parsers.Bool().transform(test_data)
+    >>> ed.Bool().transform(test_data)
     True
 
     >>> test_data = True
-    >>> parsers.Bool().transform(test_data)
+    >>> ed.Bool().transform(test_data)
     True
 
     >>> test_data = True
-    >>> parsers.Bool().parse(test_data)
+    >>> ed.Bool().parse(test_data)
     True
 
 Parameters
@@ -59,7 +58,7 @@ also accepted.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> parsers.Bool(contains=['pro 13']).parse(text)
+    >>> ed.Bool(contains=['pro 13']).parse(text)
     True
 
 .. option:: ccontains
@@ -70,7 +69,7 @@ that keys are case sensitive.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> parsers.Bool(contains=['Pro 13']).parse(text)
+    >>> ed.Bool(contains=['Pro 13']).parse(text)
     True
 
 Lets try with lowercase keys.
@@ -78,7 +77,7 @@ Lets try with lowercase keys.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> parsers.Bool(contains=['Pro 13']).parse(text)
+    >>> ed.Bool(contains=['Pro 13']).parse(text)
     False
 
 .. option:: contains_query
@@ -90,7 +89,7 @@ query selector to get our contains keys.
 .. code-block:: python
 
     >>> test_dict = {'title': 'Easybook Pro 13', 'info': {'brand': 'Easybook}'}
-    >>> parsers.Bool(jp('title'), contains_query=jp('info.brand')).parse(text)
+    >>> ed.Bool(ed.jp('title'), contains_query=ed.jp('info.brand')).parse(text)
     True
 
 .. option:: contains_query_source
@@ -100,14 +99,12 @@ query selector to get our contains keys.
 
 .. code-block:: python
 
-    from easydata import parsers
-    from easydata.queries import jp
-    from easydata.models import ItemModel
+    import easydata as ed
 
-    class ProductItemModel(ItemModel):
+    class ProductItemModel(ed.ItemModel):
         item_stock = parsers.Bool(
-            jp('title'),
-            contains_query=jp('name')
+            ed.jp('title'),
+            contains_query=ed.jp('name')
             contains_query_source='brand_data'
         )
 
@@ -134,7 +131,7 @@ Lets see in example bellow first how default behaviour works.
 .. code-block:: python
 
     >>> test_dict = None
-    >>> parsers.Bool(jp('info.stock')).parse(test_dict)
+    >>> ed.Bool(ed.jp('info.stock')).parse(test_dict)
     False
 
 Lets set ``empty_as_false`` to ``False`` and see what it returns.
@@ -142,5 +139,5 @@ Lets set ``empty_as_false`` to ``False`` and see what it returns.
 .. code-block:: python
 
     >>> test_dict = None
-    >>> parsers.Bool(jp('info.stock'), empty_as_false=False).parse(test_dict)
+    >>> ed.Bool(ed.jp('info.stock'), empty_as_false=False).parse(test_dict)
     None

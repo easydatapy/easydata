@@ -20,17 +20,17 @@ Through this tutorial we will use following text which contains some javascript 
         };
     """
 
-Lets import our ``re`` query selector. ``re`` is shortcut for a ``ReQuery`` class.
+Lets import our easydata module first.
 
 .. code-block:: python
 
-    >>> from easydata.queries import re
+    >>> import easydata as ed
 
 Now lets extract *basePrice* value from our text and pass ``js_text`` to our ``re`` instance.
 
 .. code-block:: python
 
-    >>> re('basePrice: "(.*?)"').get(js_text)
+    >>> ed.re('basePrice: "(.*?)"').get(js_text)
     '149.95€'
 
 
@@ -41,7 +41,7 @@ Pseudo keys
 By default out regex pattern will always return fist match. If we want to get list of all
 matches, then we need to add ``::all`` pseudo key to our regex pattern.
 
-    >>> re('basePrice: "(.*?)"::all').get(js_text)
+    >>> ed.re('basePrice: "(.*?)"::all').get(js_text)
     ['149.95€', '0€']
 
 
