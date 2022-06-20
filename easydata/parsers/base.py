@@ -31,6 +31,8 @@ class BaseData(Base, ABC):
         source: Optional[str] = None,
         process_raw_value: Optional[Callable] = None,
         process_value: Optional[Callable] = None,
+        debug: bool = False,
+        debug_source: bool = None,
     ):
 
         if query and from_item:
@@ -44,6 +46,8 @@ class BaseData(Base, ABC):
         self._source = source
         self._process_raw_value = process_raw_value
         self._process_value = process_value
+        self._debug = debug
+        self._debug_source = debug_source
 
     def parse(
         self,
@@ -65,10 +69,16 @@ class BaseData(Base, ABC):
 
             value = self._parse_data_to_value(data=data, query_params=query_params)
 
+        if self._debug_source:  # Debug value before is parsed
+            print(value)
+
         if self._process_raw_value:
             value = self._process_raw_value(value, data)
 
         value = self._parse_value(value, data)
+
+        if self._debug:  # Debug value after is parsed
+            print(value)
 
         if self._process_value:
             value = self._process_value(value, data)

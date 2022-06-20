@@ -40,19 +40,29 @@ class DataBaseProcessor(BaseProcessor, ABC):
         source: str = "main",
         new_source: Optional[str] = None,
         process_source_data=None,
+        debug: bool = False,
+        debug_raw: bool = None,
     ):
 
         self._source = source
         self._new_source = new_source
         self._process_source_data = process_source_data
+        self._debug = debug
+        self._debug_raw = debug_raw
 
     def parse(self, data: DataBag) -> Iterator[DataBag]:
         source_data = data[self._source]
+
+        if self._debug_raw:
+            print(source_data)
 
         if self._process_source_data:
             source_data = self._process_source_data(source_data)
 
         transformed_data = self._process_data(source_data)
+
+        if self._debug:
+            print(transformed_data)
 
         if self._multi:
             for iter_transformed_data in transformed_data:
