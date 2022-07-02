@@ -29,6 +29,7 @@ def test_bool(query, test_data, result):
         ("False", False),
         ("true", True),
         ("false", False),
+        (None, False),
     ],
 )
 def test_bool_various_types(test_data, result):

@@ -32,6 +32,13 @@ from tests.factory import data_html
         ),
         (
             (
+                parsers.Bool(pq(".brand::text"), contains=["WrongData"]),
+                parsers.Bool(pq(".brand::text"), contains=["EasyData"]),
+            ),
+            True,
+        ),
+        (
+            (
                 parsers.List(pq(".brand-wrong::text-items")),
                 parsers.Text(pq(".brand::text")),
             ),
@@ -49,17 +56,37 @@ def test_or(test_parsers, result):
     assert or_parser.parse(test_html) == result
 
 
-def test_or_strict_none_is_true():
+@pytest.mark.parametrize(
+    "test_parsers, result",
+    [
+        (
+            (
+                parsers.List(pq(".brand-wrong::text-items")),
+                parsers.Text(pq(".brand::text")),
+            ),
+            [],
+        ),
+        (
+            (
+                parsers.Bool(pq(".brand::text"), contains=["WrongData"]),
+                parsers.Bool(
+                    pq(".brand::text"), default=False, contains=["Wrong2Data"]
+                ),
+            ),
+            False,
+        ),
+    ],
+)
+def test_or_strict_none_is_true(test_parsers, result):
     test_html = """
         <p class="brand">EasyData</p>
     """
 
     or_parser = parsers.Or(
-        parsers.List(pq(".brand-wrong::text-items")),
-        parsers.Text(pq(".brand::text")),
+        *test_parsers,
         strict_none=True,
     )
-    assert or_parser.parse(test_html) == []
+    assert or_parser.parse(test_html) == result
 
 
 def test_with():
