@@ -4,9 +4,9 @@
 Clause Parsers
 ==============
 
-Union
-=====
-.. autoclass:: easydata.parsers.clause::Union
+Or
+==
+.. autoclass:: easydata.parsers.clause::Or
 
 **Example:**
 
@@ -16,7 +16,7 @@ Lets import our easydata module first.
 
     >>> import easydata as ed
 
-Lets write our ``Union`` parser.
+Lets write our ``Or`` parser.
 
 .. code-block:: python
 
@@ -24,7 +24,7 @@ Lets write our ``Union`` parser.
         <p class="brand">EasyData</p>
     '''
 
-    union_parser = ed.Union(
+    or_parser = ed.Or(
         ed.Text(ed.pq('.brand-wrong-selector::text')),
         ed.Text(ed.pq('.brand::text'))
     )
@@ -33,7 +33,7 @@ Now lets parse ``test_html`` data and print our result.
 
 .. code-block:: python
 
-    print(union_parser.parse(test_html))
+    print(or_parser.parse(test_html))
 
 .. code-block:: python
 
@@ -55,7 +55,7 @@ Please note that even if query selector found a match and it's content was still
         <p id="name">Easybook Pro 13</p>
     '''
 
-    union_parser = ed.Union(
+    or_parser = ed.Or(
         ed.Text(ed.pq('#name::text')),
         ed.Text(ed.pq('.brand::text'))
     )
@@ -64,7 +64,7 @@ Now lets parse ``test_html`` data and print our result.
 
 .. code-block:: python
 
-    print(union_parser.parse(test_html))
+    print(or_parser.parse(test_html))
 
 .. code-block:: python
 

@@ -6,66 +6,60 @@ from easydata.queries import jp, pq
 from tests.factory import data_html
 
 
-def test_union():
-    test_html = """
-        <p class="brand">EasyData</p>
-    """
-
-    union_parser = parsers.Union(
-        parsers.Text(pq(".brand-wrong::text")),
-        parsers.Text(pq(".brand::text")),
-    )
-    assert union_parser.parse(test_html) == "EasyData"
-
-
-def test_union_first():
+@pytest.mark.parametrize(
+    "test_parsers, result",
+    [
+        (
+            (
+                parsers.Text(pq(".brand-wrong::text")),
+                parsers.Text(pq(".brand::text")),
+            ),
+            "EasyData",
+        ),
+        (
+            (
+                parsers.Text(pq(".brand::text")),
+                parsers.Text(pq("#name::text")),
+            ),
+            "EasyData",
+        ),
+        (
+            (
+                parsers.Text(pq(".brand-wrong::text")),
+                parsers.Text(pq(".brand-wrong-again::text")),
+            ),
+            None,
+        ),
+        (
+            (
+                parsers.List(pq(".brand-wrong::text-items")),
+                parsers.Text(pq(".brand::text")),
+            ),
+            "EasyData",
+        ),
+    ],
+)
+def test_or(test_parsers, result):
     test_html = """
         <p class="brand">EasyData</p>
         <p id="name">Easybook Pro 13</p>
     """
 
-    union_parser = parsers.Union(
-        parsers.Text(pq(".brand::text")),
-        parsers.Text(pq("#name::text")),
-    )
-    assert union_parser.parse(test_html) == "EasyData"
+    or_parser = parsers.Or(*test_parsers)
+    assert or_parser.parse(test_html) == result
 
 
-def test_union_none():
+def test_or_strict_none_is_true():
     test_html = """
         <p class="brand">EasyData</p>
     """
 
-    union_parser = parsers.Union(
-        parsers.Text(pq(".brand-wrong::text")),
-        parsers.Text(pq(".brand-wrong-again::text")),
-    )
-    assert union_parser.parse(test_html) is None
-
-
-def test_union_strict_none_is_default_false():
-    test_html = """
-        <p class="brand">EasyData</p>
-    """
-
-    union_parser = parsers.Union(
-        parsers.List(pq(".brand-wrong::text-items")),
-        parsers.Text(pq(".brand::text")),
-    )
-    assert union_parser.parse(test_html) == "EasyData"
-
-
-def test_union_strict_none_is_true():
-    test_html = """
-        <p class="brand">EasyData</p>
-    """
-
-    union_parser = parsers.Union(
+    or_parser = parsers.Or(
         parsers.List(pq(".brand-wrong::text-items")),
         parsers.Text(pq(".brand::text")),
         strict_none=True,
     )
-    assert union_parser.parse(test_html) == []
+    assert or_parser.parse(test_html) == []
 
 
 def test_with():

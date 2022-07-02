@@ -5,7 +5,7 @@ from easydata.typing import Parser
 from easydata.utils import parse
 
 __all__ = (
-    "Union",
+    "Or",
     "With",
     "Conditional",
     "ConcatText",
@@ -16,7 +16,7 @@ __all__ = (
 )
 
 
-class Union(Base):
+class Or(Base):
     _min_len_error_msg = "At least two parsers needs to be passed in order " "to use {}"
 
     def __init__(
@@ -58,7 +58,7 @@ class Union(Base):
             raise ValueError(self._min_len_error_msg.format(cls_name))
 
 
-class With(Union):
+class With(Or):
     def parse(
         self,
         data: Any,
@@ -135,7 +135,7 @@ class Conditional(Base):
         return None
 
 
-class ConcatText(Union):
+class ConcatText(Or):
     def __init__(
         self,
         *args: Parser,
@@ -176,7 +176,7 @@ class ConcatText(Union):
         return self._separator.join(values)
 
 
-class JoinList(Union):
+class JoinList(Or):
     def parse(
         self,
         data: Any,
@@ -207,7 +207,7 @@ class JoinList(Union):
         return values
 
 
-class MergeDict(Union):
+class MergeDict(Or):
     def parse(
         self,
         data: Any,
