@@ -111,13 +111,35 @@ def test_list_max_num(max_num, result):
     assert list_parser.parse(["one", "two", "three", "four"]) == result
 
 
-def test_list_split_key():
-    test_text = "name,surname,age,country"
+@pytest.mark.parametrize(
+    "test_text,split_key,result",
+    [
+        (
+            "name,surname,age,country",
+            ",",
+            ["name", "surname", "age", "country"],
+        ),
+        (
+            "name,surname,age,country",
+            "|",
+            ["name,surname,age,country"],
+        ),
+        (
+            "name,surname,age,country",
+            ["|", ","],
+            ["name", "surname", "age", "country"],
+        ),
+        (
+            None,
+            ["|", ","],
+            [],
+        ),
+    ],
+)
+def test_list_split_key(test_text, split_key, result):
+    list_parser = parsers.List(split_key=split_key)
 
-    list_parser = parsers.List(parser=parsers.Text(), split_key=",")
-
-    expected_result = ["name", "surname", "age", "country"]
-    assert list_parser.parse(test_text) == expected_result
+    assert list_parser.parse(test_text) == result
 
 
 def test_list_allow_callables():
@@ -244,6 +266,27 @@ def test_text_list_cdeny():
     list_parser = parsers.TextList(parser=parsers.Url(), cdeny=["1.JP", "3.jp"])
 
     assert list_parser.parse(data_list.images) == expected_urls[:2]
+
+
+@pytest.mark.parametrize(
+    "test_text,split_key,result",
+    [
+        (
+            "name,surname,age,country",
+            ",",
+            ["name", "surname", "age", "country"],
+        ),
+        (
+            None,
+            ["|", ","],
+            [],
+        ),
+    ],
+)
+def test_text_list_split_key(test_text, split_key, result):
+    text_list_parser = parsers.TextList(split_key=split_key)
+
+    assert text_list_parser.parse(test_text) == result
 
 
 @pytest.mark.parametrize(
