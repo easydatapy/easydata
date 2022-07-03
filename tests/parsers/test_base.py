@@ -3,6 +3,7 @@ import pytest
 from easydata.data import DataBag
 from easydata.models import ItemModel
 from easydata.parsers.data import Data
+from easydata.parsers.text import Text
 from easydata.queries import jp
 from tests.factory import data_dict
 
@@ -74,6 +75,12 @@ def test_base_data_field_different_source(query, source, test_data, result):
             db,
             "EasyBook pro 13",
         ),
+        (
+            jp("info.name"),
+            Text(replace_keys=[("15", "13")]),
+            db,
+            "EasyBook pro 13",
+        ),
         (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
 )
@@ -95,6 +102,12 @@ def test_base_data_field_process_raw_value(
             ),
             db,
             "EasyBook pro 15 True",
+        ),
+        (
+            None,
+            Text(remove_keys=["'"], split_keys=[("Easy", -1), "pro"]),
+            "EasyBook' pro 15",
+            "Book",
         ),
         (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
