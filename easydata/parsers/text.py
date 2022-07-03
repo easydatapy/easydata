@@ -86,6 +86,9 @@ class Text(BaseData):
             else:
                 value = self._separator.join(value)
 
+        if value is None:
+            return value
+
         value = parse_string(
             raw_text=value,
             normalize=self._normalize,
