@@ -52,10 +52,14 @@ def test_pq_remove_nodes():
     [
         (["1-2-3", "4-5", "-6"], "-", ["1", "2", "3", "4", "5", "6"]),
         (["1-2-3", "4-5", "-6"], "|", ["1-2-3", "4-5", "-6"]),
+        (["1x2x3"], "x", ["1", "2", "3"]),
+        (["1x2x3"], "-", ["1x2x3"]),
+        (["1x2x3"], ["-", "x"], ["1", "2", "3"]),
+        (["-1x-2x-3"], ["x", "-"], ["-1", "-2", "-3"]),
     ],
 )
-def test_multiply_list_values_split_key(test_data, split_key, result):
-    assert mix.multiply_list_values(test_data, split_key) == result
+def test_multiply_list_values_by_split_key(test_data, split_key, result):
+    assert mix.multiply_list_values_by_split_key(test_data, split_key) == result
 
 
 @pytest.mark.parametrize(
