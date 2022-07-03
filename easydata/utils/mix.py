@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Optional, Union
 
-from easytxt.text import to_list
+from easytxt.text import to_list as multiply_to_list
 from pyquery import PyQuery
 
 from easydata.config.loader import ConfigLoader
@@ -132,10 +132,52 @@ def iter_attr_data_from_obj(
         yield attr_name, attr_value
 
 
+def to_list(
+    value: Any,
+    split_key: Union[List[str], str],
+) -> list:
+
+    if not value:
+        return []
+
+    if isinstance(split_key, str):
+        split_key = [split_key]
+
+    value = str(value)
+
+    for single_split_key in split_key:
+        if single_split_key in value:
+            return [v.strip() for v in value.split(single_split_key)]
+
+    return [value]
+
+
 def multiply_list_values(
     list_values: list,
-    split_key: Optional[str] = None,
     multiply_keys: Optional[Union[list, tuple]] = None,
+) -> list:
+
+    new_all_list_values = []
+
+    for list_value in list_values:
+        if not list_value:
+            continue
+
+        new_list_values = multiply_to_list(
+            value=list_value,
+            multiply_keys=multiply_keys,
+        )
+
+        for new_list_value in new_list_values:
+            if new_list_value:
+                new_all_list_values.append(new_list_value)
+
+    return new_all_list_values
+
+
+def multiply_list_values_by_split_key(
+    list_values: list,
+    split_key: Union[List[str], str],
 ) -> list:
 
     new_all_list_values = []
@@ -147,7 +189,6 @@ def multiply_list_values(
         new_list_values = to_list(
             value=list_value,
             split_key=split_key,
-            multiply_keys=multiply_keys,
         )
 
         for new_list_value in new_list_values:
