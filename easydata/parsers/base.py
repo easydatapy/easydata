@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from easydata.data import DataBag
 from easydata.mixins import ConfigMixin
@@ -20,6 +20,18 @@ class Base(ConfigMixin, ABC):
         pass
 
 
+def custom_process_value(
+    callback_or_parser: Union[Callable, Base],
+    value: Any,
+    data: Any,
+):
+
+    if isinstance(callback_or_parser, Base):
+        return callback_or_parser.parse(value)
+
+    return callback_or_parser(value, data)
+
+
 class BaseData(Base, ABC):
     def __init__(
         self,
@@ -29,8 +41,8 @@ class BaseData(Base, ABC):
         default: Optional[Any] = None,
         default_from_item: Optional[str] = None,
         source: Optional[str] = None,
-        process_raw_value: Optional[Callable] = None,
-        process_value: Optional[Callable] = None,
+        process_raw_value: Optional[Union[Callable, Base]] = None,
+        process_value: Optional[Union[Callable, Base]] = None,
         debug: bool = False,
         debug_source: bool = None,
     ):
@@ -73,7 +85,7 @@ class BaseData(Base, ABC):
             print(value)
 
         if self._process_raw_value:
-            value = self._process_raw_value(value, data)
+            value = custom_process_value(self._process_raw_value, value, data)
 
         value = self._parse_value(value, data)
 
@@ -81,7 +93,7 @@ class BaseData(Base, ABC):
             print(value)
 
         if self._process_value:
-            value = self._process_value(value, data)
+            value = custom_process_value(self._process_value, value, data)
 
         return self._process_default_value(value, data)
 
