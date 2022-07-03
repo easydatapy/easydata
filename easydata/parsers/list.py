@@ -27,7 +27,7 @@ class List(BaseData):
         parser: Optional[Base] = None,
         unique: bool = True,
         max_num: Optional[int] = None,
-        split_key: Optional[str] = None,
+        split_key: Optional[Union[ListType[str], str]] = None,
         preprocess_allow: Optional[Callable] = None,
         process_allow: Optional[Callable] = None,
         **kwargs,
@@ -97,7 +97,7 @@ class List(BaseData):
             list_values = [list_values]
 
         if self._split_key:
-            list_values = mix.multiply_list_values(
+            list_values = mix.multiply_list_values_by_split_key(
                 list_values=list_values,
                 split_key=self._split_key,
             )
