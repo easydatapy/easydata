@@ -2,11 +2,11 @@ from typing import Any, Optional
 
 import jmespath
 
-from easydata.queries.key import KeyQuery
+from easydata.queries.key import KeySearch
 
 
-class JMESPathSearch(KeyQuery):
-    def _parse(
+class JMESPathSearch(KeySearch):
+    def parse(
         self,
         data: Any,
         query: Optional[str],
@@ -19,3 +19,7 @@ class JMESPathSearch(KeyQuery):
             )
 
         return self._process_data_key_values(data)
+
+
+class JMESPathStrictSearch(JMESPathSearch):
+    strict = True

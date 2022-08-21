@@ -8,7 +8,7 @@ from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 
 
-class ReQuery(QuerySearch):
+class ReSearch(QuerySearch):
     def __init__(
         self,
         query: str,
@@ -33,7 +33,7 @@ class ReQuery(QuerySearch):
         self._ignore_case = ignore_case
         self._bytes_to_string_decode = bytes_to_string_decode
 
-    def _parse(
+    def parse(
         self,
         data: Any,
         query: Optional[str],
@@ -62,7 +62,7 @@ class ReQuery(QuerySearch):
         for result in results:
             yield result.group(1)
 
-    def _process_data(
+    def process_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -87,3 +87,7 @@ class ReQuery(QuerySearch):
             )
 
         return data
+
+
+class ReStrictSearch(ReSearch):
+    strict = True

@@ -38,7 +38,7 @@ class PyQuerySearch(QuerySearch):
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
 
-    def _parse(
+    def parse(
         self,
         pq: PyQuery,
         query: Optional[str],
@@ -62,7 +62,7 @@ class PyQuerySearch(QuerySearch):
         for spq in pq.items():
             yield self._extract_data_from_pq(spq)
 
-    def _process_data(
+    def process_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -163,3 +163,7 @@ class PyQuerySearch(QuerySearch):
                     pseudo_key, ",".join(_attr_shortcut_mappings.keys())
                 )
             )
+
+
+class PyQueryStrictSearch(PyQuerySearch):
+    strict = True

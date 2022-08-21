@@ -8,7 +8,7 @@ from easydata.queries.base import QuerySearch
 from easydata.utils import pseudo
 
 
-class KeyQuery(QuerySearch):
+class KeySearch(QuerySearch):
     def __init__(
         self,
         query: str = None,
@@ -26,7 +26,7 @@ class KeyQuery(QuerySearch):
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
 
-    def _parse(
+    def parse(
         self,
         data: Any,
         query: Optional[str],
@@ -37,7 +37,7 @@ class KeyQuery(QuerySearch):
 
         return self._process_data_key_values(data)
 
-    def _process_data(
+    def process_data(
         self,
         data: Any,
         source: Optional[str] = None,
@@ -150,3 +150,7 @@ class KeyQuery(QuerySearch):
                 "Pseudo key '{}' is not supported. Currently supported are: keys,"
                 "values, dict(<key>,<value>).".format(pseudo_key)
             )
+
+
+class KeyStrictSearch(KeySearch):
+    strict = True
