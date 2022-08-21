@@ -45,13 +45,13 @@ class Url(Text):
     def _protocol(self):
         return self.__protocol or self.config["ED_URL_PROTOCOL"]
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ) -> str:
 
-        value = super()._parse_value(value, data)
+        value = super().parse_value(value, data)
 
         if value and self._from_text:
             value = url.from_text(value)

@@ -75,13 +75,13 @@ class DateTime(Text):
     def _date_formats(self):
         return self.__date_formats or self.config["ED_DATETIME_FORMATS"]
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super(DateTime, self)._parse_value(value, data)
+        value = super(DateTime, self).parse_value(value, data)
 
         if not value:
             return None

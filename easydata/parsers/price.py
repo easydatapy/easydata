@@ -58,13 +58,13 @@ class BasePriceFloat(Text, ABC):
     def _max_value_config(self):
         return None
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         if not value:
             return None
@@ -107,24 +107,24 @@ class PriceFloat(BasePriceFloat):
 
 
 class PriceInt(PriceFloat):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         return int(value) if value else None
 
 
 class PriceText(PriceFloat):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         return str(value) if value else None

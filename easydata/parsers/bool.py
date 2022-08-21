@@ -38,7 +38,7 @@ class Bool(Text):
             **kwargs,
         )
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
@@ -56,7 +56,7 @@ class Bool(Text):
             elif "false" == value.lower():
                 return False
 
-        value = super(Bool, self)._parse_value(value, data)
+        value = super(Bool, self).parse_value(value, data)
 
         if not value:
 
@@ -89,12 +89,12 @@ class Bool(Text):
 
 
 class IBool(Bool):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
-        value = super(IBool, self)._parse_value(value, data)
+        value = super(IBool, self).parse_value(value, data)
 
         if value is None:
             return value

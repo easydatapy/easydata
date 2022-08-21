@@ -87,7 +87,7 @@ class BaseData(Base, ABC):
         if self._process_raw_value:
             value = custom_process_value(self._process_raw_value, value, data)
 
-        value = self._parse_value(value, data)
+        value = self.parse_value(value, data)
 
         if self._debug:  # Debug value after is parsed
             print(value)
@@ -151,7 +151,7 @@ class BaseData(Base, ABC):
         return value  # no default value was specified
 
     @abstractmethod
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,

@@ -63,13 +63,13 @@ class Text(BaseData):
     def _language(self):
         return self.__language or self.config["ED_LANGUAGE"]
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super(Text, self)._parse_value(
+        value = super(Text, self).parse_value(
             value=value,
             data=data,
         )

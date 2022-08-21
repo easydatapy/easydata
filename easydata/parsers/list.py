@@ -60,7 +60,7 @@ class List(BaseData):
     def _default_parser_obj(self):
         return Data()
 
-    def _parse_value(self, value: Any, data: Any) -> list:
+    def parse_value(self, value: Any, data: Any) -> list:
 
         if value is None:
             return []

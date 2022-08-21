@@ -120,7 +120,7 @@ class Dict(BaseData):
     def _default_value_parser_obj(self):
         return Data(self._value_query)
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,

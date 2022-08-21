@@ -40,13 +40,13 @@ class DropContains(Text):
     def _exception(self, msg: str):
         return self.config["ED_DROP_ITEM_EXCEPTION"](msg)
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super(DropContains, self)._parse_value(value, data)
+        value = super(DropContains, self).parse_value(value, data)
 
         if not value:
 
@@ -108,7 +108,7 @@ class DropEmpty(Data):
     def _exception(self, msg: str):
         return self.config["ED_DROP_ITEM_EXCEPTION"](msg)
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,

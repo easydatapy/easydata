@@ -25,36 +25,36 @@ class Float(BasePriceFloat):
 
 
 class Int(Float):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         return int(value) if value else None
 
 
 class FloatText(Float):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         return str(value) if value else None
 
 
 class IntText(Int):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         return str(value) if value else None

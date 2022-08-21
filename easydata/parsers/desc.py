@@ -130,7 +130,7 @@ class BaseDescription(BaseData, ABC):
 
 
 class Description(BaseDescription):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
@@ -142,7 +142,7 @@ class Description(BaseDescription):
 
 
 class Sentences(BaseDescription):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
@@ -154,7 +154,7 @@ class Sentences(BaseDescription):
 
 
 class Features(BaseDescription):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
@@ -166,7 +166,7 @@ class Features(BaseDescription):
 
 
 class FeaturesDict(BaseDescription):
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
@@ -197,7 +197,7 @@ class Feature(BaseDescription):
             **kwargs,
         )
 
-    def _parse_value(self, value: Any, data: Any) -> Optional[list]:
+    def parse_value(self, value: Any, data: Any) -> Optional[list]:
         if not value:
             return None
 

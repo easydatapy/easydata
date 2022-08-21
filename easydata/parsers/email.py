@@ -21,13 +21,13 @@ class Email(Text):
             **kwargs,
         )
 
-    def _parse_value(
+    def parse_value(
         self,
         value: Any,
         data: Any,
     ):
 
-        value = super()._parse_value(value=value, data=data)
+        value = super().parse_value(value=value, data=data)
 
         if not value:
             return None
