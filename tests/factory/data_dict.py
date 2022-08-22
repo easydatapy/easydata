@@ -1,4 +1,6 @@
 item_with_options = {
+    "id": 123,
+    "url_path": "easybook-pro-15",
     "title": "EasyBook pro 15",
     "info": {"name": "EasyBook pro 15"},
     "brand": {"name": "EasyData", "origin": "Slovenia"},
@@ -26,6 +28,7 @@ item_with_options = {
 }
 
 variants_data = {
+    "id": 123,
     "title": "EasyData Pro 13",
     "variants": [
         {"color": "Black", "stock": True},
@@ -35,6 +38,7 @@ variants_data = {
 
 variants_data_multi = {
     "data": {
+        "id": 123,
         "title": "EasyData Pro",
         "variants": [
             {"color": "Black", "size": "13", "stock": True},
@@ -46,6 +50,7 @@ variants_data_multi = {
 }
 
 variants_data_multi_complex = {
+    "id": 123,
     "title": "EasyData Pro",
     "images": {
         "Black": [{"assetId": "33019_B_PRIMARY"}, {"assetId": "33020_B_ALT1"}],
@@ -69,6 +74,7 @@ multi_items = {
     "data": {
         "items": [
             {
+                "id": 1,
                 "title": "EasyData Pro",
                 "variants": [
                     {"color": "Black", "size": "13", "stock": True},
@@ -78,6 +84,7 @@ multi_items = {
                 ],
             },
             {
+                "id": 2,
                 "title": "EasyPod",
                 "variants": [
                     {"color": "Black", "size": "8", "stock": True},
