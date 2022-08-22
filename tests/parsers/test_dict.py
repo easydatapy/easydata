@@ -5,57 +5,88 @@ from easydata.queries import jp, pq
 from tests.factory import data_dict, data_html
 
 
-def test_dict():
-    dict_parser = parsers.Dict(
-        pq("#size-variants li::items"),
-        key_parser=parsers.Text(pq("::text")),
-        val_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
-    )
+EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
 
-    expected_result = {"l": True, "xl": False, "xxl": True}
-    assert dict_parser.parse(data_html.sizes) == expected_result
 
-    dict_parser = parsers.Dict(
-        pq("#size-variants li::items"),
-        key_query=pq("::text"),
-        val_parser=parsers.Bool(pq("::attr(size-stock)"), contains=["true"]),
-    )
-
-    assert dict_parser.parse(data_html.sizes) == expected_result
-
-    dict_parser = parsers.Dict(
-        pq("#size-variants li::items"),
-        key_query=pq("::text"),
-        val_query=pq("::attr(size-stock)"),
-    )
-
-    expected_text_result = {"l": "true", "xl": "false", "xxl": "true"}
-    assert dict_parser.parse(data_html.sizes) == expected_text_result
-
-    dict_parser = parsers.Dict(
-        jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Bool()
-    )
-
-    assert dict_parser.parse(data_dict.sizes) == expected_result
-
-    dict_parser = parsers.Dict(jp("sizes"))
-
-    assert dict_parser.parse(data_dict.sizes) == expected_result
-
-    dict_parser = parsers.Dict(jp("sizes"), key_parser=parsers.Text())
-
-    assert dict_parser.parse(data_dict.sizes) == expected_result
-
-    dict_parser = parsers.Dict(jp("sizes"), val_parser=parsers.Bool())
-
-    assert dict_parser.parse(data_dict.sizes) == expected_result
-
-    dict_parser = parsers.Dict(
-        jp("sizes"), key_parser=parsers.Text(), val_parser=parsers.Text()
-    )
-
-    expected_result = {"l": "True", "xl": "False", "xxl": "True"}
-    assert dict_parser.parse(data_dict.sizes) == expected_result
+@pytest.mark.parametrize(
+    "dict_parser, test_data, results",
+    [
+        (
+            parsers.Dict(
+                pq("#size-variants li::items"),
+                key_parser=parsers.Text(pq("::text")),
+                val_parser=parsers.Bool(
+                    pq("::attr(size-stock)"),
+                    contains=["true"],
+                ),
+            ),
+            data_html.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(
+                pq("#size-variants li::items"),
+                key_query=pq("::text"),
+                val_parser=parsers.Bool(
+                    pq("::attr(size-stock)"),
+                    contains=["true"],
+                ),
+            ),
+            data_html.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(
+                pq("#size-variants li::items"),
+                key_query=pq("::text"),
+                val_query=pq("::attr(size-stock)"),
+            ),
+            data_html.sizes,
+            {"l": "true", "xl": "false", "xxl": "true"},
+        ),
+        (
+            parsers.Dict(
+                jp("sizes"),
+                key_parser=parsers.Text(),
+                val_parser=parsers.Bool(),
+            ),
+            data_dict.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(jp("sizes")),
+            data_dict.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(
+                jp("sizes"),
+                key_parser=parsers.Text(),
+            ),
+            data_dict.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(
+                jp("sizes"),
+                val_parser=parsers.Bool(),
+            ),
+            data_dict.sizes,
+            EXPECTED_DICT_RESULT,
+        ),
+        (
+            parsers.Dict(
+                jp("sizes"),
+                key_parser=parsers.Text(),
+                val_parser=parsers.Text(),
+            ),
+            data_dict.sizes,
+            {"l": "True", "xl": "False", "xxl": "True"},
+        ),
+    ],
+)
+def test_dict(dict_parser, test_data, results):
+    assert dict_parser.parse(test_data) == results
 
 
 def test_dict_config():
