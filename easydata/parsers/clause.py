@@ -242,10 +242,12 @@ class ItemDict(Base):
     def __init__(
         self,
         ignore_non_values: bool = False,
+        exception_on_non_values: bool = False,
         **kwargs,
     ):
 
         self._ignore_non_values = ignore_non_values
+        self._exception_on_non_values = exception_on_non_values
         self._parser_dict = kwargs
 
     def parse(
@@ -268,6 +270,11 @@ class ItemDict(Base):
 
             if self._ignore_non_values and value is None:
                 continue
+
+            if self._exception_on_non_values and value is None:
+                error_msg = "Value for dict key %s cannot be emtpy!"
+
+                raise ValueError(error_msg % name)
 
             parser_dict[name] = value
 
