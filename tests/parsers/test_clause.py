@@ -189,6 +189,17 @@ def test_item_dict(ignore_non_values, result):
     assert item_dict_parser.parse(data_bag) == result
 
 
+def test_item_dict_exception_on_non_values():
+    item_dict_parser = parsers.ItemDict(
+        exception_on_non_values=True,
+        color=parsers.Text(jp("color")),
+        brand=parsers.Text(jp("features.brand")),
+    )
+
+    with pytest.raises(ValueError):
+        item_dict_parser.parse({"color": "gold"})
+
+
 @pytest.mark.parametrize(
     "ignore_non_values, result",
     [
