@@ -85,15 +85,15 @@ class PyQuerySearch(QuerySearch):
 
     def _extract_data_from_pq(self, pq: PyQuery) -> Any:
         if self._text:
-            return pq.text()
+            return pq.text() or None
         elif self._ntext:
-            return normalize(pq.text()) if pq else None
+            return normalize(pq.text()) or None if pq else None
         elif self._html:
-            return pq.html()
+            return pq.html() or None
         elif self._outer_html:
-            return pq.outer_html()
+            return pq.outer_html() or None
         elif self._attr:
-            return pq.attr(self._attr)
+            return pq.attr(self._attr) or None
 
         return pq
 
