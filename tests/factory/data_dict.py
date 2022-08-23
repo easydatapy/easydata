@@ -8,6 +8,9 @@ item_with_options = {
     "brand": {"name": "EasyData", "origin": "Slovenia"},
     "price": 99.99,
     "sale_price": 49.99,
+    "color": "",
+    "multi": False,
+    "in_stock": True,
     "name_key": "name",
     "option_name_contains": "Moni",
     "image_data": [
