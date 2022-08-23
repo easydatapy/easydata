@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-from easydata.exceptions import (
-    QuerySearchDataEmpty,
-    QuerySearchResultNotFound,
-)
+from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 from easydata.utils import validate
 
 
