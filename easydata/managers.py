@@ -1,5 +1,4 @@
-from types import GeneratorType
-from typing import Any, Iterator, List
+from typing import Iterator, List
 
 from easydata import models
 from easydata.data import DataBag
@@ -88,11 +87,7 @@ class ModelManager(ConfigMixin):
         **kwargs,
     ) -> Iterator[dict]:
 
-        if not isinstance(data, DataBag):
-            if data:
-                kwargs["main"] = data
-
-            data = DataBag(**kwargs)
+        data = mix.data_to_data_bag(data, **kwargs)
 
         if not data.has_model_manger_instance():
             data.init_model_manager(self)
@@ -119,54 +114,23 @@ class ModelManager(ConfigMixin):
         return self.config["ED_DROP_ITEM_EXCEPTION"]
 
     def _apply_data_processors(self, data: DataBag) -> Iterator[DataBag]:
-        data = self._process_models_preprocess_data(data)
+        data = self._preprocess_data_cb(data)
 
         data_processors = list(self._data_processors_loader.values())
 
         if data_processors:
-            for iter_data in self._apply_processors(data, data_processors):
-                iter_data = self._process_models_process_data(iter_data)
+            for iter_data in mix.apply_data_processors(data, data_processors):
+                iter_data = self._process_data_cb(iter_data)
 
                 yield iter_data
         else:
             yield data
 
-    def _process_models_process_data(self, data: DataBag):
-        for model in self._models:
-            data = model.process_data(data)
-
-        return data
-
-    def _apply_processors(
-        self,
-        value: Any,
-        processors: list,
-    ) -> Any:
-
-        for processor in processors:
-            value = self._apply_processor(processor, value)
-
-        yield from value
-
-    def _apply_processor(self, processor, value):
-        if isinstance(value, GeneratorType):
-            for iter_value in value:
-                yield from processor.parse(iter_value)
-        else:
-            yield from processor.parse(value)
-
-    def _process_models_preprocess_data(self, data: DataBag):
-        for model in self._models:
-            data = model.preprocess_data(data)
-
-        return data
-
     def _apply_item_processors(self, item: dict):
-        for model in self._models:
-            item = model.preprocess_item(item)
+        item = self._preprocess_item_cb(item)
 
-            if not item:
-                return None
+        if item is None:
+            return None
 
         item = mix.apply_processors(
             value=item,
@@ -177,10 +141,7 @@ class ModelManager(ConfigMixin):
         if not item:
             return None
 
-        for model in self._models:
-            item = model.process_item(item)
-
-        return item
+        return self._process_item_cb(item)
 
     def _remove_protected_item_keys(self, item: dict) -> dict:
         if not self._item_protected_names:
@@ -207,7 +168,8 @@ class ModelManager(ConfigMixin):
             for model_block in getattr(model, "block_models"):
                 self._init_model(model_block)
 
-        model.init_model()
+        if hasattr(model, "init_model"):
+            model.init_model()
 
         self._load_item_parsers_from_model(model)
 
@@ -223,7 +185,8 @@ class ModelManager(ConfigMixin):
 
             self._item_processors_loader.add_list(item_processors)
 
-        model.initialized_model()
+        if hasattr(model, "initialized_model"):
+            model.initialized_model()
 
         self._models.append(model)
 
@@ -277,3 +240,37 @@ class ModelManager(ConfigMixin):
 
         for config_name, config_value in config_data:
             self._config_properties[config_name] = config_value
+
+    def _preprocess_data_cb(self, data: DataBag):
+        for model in self._models:
+            if hasattr(model, "preprocess_data"):
+                data = model.preprocess_data(data)
+
+        return data
+
+    def _process_data_cb(self, data: DataBag):
+        for model in self._models:
+            if hasattr(model, "process_data"):
+                data = model.process_data(data)
+
+        return data
+
+    def _preprocess_item_cb(self, item: dict):
+        for model in self._models:
+            if hasattr(model, "preprocess_item"):
+                item = model.preprocess_item(item)
+
+            if not item:
+                return None
+
+        return item
+
+    def _process_item_cb(self, item: dict):
+        for model in self._models:
+            if hasattr(model, "process_item"):
+                item = model.process_item(item)
+
+            if not item:
+                return None
+
+        return item

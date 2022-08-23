@@ -1,8 +1,7 @@
 from abc import ABC
 from functools import lru_cache
-from typing import Iterator
+from typing import Any, Callable, Iterator, List, Optional
 
-from easydata.data import DataBag
 from easydata.managers import ModelManager
 from easydata.processors.data import DataBaseProcessor
 from easydata.processors.item import ItemBaseProcessor
@@ -16,24 +15,6 @@ __all__ = (
 
 
 class BaseModel(ABC):
-    def preprocess_data(self, data: DataBag):
-        return data
-
-    def process_data(self, data: DataBag):
-        return data
-
-    def preprocess_item(self, item: dict):
-        return item
-
-    def process_item(self, item: dict):
-        return item
-
-    def init_model(self):
-        pass
-
-    def initialized_model(self):
-        pass
-
     @property  # type: ignore
     @lru_cache(maxsize=None)
     def model_manager(self) -> ModelManager:
@@ -67,20 +48,67 @@ class ItemModel(BaseModel):
 
 
 class StackedMixin:
-    def __init__(self, *components, **item_components):
+    def __init__(
+        self,
+        *args,
+        block_models: Optional[List[BaseModel]] = None,
+        data_processors: Optional[List[DataBaseProcessor]] = None,
+        item_processors: Optional[List[ItemBaseProcessor]] = None,
+        preprocess_data: Optional[Callable] = None,
+        process_data: Optional[Callable] = None,
+        preprocess_item: Optional[Callable] = None,
+        process_item: Optional[Callable] = None,
+        init_model: Optional[Callable] = None,
+        initialized_model: Optional[Callable] = None,
+        **kwargs,
+    ):
 
-        self.block_models = []
+        self.block_models: List[BaseModel] = []
+        self.data_processors: List[DataBaseProcessor] = []
+        self.item_processors: List[ItemBaseProcessor] = []
 
-        self.data_processors = []
+        if block_models:
+            if not isinstance(block_models, list):
+                raise TypeError("block_models must be of type list")
 
-        self.item_processors = []
+            self.block_models = block_models
 
-        self._initialize_components(components)
+        if data_processors:
+            if not isinstance(data_processors, list):
+                raise TypeError("data_processors must be of type list")
 
-        self._initialize_item_components(item_components)
+            self.data_processors = data_processors
 
-    def _initialize_components(self, components):
-        for component in components:
+        if item_processors:
+            if not isinstance(item_processors, list):
+                raise TypeError("item_processors must be of type list")
+
+            self.item_processors = item_processors
+
+        if preprocess_data:
+            self.preprocess_data = preprocess_data
+
+        if process_data:
+            self.process_data = process_data
+
+        if preprocess_item:
+            self.preprocess_item = preprocess_item
+
+        if process_item:
+            self.process_item = process_item
+
+        if init_model:
+            self.init_model = init_model
+
+        if initialized_model:
+            self.initialized_model = initialized_model
+
+        self.__initialize_args(args)
+
+        self.__initialize_kwargs(kwargs)
+
+    def __initialize_args(self, args: Any):
+        for component in args:
             if isinstance(component, ItemModel):
                 self.block_models.append(component)
             elif isinstance(component, DataBaseProcessor):
@@ -93,8 +121,8 @@ class StackedMixin:
                     "processors and item block models"
                 )
 
-    def _initialize_item_components(self, item_components):
-        for item_name, item_component in item_components.items():
+    def __initialize_kwargs(self, kwargs):
+        for item_name, item_component in kwargs.items():
             if item_name.startswith("ED_"):
                 setattr(self, item_name, item_component)
             elif item_name[0] == "_":
