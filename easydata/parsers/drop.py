@@ -4,7 +4,7 @@ from easytxt import text
 
 from easydata.parsers.data import Data
 from easydata.parsers.text import Text
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 
 __all__ = (
     "DropContains",
@@ -18,7 +18,7 @@ class DropContains(Text):
         *args,
         contains: Optional[Union[list, str]] = None,
         ccontains: Optional[Union[list, str]] = None,
-        contains_query: Optional[QuerySearch] = None,
+        contains_query: Optional[QuerySearchBase] = None,
         contains_query_params: Optional[dict] = None,
         contains_query_source: str = "main",
         error_msg: str = "Item dropped due to matched key: {key}",

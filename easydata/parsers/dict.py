@@ -10,7 +10,7 @@ from easydata.parsers.bool import Bool
 from easydata.parsers.data import Data
 from easydata.parsers.price import PriceFloat, PriceText
 from easydata.parsers.text import Text
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 from easydata.utils import mix
 
 __all__ = (
@@ -25,11 +25,11 @@ __all__ = (
 class Dict(BaseData):
     def __init__(
         self,
-        query: Optional[QuerySearch] = None,
+        query: Optional[QuerySearchBase] = None,
         key_parser: Base = None,
         val_parser: Base = None,
-        key_query: Optional[QuerySearch] = None,
-        val_query: Optional[QuerySearch] = None,
+        key_query: Optional[QuerySearchBase] = None,
+        val_query: Optional[QuerySearchBase] = None,
         dict_val_from_key: bool = False,
         ignore_non_values: bool = False,
         ignore_non_keys: bool = True,
@@ -274,7 +274,7 @@ class BoolDict(TextDict):
         *args,
         val_contains: Optional[Union[list, str]] = None,
         val_ccontains: Optional[Union[list, str]] = None,
-        val_contains_query: Optional[QuerySearch] = None,
+        val_contains_query: Optional[QuerySearchBase] = None,
         val_contains_query_params: Optional[dict] = None,
         val_contains_query_source: str = "data",
         val_empty_as_false: bool = True,

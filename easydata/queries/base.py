@@ -5,16 +5,29 @@ from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 from easydata.utils import validate
 
 
-class QuerySearch(ABC):
+class QuerySearchBase(ABC):
+    @abstractmethod
+    def get(
+            self,
+            data: Any,
+            source: str = "main",
+            query_params: Optional[dict] = None,
+    ) -> Any:
+        pass
+
+
+class QuerySearch(QuerySearchBase, ABC):
     strict: bool = False
 
     def __init__(
         self,
         query: str = None,
+        source: Optional[str] = None,
         strict: Optional[bool] = None,
     ):
 
         self._query = query
+        self._source = source
 
         if isinstance(strict, bool):
             self.strict = strict
@@ -28,7 +41,7 @@ class QuerySearch(ABC):
 
         validate.if_data_bag_with_source(
             data=data,
-            source=source,
+            source=self._source or source,
         )
 
         if not data:

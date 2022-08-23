@@ -3,7 +3,7 @@ from typing import Any, Optional, Union
 from easytxt import text
 
 from easydata.parsers.text import Text
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 
 __all__ = ("Bool", "IBool")
 
@@ -14,7 +14,7 @@ class Bool(Text):
         *args,
         contains: Optional[Union[list, str]] = None,
         ccontains: Optional[Union[list, str]] = None,
-        contains_query: Optional[QuerySearch] = None,
+        contains_query: Optional[QuerySearchBase] = None,
         contains_query_params: Optional[dict] = None,
         contains_query_source: str = "main",
         has_value: bool = False,

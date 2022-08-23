@@ -2,11 +2,11 @@ from types import FunctionType
 from typing import Any, Optional
 
 from easydata.data import DataBag
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 
 
 def query_search(
-    query: QuerySearch,
+    query: QuerySearchBase,
     data: Any,
     source: str = "main",
     query_params: Optional[dict] = None,

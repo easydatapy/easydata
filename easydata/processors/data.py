@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from functools import lru_cache
-from typing import Any, Dict, Iterator, List, Optional, Union
+from typing import Any, Dict, Iterator, List, Optional
 
 import xmltodict
 import yaml
@@ -12,7 +12,7 @@ from easydata.data import DataBag
 from easydata.parsers.base import BaseData
 from easydata.parsers.data import Data
 from easydata.processors.base import BaseProcessor
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 from easydata.queries.re import ReSearch
 from easydata.utils import parse
 
@@ -196,7 +196,7 @@ class DataXmlToDictProcessor(DataBaseProcessor):
 class DataFromQueryProcessor(DataBaseProcessor):
     def __init__(
         self,
-        query: Union[QuerySearch],
+        query: QuerySearchBase,
         **kwargs,
     ):
 
@@ -286,11 +286,11 @@ class DataJsonFromReToDictProcessor(DataTextFromReProcessor):
 class DataVariantsProcessor(DataBaseProcessor):
     def __init__(
         self,
-        query: Optional[QuerySearch] = None,
+        query: Optional[QuerySearchBase] = None,
         source: str = "main",
         parser: Optional[BaseData] = None,
         key_parser: Optional[BaseData] = None,
-        key_query: Optional[QuerySearch] = None,
+        key_query: Optional[QuerySearchBase] = None,
         **kwargs,
     ):
 

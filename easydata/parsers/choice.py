@@ -8,7 +8,7 @@ from easydata.data import DataBag
 from easydata.parsers.base import Base
 from easydata.parsers.bool import Bool
 from easydata.parsers.text import Text
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 from easydata.utils import mix
 
 __all__ = (
@@ -66,7 +66,7 @@ class BaseLookups(Base, ABC):
             lookups = self._lookups
 
         for lookup in lookups:
-            if isinstance(lookup, QuerySearch):
+            if isinstance(lookup, QuerySearchBase):
                 lookup = Text(query=lookup, source=self._source)
 
             if isinstance(lookup, Base):

@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional, Union
 
 from easydata.data import DataBag
 from easydata.mixins import ConfigMixin
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 from easydata.utils import parse
 
 __all__ = ("Base", "BaseData")
@@ -35,7 +35,7 @@ def custom_process_value(
 class BaseData(Base, ABC):
     def __init__(
         self,
-        query: Optional[QuerySearch] = None,
+        query: Optional[QuerySearchBase] = None,
         query_params: Optional[dict] = None,
         from_item: Optional[str] = None,
         default: Optional[Any] = None,
@@ -128,7 +128,7 @@ class BaseData(Base, ABC):
 
     def _parse_query(
         self,
-        query: QuerySearch,
+        query: QuerySearchBase,
         data: Any,
         source: str,
         query_params: Optional[dict] = None,

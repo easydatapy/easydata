@@ -9,7 +9,7 @@ from easydata.parsers.base import Base, BaseData
 from easydata.parsers.data import Data
 from easydata.parsers.text import Text
 from easydata.parsers.url import Url
-from easydata.queries.base import QuerySearch
+from easydata.queries.base import QuerySearchBase
 from easydata.utils import email, mix
 
 __all__ = (
@@ -23,7 +23,7 @@ __all__ = (
 class List(BaseData):
     def __init__(
         self,
-        query: Optional[QuerySearch] = None,
+        query: Optional[QuerySearchBase] = None,
         parser: Optional[Base] = None,
         unique: bool = True,
         max_num: Optional[int] = None,
