@@ -19,16 +19,12 @@ class DropContains(Text):
         contains: Optional[Union[list, str]] = None,
         ccontains: Optional[Union[list, str]] = None,
         contains_query: Optional[QuerySearchBase] = None,
-        contains_query_params: Optional[dict] = None,
-        contains_query_source: str = "main",
         error_msg: str = "Item dropped due to matched key: {key}",
         **kwargs,
     ):
 
         self._contains = ccontains or contains
         self._contains_query = contains_query
-        self._contains_query_params = contains_query_params
-        self._contains_query_source = contains_query_source
         self._contains_case = bool(ccontains)
         self._error_msg = error_msg
 
@@ -69,7 +65,7 @@ class DropContains(Text):
             contains_values = self._parse_query(
                 query=self._contains_query,
                 data=data,
-                source=self._contains_query_source,
+                source=self.source,
             )
 
             if not contains_values:
