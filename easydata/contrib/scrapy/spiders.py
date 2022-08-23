@@ -9,6 +9,7 @@ from scrapy.spiders import CrawlSpider
 from easydata.contrib.scrapy.models import ItemModel
 
 __all__ = (
+    "ItemModelMixin",
     "ItemModelSpider",
     "ItemModelCrawlSpider",
 )
