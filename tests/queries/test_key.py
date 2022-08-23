@@ -1,7 +1,8 @@
 import pytest
 
+import easydata as ed
 from easydata.data import DataBag
-from easydata.queries import key
+from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 
 test_data_dict = {"product_type": "smartphone"}
 
@@ -44,7 +45,7 @@ expected_image_list = [
     ],
 )
 def test_key_query(query, test_data, result):
-    assert key(query).get(test_data) == result
+    assert ed.key(query).get(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -56,7 +57,7 @@ def test_key_query(query, test_data, result):
 )
 def test_key_query_get_data_bag(query, test_data, result):
     db = DataBag(main=test_data)
-    assert key(query).get(db) == result
+    assert ed.key(query).get(db) == result
 
 
 @pytest.mark.parametrize(
@@ -70,7 +71,7 @@ def test_key_query_get_data_bag_bad_source(query, test_data):
     db = DataBag(main=test_data)
 
     with pytest.raises(ValueError) as excinfo:
-        key(query).get(db)
+        ed.key(query).get(db)
 
     assert "provided data from source" in str(excinfo.value).lower()
 
@@ -78,8 +79,8 @@ def test_key_query_get_data_bag_bad_source(query, test_data):
 def test_key_query_get_data_bag_source():
     db = DataBag(json_data=test_data_dict)
 
-    assert key("product_type").get(db, source="json_data") == "smartphone"
-    assert key("product_type").get(db, "json_data") == "smartphone"
+    assert ed.key("product_type").get(db, source="json_data") == "smartphone"
+    assert ed.key("product_type").get(db, "json_data") == "smartphone"
 
 
 @pytest.mark.parametrize(
@@ -90,11 +91,21 @@ def test_key_query_get_data_bag_source():
     ],
 )
 def test_key_query_get_list(query, test_data, result):
-    assert key(query).get(test_data) == result
+    assert ed.key(query).get(test_data) == result
 
 
 def test_key_query_pseudo_key_exception():
     with pytest.raises(ValueError) as excinfo:
-        key("prices::wrong").get(test_data_prices_dict)
+        ed.key("prices::wrong").get(test_data_prices_dict)
 
     assert "pseudo key 'wrong' is not supported" in str(excinfo.value).lower()
+
+
+def test_key_query_strict_query_non_existent_error():
+    with pytest.raises(QuerySearchResultNotFound):
+        assert ed.key_strict("product_type2").get(test_data_dict)
+
+
+def test_key_query_strict_data_empty_error():
+    with pytest.raises(QuerySearchDataEmpty):
+        assert ed.key_strict("product_type").get(None)

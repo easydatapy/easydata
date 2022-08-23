@@ -1,6 +1,7 @@
 import pytest
 
-from easydata.queries import jp
+import easydata as ed
+from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 from tests.factory import data_dict
 
 
@@ -62,7 +63,17 @@ from tests.factory import data_dict
     ],
 )
 def test_jp_query(query, result):
-    assert jp(query).get(data_dict.item_with_options) == result
+    assert ed.jp(query).get(data_dict.item_with_options) == result
+
+
+@pytest.mark.parametrize(
+    "query, result",
+    [
+        ("title", "EasyBook pro 15"),
+    ],
+)
+def test_jp_query_strict(query, result):
+    assert ed.jp_strict(query).get(data_dict.item_with_options) == result
 
 
 @pytest.mark.parametrize(
@@ -86,7 +97,7 @@ def test_jp_query(query, result):
     ],
 )
 def test_jp_query_params(query, params, result):
-    assert jp(query).get(data_dict.item_with_options, query_params=params) == result
+    assert ed.jp(query).get(data_dict.item_with_options, query_params=params) == result
 
 
 @pytest.mark.parametrize(
@@ -105,4 +116,14 @@ def test_jp_query_params(query, params, result):
     ],
 )
 def test_jp_query_empty_selector(query, test_data, result):
-    assert jp(query).get(test_data) == result
+    assert ed.jp(query).get(test_data) == result
+
+
+def test_jp_query_strict_query_non_existent_error():
+    with pytest.raises(QuerySearchResultNotFound):
+        assert ed.jp_strict("title2").get(data_dict.item_with_options)
+
+
+def test_jp_query_strict_data_empty_error():
+    with pytest.raises(QuerySearchDataEmpty):
+        assert ed.jp_strict("title").get(None)
