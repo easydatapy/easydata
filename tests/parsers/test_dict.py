@@ -4,7 +4,6 @@ from easydata import parsers
 from easydata.queries import jp, pq
 from tests.factory import data_dict, data_html
 
-
 EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
 
 
