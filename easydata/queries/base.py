@@ -30,12 +30,14 @@ class QuerySearch(QuerySearchBase, ABC):
         params: Optional[dict] = None,
         source: Optional[str] = None,
         strict: Optional[bool] = None,
+        empty_as_none: bool = False,
         debug_query: bool = False,
     ):
 
         self._query = query
         self._source = source
         self._params = params
+        self._empty_as_none = empty_as_none
         self._debug_query = debug_query
 
         if isinstance(strict, bool):
@@ -76,6 +78,9 @@ class QuerySearch(QuerySearchBase, ABC):
             print(query)
 
         value = self.parse(data, query)
+
+        if not value and self._empty_as_none:
+            value = None
 
         if self.strict and value is None:
             error_msg = 'Query: "%s" didn\'t found any results!'
