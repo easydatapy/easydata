@@ -60,6 +60,9 @@ from tests.factory import data_dict
                 )
             ),
         ),
+        ("color", ""),
+        ("multi", False),
+        ("in_stock", True),
     ],
 )
 def test_jp_query(query, result):
@@ -70,6 +73,9 @@ def test_jp_query(query, result):
     "query, result",
     [
         ("title", "EasyBook pro 15"),
+        ("color", ""),
+        ("multi", False),
+        ("in_stock", True),
     ],
 )
 def test_jp_query_strict(query, result):
