@@ -69,7 +69,7 @@ class ProductJsonModelWithVariantItems(ed.ItemModel):
 
     item_name = ed.Text(ed.jp("title"))
 
-    item_color = ed.Text(ed.jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color", source="color_data"))
 
     item_key = ed.Text(source="color_data_key", uppercase=True)
 
@@ -93,7 +93,7 @@ class ProductJsonModelWithVariantDropItems(ed.ItemModel):
 
     _item_drop_color = ed.DropContains(from_item="color", contains=["black"])
 
-    item_color = ed.Text(ed.jp("color"), source="color_data")
+    item_color = ed.Text(ed.jp("color", source="color_data"))
 
 
 class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
@@ -110,8 +110,10 @@ class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
     item_color = ed.Text(ed.jp("color"), source="color_data")
 
     item_images = ed.UrlList(
-        ed.jp("images.{color}[].assetId"),
-        query_params={"color": ed.Data(ed.jp("color"), source="color_data")},
+        ed.jp(
+            "images.{color}[].assetId",
+            params={"color": ed.Data(ed.jp("color"), source="color_data")},
+        ),
         domain="https://demo.com/is/image/easydata/",
     )
 
@@ -119,8 +121,10 @@ class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
         source="color_data_variants",
         key_parser=ed.Text(ed.jp("size")),
         val_parser=ed.Bool(
-            ed.jp("stock_data[?id==`{stock_id}`] | [0].stock"),
-            query_params={"stock_id": ed.Int(ed.jp("stock_id"))},
+            ed.jp(
+                "stock_data[?id==`{stock_id}`] | [0].stock",
+                params={"stock_id": ed.Int(ed.jp("stock_id"))},
+            ),
             source="main",
         ),
     )

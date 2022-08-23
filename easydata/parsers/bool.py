@@ -5,7 +5,10 @@ from easytxt import text
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearchBase
 
-__all__ = ("Bool", "IBool")
+__all__ = (
+    "Bool",
+    "IBool",
+)
 
 
 class Bool(Text):
@@ -15,8 +18,6 @@ class Bool(Text):
         contains: Optional[Union[list, str]] = None,
         ccontains: Optional[Union[list, str]] = None,
         contains_query: Optional[QuerySearchBase] = None,
-        contains_query_params: Optional[dict] = None,
-        contains_query_source: str = "main",
         has_value: bool = False,
         empty_as_false: bool = True,
         **kwargs,
@@ -24,8 +25,6 @@ class Bool(Text):
 
         self._contains = ccontains or contains
         self._contains_query = contains_query
-        self._contains_query_params = contains_query_params
-        self._contains_query_source = contains_query_source
         self._has_value = has_value
         self._contains_case = bool(ccontains)
         self._empty_as_false = empty_as_false
@@ -73,8 +72,8 @@ class Bool(Text):
             contains_values = self._parse_query(
                 query=self._contains_query,
                 data=data,
-                source=self._contains_query_source,
-                query_params=self._contains_query_params,
+                source=self.source,
+                parent_data=data,
             )
 
             return contains_values and text.contains(

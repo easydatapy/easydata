@@ -4,14 +4,19 @@ from typing import Any, Optional
 from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 from easydata.utils import validate
 
+__all__ = (
+    "QuerySearchBase",
+    "QuerySearch",
+)
+
 
 class QuerySearchBase(ABC):
     @abstractmethod
     def get(
-            self,
-            data: Any,
-            source: str = "main",
-            query_params: Optional[dict] = None,
+        self,
+        data: Any,
+        source: str = "main",
+        parent_data: Optional[Any] = None,
     ) -> Any:
         pass
 
@@ -22,12 +27,16 @@ class QuerySearch(QuerySearchBase, ABC):
     def __init__(
         self,
         query: str = None,
+        params: Optional[dict] = None,
         source: Optional[str] = None,
         strict: Optional[bool] = None,
+        debug_query: bool = False,
     ):
 
         self._query = query
         self._source = source
+        self._params = params
+        self._debug_query = debug_query
 
         if isinstance(strict, bool):
             self.strict = strict
@@ -36,13 +45,17 @@ class QuerySearch(QuerySearchBase, ABC):
         self,
         data: Any,
         source: str = "main",
-        query_params: Optional[dict] = None,
+        parent_data: Optional[Any] = None,
     ) -> Any:
+
+        source = self._source or source
 
         validate.if_data_bag_with_source(
             data=data,
-            source=self._source or source,
+            source=source,
         )
+
+        query_params = self._parse_query_params(parent_data or data)
 
         if not data:
             if self.strict and data is None:
@@ -59,6 +72,9 @@ class QuerySearch(QuerySearchBase, ABC):
         else:
             query = self._query
 
+        if self._debug_query:
+            print(query)
+
         value = self.parse(data, query)
 
         if self.strict and value is None:
@@ -67,6 +83,20 @@ class QuerySearch(QuerySearchBase, ABC):
             raise QuerySearchResultNotFound(error_msg, self._query)
 
         return value
+
+    def _parse_query_params(self, data: Any):
+
+        if not self._params:
+            return None
+
+        parsed_query_params = {}
+
+        for query_param_key, query_param_parser in self._params.items():
+            parsed_value = query_param_parser.parse(data)
+
+            parsed_query_params[query_param_key] = parsed_value
+
+        return parsed_query_params
 
     def _apply_query_params(self, query, query_params):
         return query.format(**query_params)

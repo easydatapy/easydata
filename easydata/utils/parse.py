@@ -9,13 +9,13 @@ def query_search(
     query: QuerySearchBase,
     data: Any,
     source: str = "main",
-    query_params: Optional[dict] = None,
+    parent_data: Optional[Any] = None,
 ) -> Any:
 
     return query.get(
         data=data,
         source=source,
-        query_params=query_params,
+        parent_data=parent_data,
     )
 
 

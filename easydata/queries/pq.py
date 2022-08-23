@@ -7,6 +7,11 @@ from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 from easydata.utils import pseudo
 
+__all__ = (
+    "PyQuerySearch",
+    "PyQueryStrictSearch",
+)
+
 _attr_shortcut_mappings = {
     "val": "value",
     "src": "src",
@@ -21,9 +26,10 @@ class PyQuerySearch(QuerySearch):
         self,
         query: Optional[str],
         remove_query: Optional[str] = None,
+        **kwargs,
     ):
 
-        super().__init__(query)
+        super().__init__(query, **kwargs)
 
         self._remove_query = remove_query
 

@@ -7,6 +7,11 @@ from pyquery import PyQuery
 from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 
+__all__ = (
+    "ReSearch",
+    "ReStrictSearch",
+)
+
 
 class ReSearch(QuerySearch):
     def __init__(

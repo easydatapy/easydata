@@ -6,7 +6,10 @@ from easydata.mixins import ConfigMixin
 from easydata.queries.base import QuerySearchBase
 from easydata.utils import parse
 
-__all__ = ("Base", "BaseData")
+__all__ = (
+    "Base",
+    "BaseData",
+)
 
 
 class Base(ConfigMixin, ABC):
@@ -36,7 +39,6 @@ class BaseData(Base, ABC):
     def __init__(
         self,
         query: Optional[QuerySearchBase] = None,
-        query_params: Optional[dict] = None,
         from_item: Optional[str] = None,
         default: Optional[Any] = None,
         default_from_item: Optional[str] = None,
@@ -51,7 +53,6 @@ class BaseData(Base, ABC):
             raise AttributeError("query attr cannot be set together with from_item!")
 
         self._query = query
-        self._query_params = query_params
         self._from_item = from_item
         self._default = default
         self._default_from_item = default_from_item
@@ -71,15 +72,15 @@ class BaseData(Base, ABC):
         if self._from_item and isinstance(data, DataBag):
             value = data.get(self._from_item)
         else:
-            if with_parent_data:
-                query_params = self._parse_query_params(parent_data)
-            else:
-                query_params = self._parse_query_params(data)
+            parent_data = parent_data if with_parent_data else data
 
             if with_parent_data and not self._source:
                 data = parent_data
 
-            value = self._parse_data_to_value(data=data, query_params=query_params)
+            value = self._parse_data_to_value(
+                data=data,
+                parent_data=parent_data,
+            )
 
         if self._debug_source:  # Debug value before is parsed
             print(value)
@@ -97,48 +98,39 @@ class BaseData(Base, ABC):
 
         return self._process_default_value(value, data)
 
+    @property
+    def source(self):
+        return self._source or "main"
+
     def _parse_data_to_value(
         self,
         data: DataBag,
-        query_params: Optional[dict] = None,
+        parent_data: Optional[DataBag] = None,
     ) -> Any:
-
-        source = self._source or "main"
 
         if self._query:
             return self._parse_query(
-                query=self._query, data=data, source=source, query_params=query_params
+                query=self._query,
+                data=data,
+                source=self.source,
+                parent_data=parent_data,
             )
 
-        return self._parse_default_data_value(data, source)
-
-    def _parse_query_params(self, data):
-
-        if not self._query_params:
-            return None
-
-        parsed_query_params = {}
-
-        for query_param_key, query_param_parser in self._query_params.items():
-            parsed_value = query_param_parser.parse(data)
-
-            parsed_query_params[query_param_key] = parsed_value
-
-        return parsed_query_params
+        return self._parse_default_data_value(data, self.source)
 
     def _parse_query(
         self,
         query: QuerySearchBase,
         data: Any,
         source: str,
-        query_params: Optional[dict] = None,
+        parent_data: Optional[Any] = None,
     ):
 
         return parse.query_search(
             query=query,
             data=data,
             source=source,
-            query_params=query_params,
+            parent_data=parent_data,
         )
 
     def _process_default_value(self, value, data):

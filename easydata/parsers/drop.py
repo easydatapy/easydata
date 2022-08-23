@@ -70,7 +70,6 @@ class DropContains(Text):
                 query=self._contains_query,
                 data=data,
                 source=self._contains_query_source,
-                query_params=self._contains_query_params,
             )
 
             if not contains_values:

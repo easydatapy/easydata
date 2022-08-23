@@ -4,6 +4,11 @@ import jmespath
 
 from easydata.queries.key import KeySearch
 
+__all__ = (
+    "JMESPathSearch",
+    "JMESPathStrictSearch",
+)
+
 
 class JMESPathSearch(KeySearch):
     def parse(

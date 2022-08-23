@@ -275,8 +275,6 @@ class BoolDict(TextDict):
         val_contains: Optional[Union[list, str]] = None,
         val_ccontains: Optional[Union[list, str]] = None,
         val_contains_query: Optional[QuerySearchBase] = None,
-        val_contains_query_params: Optional[dict] = None,
-        val_contains_query_source: str = "data",
         val_empty_as_false: bool = True,
         **kwargs,
     ):
@@ -285,8 +283,6 @@ class BoolDict(TextDict):
             "contains": val_contains,
             "ccontains": val_ccontains,
             "contains_query": val_contains_query,
-            "contains_query_params": val_contains_query_params,
-            "contains_query_source": val_contains_query_source,
             "empty_as_false": val_empty_as_false,
         }
 

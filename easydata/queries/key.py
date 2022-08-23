@@ -7,14 +7,20 @@ from easydata.data import DataBag
 from easydata.queries.base import QuerySearch
 from easydata.utils import pseudo
 
+__all__ = (
+    "KeySearch",
+    "KeyStrictSearch",
+)
+
 
 class KeySearch(QuerySearch):
     def __init__(
         self,
         query: str = None,
+        **kwargs,
     ):
 
-        super().__init__(query)
+        super().__init__(query, **kwargs)
 
         self._keys: bool = False
         self._values: bool = False

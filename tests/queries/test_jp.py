@@ -79,25 +79,29 @@ def test_jp_query_strict(query, result):
 @pytest.mark.parametrize(
     "query, params, result",
     [
-        ("brand.{name}", {"name": "name"}, "EasyData"),
+        (
+            "brand.{name}",
+            {"name": ed.Data(ed.jp("name_key"))},
+            "EasyData",
+        ),
         (
             "options[].{{name: {name}, stock: availability.value}}",
-            {"name": "name"},
+            {"name": ed.Data(ed.jp("name_key"))},
             [{"name": "Monitor", "stock": "yes"}, {"name": "Mouse", "stock": "no"}],
         ),
         (
             "options[?contains(name, '{value}')].availability.value",
-            {"value": "Moni"},
+            {"value": ed.Data(ed.jp("option_name_contains"))},
             ["yes"],
         ),
-        ("brand.{name}", {"name": None}, None),
-        ("brand.name", {"name": "name"}, "EasyData"),
+        ("brand.{name}", {"name": ed.Data(ed.jp("name_key_non"))}, None),
+        ("brand.name", {"name": ed.Data(ed.jp("name_key"))}, "EasyData"),
         ("brand.name", {}, "EasyData"),
         ("brand.name", None, "EasyData"),
     ],
 )
 def test_jp_query_params(query, params, result):
-    assert ed.jp(query).get(data_dict.item_with_options, query_params=params) == result
+    assert ed.jp(query, params=params).get(data_dict.item_with_options) == result
 
 
 @pytest.mark.parametrize(

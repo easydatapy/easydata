@@ -66,6 +66,11 @@ def test_base_data_field_different_source(query, source, test_data, result):
     assert item_data.parse(test_data) == result
 
 
+def test_base_data_with_query_source():
+    item_data = Data(query=jp("stock", source="additional_data"))
+    assert item_data.parse(db) is True
+
+
 @pytest.mark.parametrize(
     "query, process_raw_value_callback, test_data, result",
     [
