@@ -1,3 +1,5 @@
+import json
+
 item_with_options = {
     "id": 123,
     "url_path": "easybook-pro-15",
@@ -26,6 +28,8 @@ item_with_options = {
         },
     ],
 }
+
+item_with_options_text = json.dumps(item_with_options)
 
 variants_data = {
     "id": 123,
