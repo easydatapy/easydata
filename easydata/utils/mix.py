@@ -1,9 +1,11 @@
+from types import GeneratorType
 from typing import Any, Callable, List, Optional, Union
 
 from easytxt.text import to_list as multiply_to_list
 from pyquery import PyQuery
 
 from easydata.config.loader import ConfigLoader
+from easydata.data import DataBag
 from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
 
@@ -130,6 +132,43 @@ def iter_attr_data_from_obj(
         attr_value = getattr(obj, attr_name)
 
         yield attr_name, attr_value
+
+
+def data_to_data_bag(
+    data: Optional[Union[Any, DataBag]] = None,
+    **kwargs,
+):
+
+    if not isinstance(data, DataBag):
+        if data:
+            kwargs["main"] = data
+
+        return DataBag(**kwargs)
+
+    if kwargs:
+        for data_name, data_value in kwargs.items():
+            data.add(data_name, data_value)
+
+    return data
+
+
+def apply_data_processor(processor, value):
+    if isinstance(value, GeneratorType):
+        for iter_value in value:
+            yield from processor.parse(iter_value)
+    else:
+        yield from processor.parse(value)
+
+
+def apply_data_processors(
+    value: Any,
+    processors: list,
+) -> Any:
+
+    for processor in processors:
+        value = apply_data_processor(processor, value)
+
+    yield from value
 
 
 def to_list(
