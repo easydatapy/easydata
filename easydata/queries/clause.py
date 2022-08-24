@@ -2,10 +2,10 @@ from typing import Any, Optional
 
 from easydata.queries.base import QuerySearchBase
 
-__all__ = ("Queries",)
+__all__ = ("OrClause",)
 
 
-class Queries(QuerySearchBase):
+class OrClause(QuerySearchBase):
     def __init__(self, *query_searches):
         self._query_searches = query_searches
 

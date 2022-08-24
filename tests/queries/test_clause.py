@@ -8,21 +8,21 @@ from tests.factory import data_dict
     "queries, result",
     [
         (
-            ed.qs(
+            ed.orc(
                 ed.jp("title2"),
                 ed.jp("title"),
             ),
             "EasyBook pro 15",
         ),
         (
-            ed.qs(
+            ed.orc(
                 ed.jp("color"),
                 ed.jp("title"),
             ),
             "",
         ),
         (
-            ed.qs(
+            ed.orc(
                 ed.jp(
                     "color",
                     empty_as_none=True,
@@ -32,7 +32,7 @@ from tests.factory import data_dict
             "EasyBook pro 15",
         ),
         (
-            ed.qs(
+            ed.orc(
                 ed.jp("multi"),
                 ed.jp("title"),
             ),
@@ -40,5 +40,5 @@ from tests.factory import data_dict
         ),
     ],
 )
-def test_qs(queries, result):
+def test_orc(queries, result):
     assert queries.get(data_dict.item_with_options) == result
