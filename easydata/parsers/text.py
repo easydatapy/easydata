@@ -1,6 +1,7 @@
 from typing import Any, List, Optional, Union
 
 from easytxt import parse_string, text
+from pyquery import PyQuery
 
 from easydata.parsers import BaseData
 
@@ -74,9 +75,8 @@ class Text(BaseData):
             data=data,
         )
 
-        if isinstance(value, (list, tuple)):
-
-            value = [text.to_str(v) for v in value if v]
+        if not isinstance(value, PyQuery) and isinstance(value, (list, tuple)):
+            value = [text.to_str(v) for v in value if v is not None]
 
             if not value:
                 return None
