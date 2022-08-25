@@ -4,7 +4,7 @@ from tests.factory.scrapy import (
     PRODUCT_ITEM_STACKED_MODEL,
     ProductItem,
     ProductItemModel,
-    product_demo_item_fake_response,
+    fake_response,
 )
 
 
@@ -17,7 +17,7 @@ def test_item_model_parse_res2item():
 
     assert (
         product_item_model.parse_res2item(
-            response=product_demo_item_fake_response(),
+            response=fake_response(),
         )
         == EXPECTED_PRODUCT_ITEM_RESULT
     )
@@ -29,7 +29,7 @@ def test_item_model_parse_res2items():
     assert (
         next(
             product_item_model.parse_res2items(
-                response=product_demo_item_fake_response(),
+                response=fake_response(),
             )
         )
         == EXPECTED_PRODUCT_ITEM_RESULT
@@ -41,7 +41,7 @@ def test_item_model_parse_res2item_with_scrapy_item():
 
     assert (
         product_item_model.parse_res2item(
-            response=product_demo_item_fake_response(),
+            response=fake_response(),
         )
         == EXPECTED_PRODUCT_ITEM_RESULT_SCRAPY_ITEM
     )
@@ -50,7 +50,7 @@ def test_item_model_parse_res2item_with_scrapy_item():
 def test_item_stacked_model_parse_res2item():
     assert (
         PRODUCT_ITEM_STACKED_MODEL.parse_res2item(
-            response=product_demo_item_fake_response(),
+            response=fake_response(),
         )
         == EXPECTED_PRODUCT_ITEM_RESULT
     )

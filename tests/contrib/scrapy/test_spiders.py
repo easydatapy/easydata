@@ -4,7 +4,7 @@ from tests.factory.scrapy import (
     EXPECTED_PRODUCT_ITEM_RESULT_SCRAPY_ITEM,
     PRODUCT_ITEM_STACKED_MODEL,
     ProductItemModel,
-    product_demo_item_fake_response,
+    fake_response,
 )
 
 
@@ -26,7 +26,7 @@ class DemoStackedItemModelSpider(DemoSpider):
 
 
 def get_spider_result(spider):
-    iter_item = spider.parse_item_model(response=product_demo_item_fake_response())
+    iter_item = spider.parse_item_model(response=fake_response())
 
     return next(iter_item)
 

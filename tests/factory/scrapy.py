@@ -9,8 +9,8 @@ from tests.factory import data_dict
 
 
 def fake_response(
-    url: str,
-    body: str,
+    url: str = "https://demo.com/test",
+    body: str = data_dict.item_with_options_text,
     meta: Optional[dict] = None,
     encoding: str = "utf-8",
     cb_kwargs: Optional[dict] = None,
@@ -28,13 +28,6 @@ def fake_response(
         body=body,
         encoding=encoding,
         request=request,
-    )
-
-
-def product_demo_item_fake_response():
-    return fake_response(
-        url="https://demo.com/test",
-        body=data_dict.item_with_options_text,
     )
 
 
