@@ -12,11 +12,17 @@ __all__ = (
     "PyQueryStrictSearch",
 )
 
+_pseudo_with_values = [
+    "attr",
+    "has_class",
+]
+
 _attr_shortcut_mappings = {
     "val": "value",
     "src": "src",
     "href": "href",
     "name": "name",
+    "class": "class",
     "content": "content",
 }
 
@@ -35,6 +41,7 @@ class PyQuerySearch(QuerySearch):
 
         self._first: bool = True
         self._attr: Optional[str] = None
+        self._has_class: Optional[str] = None
         self._text: bool = False
         self._ntext: bool = False
         self._html: bool = False
@@ -98,6 +105,9 @@ class PyQuerySearch(QuerySearch):
             return pq.html() or None
         elif self._outer_html:
             return pq.outer_html() or None
+        elif self._has_class:
+            # Returns bool
+            return pq.has_class(self._has_class)
         elif self._attr:
             return pq.attr(self._attr) or None
 
@@ -129,7 +139,10 @@ class PyQuerySearch(QuerySearch):
         self._process_pseudo_key(pseudo_key)
 
     def _process_pseudo_key_extension(self, pseudo_key: str) -> str:
-        pseudo_key, extension = pseudo.get_extension_value(pseudo_key, ["attr"])
+        pseudo_key, extension = pseudo.get_extension_value(
+            pseudo_key=pseudo_key,
+            pseudo_keys_with_separator_value=["attr", "has_class"],
+        )
 
         if not extension:
             return pseudo_key
@@ -148,8 +161,9 @@ class PyQuerySearch(QuerySearch):
 
     def _process_pseudo_key(self, pseudo_key: str) -> None:
         if pseudo_key.startswith("attr"):
-            attr_value = pseudo_key.split("(")[-1].strip(")")
-            self._attr = attr_value
+            self._attr = pseudo.get_value(pseudo_key)
+        elif pseudo_key.startswith("has_class"):
+            self._has_class = pseudo.get_value(pseudo_key)
         elif pseudo_key in _attr_shortcut_mappings:
             self._attr = _attr_shortcut_mappings[pseudo_key]
         elif pseudo_key == "text":
@@ -165,7 +179,7 @@ class PyQuerySearch(QuerySearch):
         else:
             raise ValueError(
                 "Pseudo key '{}' is not supported. Currently supported are: text,"
-                "ntext,html,ohtml,items, attr(<value>),{}".format(
+                "ntext,html,ohtml,items,has_class(<value>),attr(<value>),{}".format(
                     pseudo_key, ",".join(_attr_shortcut_mappings.keys())
                 )
             )
