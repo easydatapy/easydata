@@ -1,4 +1,5 @@
 import pytest
+from pyquery import PyQuery
 
 from easydata.parsers import Text
 
@@ -18,6 +19,7 @@ def test_text_parser(test_data, result):
         (" easybook pro   13", "easybook pro 13"),
         (" Easybook Pro 13    ", "Easybook Pro 13"),
         ("Easybook Pro\n13", "Easybook Pro 13"),
+        (PyQuery("<div>Easybook Pro 13</div>"), "Easybook Pro 13"),
     ],
 )
 def test_text_normalize_default(test_data, result):
