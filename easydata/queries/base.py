@@ -43,6 +43,10 @@ class QuerySearch(QuerySearchBase, ABC):
         if isinstance(strict, bool):
             self.strict = strict
 
+    @property
+    def query(self):
+        return self._query
+
     def get(
         self,
         data: Any,
