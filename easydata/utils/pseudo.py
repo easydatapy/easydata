@@ -13,6 +13,10 @@ def get_key_from_query(
     return new_query, query_parts[-1]
 
 
+def get_value(pseudo_key: str) -> str:
+    return pseudo_key.split("(")[-1].strip(")")
+
+
 def get_extension_value(
     pseudo_key: str,
     pseudo_keys_with_separator_value: Optional[List[str]] = None,
