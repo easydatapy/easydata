@@ -17,6 +17,12 @@ Currently easy data has 4 query components, which should cover most of situation
 
 * :ref:`queries-regex` - is a regex based selector with a regex pattern as a query selector.
 
+* :ref:`queries-cor` - ``or`` clause which can accept 2 or more query selectors and return results
+  from the first matching query selector
+
+* :ref:`queries-cwith` - ``with`` clause which can accept 2 or more query selectors and process
+  data in a sequence
+
 .. toctree::
     :maxdepth: 2
     :hidden:
@@ -25,6 +31,8 @@ Currently easy data has 4 query components, which should cover most of situation
     pyquery
     key
     regex
+    cor
+    cwith
 
 
 .. _jmespath: https://pypi.org/project/jmespath/
