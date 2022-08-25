@@ -1,7 +1,7 @@
 .. _`scrapy`:
 
-======
-Scrapy
-======
-*EasyData* support for *scrapy* framework will come as a separate package and is
-currently a *work in progress*.
+==============
+Scrapy Support
+==============
+
+*Documentation is coming soon...*
