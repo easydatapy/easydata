@@ -4,6 +4,10 @@ prices_and_variants = """
             <h2 class="name" itemprop="name">EasyBook Pro 15</h2>
             <div id="price">Was 999.9</div>
             <div id="sale-price">499.9</div>
+            <p class="instock availability">
+                <i class="icon-ok"></i>
+                In stock (10 available)
+            </p>
             <div id="color-variants">
                 Colors:
                 <div class="color" stock="true">
