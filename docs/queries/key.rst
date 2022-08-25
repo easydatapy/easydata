@@ -1,9 +1,9 @@
 .. _`queries-key`:
 
-==============
-KeyQuery (key)
-==============
-.. autoclass:: easydata.queries.key::KeyQuery
+===============
+KeySearch (key)
+===============
+.. autoclass:: easydata.queries.key::KeySearch
 
 ``KeyQuery`` (shortcut: ``key``) allows you to select a value from a dictionary by key.
 

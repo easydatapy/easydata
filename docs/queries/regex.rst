@@ -1,9 +1,9 @@
 .. _`queries-regex`:
 
-============
-ReQuery (re)
-============
-.. autoclass:: easydata.queries.re::ReQuery
+=============
+ReSearch (re)
+=============
+.. autoclass:: easydata.queries.re::ReSearch
 
 ``ReQuery`` (shortcut: ``re``) allows you to select a value from a text by a *regex* pattern.
 
