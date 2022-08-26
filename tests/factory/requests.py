@@ -20,9 +20,11 @@ def fake_response(
 
 
 class ProductItemModel(ItemModel):
-    data_processors = [
-        ed.DataJsonToDictProcessor(),
-    ]
+    def __init__(self, to_json: bool = True):
+        if to_json:
+            self.data_processors = [
+                ed.DataJsonToDictProcessor(),
+            ]
 
     item_name = ed.Text(ed.jp("title"))
     item_brand = ed.Text(ed.jp("brand.name"))

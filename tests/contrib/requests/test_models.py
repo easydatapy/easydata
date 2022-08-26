@@ -30,6 +30,20 @@ def test_item_model_parse_res2items():
     )
 
 
+def test_item_model_parse_res2items_to_json():
+    product_item_model = ProductItemModel(to_json=False)
+
+    assert (
+        next(
+            product_item_model.parse_res2items(
+                response=fake_response(),
+                to_json=True,
+            )
+        )
+        == EXPECTED_PRODUCT_ITEM_RESULT
+    )
+
+
 def test_item_stacked_model_parse_res2item():
     assert (
         PRODUCT_ITEM_STACKED_MODEL.parse_res2item(

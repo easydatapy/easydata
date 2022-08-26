@@ -16,19 +16,31 @@ class ItemModel(BaseItemModel):
     def parse_res2item(
         self,
         response: Optional[Response] = None,
+        to_json: bool = False,
         **cb_kwargs,
     ):
 
-        return next(self.parse_res2items(response=response, **cb_kwargs))
+        return next(
+            self.parse_res2items(
+                response=response,
+                to_json=to_json,
+                **cb_kwargs,
+            )
+        )
 
     def parse_res2items(
         self,
         response: Optional[Response] = None,
+        to_json: bool = False,
         **cb_kwargs,
     ):
 
         if response:
-            data_bag = response_to_data_bag(response, **cb_kwargs)
+            data_bag = response_to_data_bag(
+                response,
+                to_json=to_json,
+                **cb_kwargs,
+            )
 
             iter_items = super().parse_items(data=data_bag)
         else:
