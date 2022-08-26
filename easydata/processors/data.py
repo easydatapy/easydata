@@ -211,6 +211,9 @@ class DataFromQueryProcessor(DataBaseProcessor):
 class DataFromIterQueryProcessor(DataFromQueryProcessor):
     _multi = True
 
+    def process_data(self, data: Any) -> Any:
+        yield from parse.query_search(self._query, data)
+
 
 class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
     def process_data(self, data: Any) -> Any:

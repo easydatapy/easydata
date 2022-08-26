@@ -47,6 +47,7 @@ class PyQuerySearch(QuerySearch):
         self._html: bool = False
         self._outer_html: bool = False
         self._items: bool = False
+        self._iter: bool = False
 
         if self._query and "::" in self._query:
             self._initialize_custom_pseudo_keys()
@@ -57,8 +58,10 @@ class PyQuerySearch(QuerySearch):
         query: Optional[str],
     ) -> Any:
 
+        if self._iter:
+            return self._iter_parse(pq, query=query)
         if self._items:
-            return [i for i in self._iter_parse(pq, query=query)]
+            return list(self._iter_parse(pq, query=query))
         else:
             pq = self._parse_pq(pq, query=query, first=self._first)
 
@@ -147,14 +150,16 @@ class PyQuerySearch(QuerySearch):
         if not extension:
             return pseudo_key
 
-        if extension == "items":
+        if extension == "iter":
+            self._iter = True
+        elif extension == "items":
             self._items = True
         elif extension == "all":
             self._first = False
         else:
             raise ValueError(
                 "Pseudo key extension {} is not supported. Currently supported "
-                "are -items and -all".format(extension)
+                "are -items, -iter and -all".format(extension)
             )
 
         return pseudo_key
@@ -176,12 +181,13 @@ class PyQuerySearch(QuerySearch):
             self._outer_html = True
         elif pseudo_key == "items":
             self._items = True
+        elif pseudo_key == "iter":
+            self._iter = True
         else:
             raise ValueError(
                 "Pseudo key '{}' is not supported. Currently supported are: text,"
-                "ntext,html,ohtml,items,has_class(<value>),attr(<value>),{}".format(
-                    pseudo_key, ",".join(_attr_shortcut_mappings.keys())
-                )
+                "ntext,html,ohtml,items,iter,has_class(<value>),attr(<value>),"
+                "{}".format(pseudo_key, ",".join(_attr_shortcut_mappings.keys()))
             )
 
 
