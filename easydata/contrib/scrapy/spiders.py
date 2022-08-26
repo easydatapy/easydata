@@ -4,6 +4,7 @@ from typing import Optional
 
 from scrapy import Spider
 from scrapy.http import Response
+from scrapy.item import Item
 from scrapy.spiders import CrawlSpider
 
 from easydata.contrib.scrapy.models import ItemModel
@@ -16,18 +17,25 @@ __all__ = (
 
 
 class ItemModelMixin:
-    item_model_cls = None
+    item_model_cls: Optional[Item] = None
 
     item_model_obj: Optional[ItemModel] = None
+
+    parse_item_model_response_json: bool = False
 
     def parse_item_model(
         self,
         response: Optional[Response] = None,
+        to_json: Optional[bool] = None,
         **cb_kwargs,
     ):
 
+        if not isinstance(to_json, bool):
+            to_json = self.parse_item_model_response_json
+
         return self.item_model_instance.parse_res2items(
             response,
+            to_json=to_json,
             **cb_kwargs,
         )
 

@@ -1,19 +1,29 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from scrapy.http.response import Response
+from scrapy.http.response.text import TextResponse
 
 from easydata.data import DataBag
 
 
 def response_to_data_bag(
-    response: Response,
+    response: Union[Response, TextResponse],
+    to_json: bool = False,
     meta_to_data_values: Optional[List[str]] = None,
     meta_to_data_enable: bool = True,
     **kwargs,
 ):
 
+    if to_json:
+        if not hasattr(response, "json"):
+            raise AttributeError("Response instance must support json method!")
+
+        main_data = response.json()
+    else:
+        main_data = response.text
+
     data_args = {
-        "main": response.body,
+        "main": main_data,
         "url": response.url,
         "headers": response.headers,
     }

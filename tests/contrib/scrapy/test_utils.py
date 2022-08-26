@@ -10,6 +10,15 @@ def test_response_to_data_bag():
     assert json.loads(data["main"]) == {"name": "Easybook 15"}
 
 
+def test_response_to_data_bag_with_to_json():
+    data = response_to_data_bag(
+        fake_response(body=json.dumps({"name": "Easybook 15"})),
+        to_json=True,
+    )
+
+    assert data["main"] == {"name": "Easybook 15"}
+
+
 def test_response_to_data_bag_with_cb_kwargs():
     data = response_to_data_bag(
         fake_response(body=json.dumps({"name": "Easybook 15"})),
