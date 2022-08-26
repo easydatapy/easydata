@@ -66,7 +66,7 @@ def test_cor(queries, result):
         ed.cor(
             ed.jp("title2"),
             ed.jp("title3", strict=True),
-        )
+        ),
     ],
 )
 def test_cor_strict_query_non_existent_error(queries):

@@ -65,7 +65,7 @@ def test_pq_attr_name():
 
 
 def test_pq_attr_class():
-    result = ed.pq('.availability::class').get(data_html.prices_and_variants)
+    result = ed.pq(".availability::class").get(data_html.prices_and_variants)
     assert result == "instock availability"
 
 
