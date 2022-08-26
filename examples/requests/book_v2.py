@@ -30,6 +30,11 @@ class BookItemModel(ItemModel):
         remove_keys=["...more"],
     )
 
+    item_features = ed.Features(
+        ed.pq(".table"),
+        deny=["Avail"],
+    )
+
     def crawl_book(self, url: str) -> dict:
         response = requests.get(url)
 

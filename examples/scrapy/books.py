@@ -42,6 +42,11 @@ class BooksSpider(ItemModelCrawlSpider):
             remove_keys=["...more"],
         )
 
+        item_features = ed.Features(
+            ed.pq(".table"),
+            deny=["Avail"],
+        )
+
 
 if __name__ == "__main__":
     process = CrawlerProcess()

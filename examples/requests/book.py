@@ -30,6 +30,11 @@ class BookItemModel(ItemModel):
         remove_keys=["...more"],
     )
 
+    item_features = ed.Features(
+        ed.pq(".table"),
+        deny=["upc", "Availability"],
+    )
+
 
 if __name__ == "__main__":
     book_item_model = BookItemModel()

@@ -35,6 +35,10 @@ class BooksSpider(ItemModelCrawlSpider):
             # remove "...more" since it doesn't do anything
             remove_keys=["...more"],
         ),
+        features=ed.Features(
+            ed.pq(".table"),
+            deny=["Avail"],
+        )
     )
 
 
