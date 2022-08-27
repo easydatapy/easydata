@@ -126,7 +126,7 @@ Pseudo key ``::val`` is a shortcut for a ``::attr(value)``.
     >>> ed.pq('#stock-quantity::val').get(test_html)
     'EasyData'
 
-.. option:: ::val
+.. option:: ::name
 
 Pseudo key ``::name`` is a shortcut for a ``::attr(name)``.
 
