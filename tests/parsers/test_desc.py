@@ -1,7 +1,7 @@
 import pytest
 
-from easydata.parsers import Description, Feature, Features, FeaturesDict, Sentences
-from tests.factory import data_text
+import easydata as ed
+from tests.factory import data_html, data_text
 
 
 @pytest.mark.parametrize(
@@ -13,7 +13,7 @@ from tests.factory import data_text
     ],
 )
 def test_description(test_text, result):
-    assert Description().parse(test_text) == result
+    assert ed.Description().parse(test_text) == result
 
 
 @pytest.mark.parametrize(
@@ -28,7 +28,7 @@ def test_description(test_text, result):
     ],
 )
 def test_description_html(test_text, result, params):
-    assert Description(**params).parse(test_text) == result
+    assert ed.Description(**params).parse(test_text) == result
 
 
 @pytest.mark.parametrize(
@@ -43,7 +43,7 @@ def test_description_html(test_text, result, params):
     ],
 )
 def test_sentences(test_text, result):
-    assert Sentences().parse(test_text) == result
+    assert ed.Sentences().parse(test_text) == result
 
 
 @pytest.mark.parametrize(
@@ -55,7 +55,7 @@ def test_sentences(test_text, result):
     ],
 )
 def test_features(test_text, result):
-    assert Features().parse(test_text) == result
+    assert ed.Features().parse(test_text) == result
 
 
 @pytest.mark.parametrize(
@@ -67,7 +67,7 @@ def test_features(test_text, result):
     ],
 )
 def test_features_dict(test_text, result):
-    assert FeaturesDict().parse(test_text) == result
+    assert ed.FeaturesDict().parse(test_text) == result
 
 
 @pytest.mark.parametrize(
@@ -80,8 +80,20 @@ def test_features_dict(test_text, result):
     ],
 )
 def test_feature(key, result):
-    feature_parser = Feature(key=key)
+    feature_parser = ed.Feature(key=key)
     assert feature_parser.parse(data_text.raw_sentences) == result
+
+
+def test_feature_html_text_to_sentences_false():
+    feature_parser = ed.Features(
+        query=ed.pq(".specs2"),
+        html_text_to_sentences=False,
+    )
+
+    assert feature_parser.parse(data_html.features) == [
+        ("Product Type", "Papers"),
+        ("Price (dddd. tax)", "£52"),
+    ]
 
 
 @pytest.mark.parametrize(
@@ -93,5 +105,5 @@ def test_feature(key, result):
     ],
 )
 def test_feature_key_exact(key_exact, result):
-    feature_parser = Feature(key_exact=key_exact)
+    feature_parser = ed.Feature(key_exact=key_exact)
     assert feature_parser.parse(data_text.raw_sentences) == result

@@ -81,6 +81,26 @@ features = """
             <li>style: <strong>elegant</strong> is this</li>
             <li>Date added: Fri, 12 Dec 2018 10:55</li>
         </ul>
+        <table class="table specs">
+            <tr>
+                <th>Product Type</th>
+                <td>Books</td>
+            </tr>
+            <tr>
+                <th>Price (excl. tax)</th>
+                <td>£51.77</td>
+            </tr>
+        </table>
+        <table class="table2 specs2">
+            <tr>
+                <th>Product Type</th>
+                <td>Papers</td>
+            </tr>
+            <tr>
+                <th>Price (dddd. tax)</th>
+                <td>£52</td>
+            </tr>
+        </table>
     </div>
 """
 
