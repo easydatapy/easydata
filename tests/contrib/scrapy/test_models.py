@@ -9,7 +9,7 @@ from tests.factory.scrapy import (
 
 
 class ProductItemModelWithScrapyItem(ProductItemModel):
-    scrapy_item_cls = ProductItem
+    sitem_cls = ProductItem
 
 
 def test_item_model_parse_res2item():
