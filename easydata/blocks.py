@@ -25,6 +25,7 @@ class BlockParserModel(ItemModel):
     def __init__(
         self,
         parser: BaseData,
+        source: Optional[str] = None,
         query_prefix: Optional[str] = None,
         **queries,
     ):
@@ -34,6 +35,9 @@ class BlockParserModel(ItemModel):
 
             if query_prefix and isinstance(query, QuerySearch):
                 query.add_query_prefix(query_prefix)
+
+            if source:
+                item_parser.add_source(source)
 
             item_parser.add_query(query)
 

@@ -37,10 +37,26 @@ test_data = {
                 "brand": "easydata",
             },
         ),
+        (
+            ed.BlockParserModel(
+                ed.Text(uppercase=True),
+                source="location",
+                country=ed.jp("country"),
+            ),
+            {
+                "country": "SLOVENIA",
+            },
+        ),
     ],
 )
 def test_block_parser_model(block_parser_model, result):
-    assert block_parser_model.parse_item(test_data) == result
+    assert (
+        block_parser_model.parse_item(
+            test_data,
+            location={"country": "Slovenia"},
+        )
+        == result
+    )
 
 
 @pytest.mark.parametrize(
