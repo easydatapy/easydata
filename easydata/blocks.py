@@ -1,5 +1,5 @@
 from copy import copy
-from typing import Optional
+from typing import Optional, Type
 
 from easydata.models import ItemModel
 from easydata.parsers.base import BaseData
@@ -45,7 +45,7 @@ class BlockParserModel(ItemModel):
 
 
 class BlockSimpleBaseModel(ItemModel):
-    default_parser_cls: Optional[type[BaseData]] = None
+    default_parser_cls: Optional[Type[BaseData]] = None
 
     def __init__(
         self,
