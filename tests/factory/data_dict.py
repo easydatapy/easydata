@@ -26,10 +26,12 @@ item_with_options = {
         {
             "name": "Monitor",
             "availability": {"value": "yes"},
+            "quantity": "3 units",
         },
         {
             "name": "Mouse",
             "availability": {"value": "no"},
+            "quantity": "no units",
         },
     ],
 }

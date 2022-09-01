@@ -233,6 +233,27 @@ def test_item_model_with_multi_items():
             [{"discount": 50.0, "name": "EasyBook pro 15", "price": 100.0}],
         ),
         (
+            data_dict.item_with_options,
+            ed.StackedModel(
+                options=ed.List(
+                    query=ed.jp("options"),
+                    parser=ed.ItemDict(quantity=ed.Bool(ed.Int(ed.jp("quantity")))),
+                ),
+            ),
+            [
+                {
+                    "options": [
+                        {
+                            "quantity": True,
+                        },
+                        {
+                            "quantity": False,
+                        },
+                    ]
+                }
+            ],
+        ),
+        (
             data_dict.variants_data_multi,
             ed.StackedModel(
                 ed.DataFromQueryProcessor(ed.jp("data")),
