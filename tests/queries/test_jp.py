@@ -69,6 +69,14 @@ def test_jp_query(query, result):
     assert ed.jp(query).get(data_dict.item_with_options) == result
 
 
+def test_jp_query_add_query_prefix():
+    jp_query = ed.jp("name")
+
+    jp_query.add_query_prefix("brand.")
+
+    assert jp_query.get(data_dict.item_with_options) == "EasyData"
+
+
 @pytest.mark.parametrize(
     "query, result",
     [
