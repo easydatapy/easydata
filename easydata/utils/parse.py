@@ -5,18 +5,21 @@ from easydata.data import DataBag
 from easydata.queries.base import QuerySearchBase
 
 
-def query_search(
-    query: QuerySearchBase,
+def query_parser(
+    query,
     data: Any,
     source: str = "main",
     parent_data: Optional[Any] = None,
 ) -> Any:
 
-    return query.get(
-        data=data,
-        source=source,
-        parent_data=parent_data,
-    )
+    if isinstance(query, QuerySearchBase):
+        return query.get(
+            data=data,
+            source=source,
+            parent_data=parent_data,
+        )
+
+    return query.parse(data, parent_data)
 
 
 def default_data_value(
