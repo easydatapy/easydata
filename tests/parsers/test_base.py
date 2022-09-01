@@ -27,6 +27,18 @@ def test_base_data_add_query():
     assert item_data.parse(db) == "EasyBook pro 15"
 
 
+def test_base_data_add_source():
+    item_data = Data()
+
+    # Check default source name
+    assert item_data.source == "main"
+
+    # Add new source name
+    item_data.add_source("country")
+
+    assert item_data.source == "country"
+
+
 def test_base_data_from_item():
     item_model = ItemModel()
     item_model.item_name = Data(query=jp("title"))
