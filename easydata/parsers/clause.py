@@ -12,7 +12,7 @@ __all__ = (
     "JoinList",
     "MergeDict",
     "ItemDict",
-    "ItemList",
+    "ValueList",
 )
 
 
@@ -281,7 +281,7 @@ class ItemDict(Base):
         return parser_dict
 
 
-class ItemList(Base):
+class ValueList(Base):
     def __init__(
         self,
         *args: Parser,

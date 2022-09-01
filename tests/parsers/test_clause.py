@@ -207,11 +207,11 @@ def test_item_dict_exception_on_non_values():
         (True, ["gold", False, "16 gb"]),
     ],
 )
-def test_item_list(ignore_non_values, result):
+def test_value_list(ignore_non_values, result):
     test_features_dict = {"color": "gold", "display": "retina"}
     test_specs_dict = {"proc": "i7", "ram": "16 gb"}
 
-    item_list_parser = parsers.ItemList(
+    value_list_parser = parsers.ValueList(
         parsers.Text(jp("color")),
         parsers.Bool(jp("display"), contains=["retina2"]),
         parsers.Text(jp("ram"), source="specs"),
@@ -220,4 +220,4 @@ def test_item_list(ignore_non_values, result):
     )
 
     data_bag = DataBag(main=test_features_dict, specs=test_specs_dict)
-    assert item_list_parser.parse(data_bag) == result
+    assert value_list_parser.parse(data_bag) == result
