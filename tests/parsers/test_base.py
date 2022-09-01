@@ -19,6 +19,14 @@ def test_base_data_query():
     assert item_data.parse(db) == "EasyBook pro 15"
 
 
+def test_base_data_add_query():
+    item_data = Data()
+
+    item_data.add_query(jp("info.name"))
+
+    assert item_data.parse(db) == "EasyBook pro 15"
+
+
 def test_base_data_from_item():
     item_model = ItemModel()
     item_model.item_name = Data(query=jp("title"))
