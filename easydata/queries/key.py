@@ -16,7 +16,7 @@ __all__ = (
 class KeySearch(QuerySearch):
     def __init__(
         self,
-        query: str = None,
+        query: str,
         **kwargs,
     ):
 

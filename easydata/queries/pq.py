@@ -30,7 +30,7 @@ _attr_shortcut_mappings = {
 class PyQuerySearch(QuerySearch):
     def __init__(
         self,
-        query: Optional[str],
+        query: str,
         remove_query: Optional[str] = None,
         **kwargs,
     ):

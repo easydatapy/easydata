@@ -26,7 +26,7 @@ class QuerySearch(QuerySearchBase, ABC):
 
     def __init__(
         self,
-        query: str = None,
+        query: str,
         params: Optional[dict] = None,
         source: Optional[str] = None,
         strict: Optional[bool] = None,
@@ -42,6 +42,9 @@ class QuerySearch(QuerySearchBase, ABC):
 
         if isinstance(strict, bool):
             self.strict = strict
+
+    def add_query_prefix(self, query_prefix: str):
+        self._query = query_prefix + self._query
 
     @property
     def query(self):
