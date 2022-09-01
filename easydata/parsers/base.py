@@ -62,6 +62,9 @@ class BaseData(Base, ABC):
         self._debug = debug
         self._debug_source = debug_source
 
+    def add_query(self, query: QuerySearchBase):
+        self._query = query
+
     def parse(
         self,
         data: Any,
