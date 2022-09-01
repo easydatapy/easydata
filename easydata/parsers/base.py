@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Optional, Union
 
@@ -38,7 +40,7 @@ def custom_process_value(
 class BaseData(Base, ABC):
     def __init__(
         self,
-        query: Optional[QuerySearchBase] = None,
+        query: Optional[Union[QuerySearchBase, BaseData]] = None,
         from_item: Optional[str] = None,
         default: Optional[Any] = None,
         default_from_item: Optional[str] = None,
@@ -62,7 +64,7 @@ class BaseData(Base, ABC):
         self._debug = debug
         self._debug_source = debug_source
 
-    def add_query(self, query: QuerySearchBase):
+    def add_query(self, query: Union[QuerySearchBase, BaseData]):
         self._query = query
 
     def add_source(self, source: str):
@@ -126,13 +128,13 @@ class BaseData(Base, ABC):
 
     def _parse_query(
         self,
-        query: QuerySearchBase,
+        query: Union[QuerySearchBase, BaseData],
         data: Any,
         source: str,
         parent_data: Optional[Any] = None,
     ):
 
-        return parse.query_search(
+        return parse.query_parser(
             query=query,
             data=data,
             source=source,

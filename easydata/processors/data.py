@@ -14,6 +14,7 @@ from easydata.parsers.data import Data
 from easydata.processors.base import BaseProcessor
 from easydata.queries.base import QuerySearchBase
 from easydata.queries.re import ReSearch
+from easydata.typing import QueryDataParser
 from easydata.utils import parse
 
 __all__ = (
@@ -196,7 +197,7 @@ class DataXmlToDictProcessor(DataBaseProcessor):
 class DataFromQueryProcessor(DataBaseProcessor):
     def __init__(
         self,
-        query: QuerySearchBase,
+        query: QueryDataParser,
         **kwargs,
     ):
 
@@ -205,14 +206,14 @@ class DataFromQueryProcessor(DataBaseProcessor):
         super().__init__(**kwargs)
 
     def process_data(self, data: Any) -> Any:
-        return parse.query_search(self._query, data)
+        return parse.query_parser(self._query, data)
 
 
 class DataFromIterQueryProcessor(DataFromQueryProcessor):
     _multi = True
 
     def process_data(self, data: Any) -> Any:
-        yield from parse.query_search(self._query, data)
+        yield from parse.query_parser(self._query, data)
 
 
 class DataJsonFromQueryToDictProcessor(DataFromQueryProcessor):
