@@ -38,7 +38,7 @@ class BooksSpider(ItemModelCrawlSpider):
         features=ed.Features(
             ed.pq(".table"),
             deny=["Avail"],
-        )
+        ),
     )
 
 
