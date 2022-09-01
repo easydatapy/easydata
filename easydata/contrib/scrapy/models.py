@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type
 
 from scrapy.http.response import Response
 from scrapy.item import Item
@@ -14,7 +14,7 @@ __all__ = (
 
 
 class ItemModel(BaseItemModel):
-    sitem_cls: Optional[type[Item]] = None
+    sitem_cls: Optional[Type[Item]] = None
 
     def parse_res2item(
         self,
@@ -63,7 +63,7 @@ class StackedModel(StackedMixin, ItemModel):
     def __init__(
         self,
         *components,
-        sitem_cls: Optional[type[Item]] = None,
+        sitem_cls: Optional[Type[Item]] = None,
         **item_components,
     ):
 
