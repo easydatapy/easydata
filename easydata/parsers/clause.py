@@ -22,7 +22,7 @@ class Or(Base):
     def __init__(
         self,
         *args,
-        strict_none=False,
+        strict_none: bool = False,
     ):
 
         self.parsers = args
