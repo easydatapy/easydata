@@ -1,4 +1,4 @@
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 
 from easydata.blocks import *  # noqa: F401 F403
 from easydata.models import ItemModel, StackedModel  # noqa: F401 F403

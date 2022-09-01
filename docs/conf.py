@@ -25,7 +25,7 @@ copyright = "2022, EasyData developers"
 author = "Rok Grabnar"
 
 # The full version, including alpha/beta/rc tags
-release = "0.2.6"
+release = "0.2.7"
 
 
 # -- General configuration ---------------------------------------------------
