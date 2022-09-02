@@ -65,21 +65,18 @@ class ModelManager(ConfigMixin):
         return self._item_parsers[item_key]
 
     def process_item_parser(self, item_key: str, data: DataBag):
-        item_parser = self._item_parsers[item_key]
+        try:
+            return self._process_item_parser(item_key, data)
+        except self._drop_item_exception as msg:
+            raise self._drop_item_exception(msg)
+        except Exception as e:
+            # Append to all exception info regarding which item
+            # key was affected
+            append_error_msg = 'FOR ITEM KEY: "%s"' % item_key
 
-        if item_parser is None:
-            return None
+            e.args = (append_error_msg,) + e.args
 
-        if isinstance(item_parser, (str, bool, float, int, list, dict)):
-            return item_parser
-        elif isinstance(item_parser, models.ItemModel):
-            data = data.copy(item_parser.model_manager)
-
-            return item_parser.parse_item(data)
-        elif isinstance(item_parser, BaseParser):
-            return item_parser.parse(data)
-
-        return item_parser(data)
+            raise
 
     def parse_data_to_items(
         self,
@@ -95,19 +92,38 @@ class ModelManager(ConfigMixin):
         drop_item_exceptions = []
 
         for iter_data in self._apply_data_processors(data):
+            # we store exceptions so that other variations could get
+            # processed, and we throw stored exceptions after iteration has ended
+
             try:
                 yield self._data_to_item(iter_data)
             except self._drop_item_exception as drop_item_exception:
-                # we store drop item exceptions so that other variations could
-                # get processed and we throw stored exceptions after iteration
-                # has ended
+                # Store item drop exceptions
                 drop_item_exceptions.append(drop_item_exception)
 
         if drop_item_exceptions:
+            # Re-release item drop exceptions
             if len(drop_item_exceptions) > 1:
                 raise self._drop_item_exception(drop_item_exceptions)
 
-            raise drop_item_exceptions[0]
+            raise self._drop_item_exception(drop_item_exceptions[0])
+
+    def _process_item_parser(self, item_key: str, data: DataBag):
+        item_parser = self._item_parsers[item_key]
+
+        if item_parser is None:
+            return None
+
+        if isinstance(item_parser, (str, bool, float, int, list, dict)):
+            return item_parser
+        elif isinstance(item_parser, models.ItemModel):
+            data = data.copy(item_parser.model_manager)
+
+            return item_parser.parse_item(data)
+        elif isinstance(item_parser, BaseParser):
+            return item_parser.parse(data)
+
+        return item_parser(data)
 
     @property
     def _drop_item_exception(self):
