@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 from easytxt import text
 from price_parser import Price
@@ -46,3 +46,18 @@ def get_discount(
         discount = int(discount)
 
     return discount
+
+
+def process_min_max_value(
+    value: Union[float, int],
+    min_value: Optional[Union[float, int]] = None,
+    max_value: Optional[Union[float, int]] = None,
+) -> Optional[Union[float, int]]:
+
+    if min_value and value < min_value:
+        return None
+
+    if max_value and value > max_value:
+        return None
+
+    return value
