@@ -298,3 +298,42 @@ def test_item_model_with_multi_items():
 )
 def test_stacked_model(test_data, stacked_model, result):
     assert list(stacked_model.parse_items(test_data)) == result
+
+
+@pytest.mark.parametrize(
+    "stacked_model, exception, error_msg",
+    [
+        (
+            ed.StackedModel(
+                _name=ed.DropContains(
+                    ed.key("name"),
+                    contains="EasyData",
+                )
+            ),
+            DropItem,
+            "dropped due to matched key: easydata",
+        ),
+        (
+            ed.StackedModel(name=ed.Data(ed.jp_strict("brand"))),
+            Exception,
+            'item key: "name"',
+        ),
+        (
+            ed.StackedModel(_name=ed.Data(ed.jp_strict("brand"))),
+            Exception,
+            'item key: "name"',
+        ),
+        (
+            ed.StackedModel(sale_price=ed.Data(ed.jp("sale_price"), source="pricing")),
+            Exception,
+            'item key: "sale_price"',
+        ),
+    ],
+)
+def test_model_exceptions(stacked_model, exception, error_msg):
+    test_data = {"name": "EasyData"}
+
+    with pytest.raises(exception) as excinfo:
+        stacked_model.parse_item(test_data)
+
+    assert error_msg in str(excinfo.value).lower()
