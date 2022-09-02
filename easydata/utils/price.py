@@ -7,11 +7,17 @@ from price_parser import Price
 def to_float(
     price_value: Union[str, int, float],
     decimals: Union[int, bool] = 2,
+    currency_hint: Optional[str] = None,
+    decimal_separator: Optional[str] = None,
 ):
 
     price_str_value: str = text.to_str(price_value)
 
-    price = Price.fromstring(price=price_str_value).amount_float
+    price = Price.fromstring(
+        price=price_str_value,
+        currency_hint=currency_hint,
+        decimal_separator=decimal_separator,
+    ).amount_float
 
     if not price:
         return price
@@ -22,10 +28,18 @@ def to_float(
 def to_string(
     price_value: Union[str, int, float],
     decimals: Union[int, bool] = 2,
+    currency_hint: Optional[str] = None,
+    decimal_separator: Optional[str] = None,
 ):
 
-    price = to_float(price_value=price_value, decimals=decimals)
-    return str(price) if price else price
+    price = to_float(
+        price_value=price_value,
+        decimals=decimals,
+        currency_hint=currency_hint,
+        decimal_separator=decimal_separator,
+    )
+
+    return str(price) if price is not None else price
 
 
 def get_discount(
