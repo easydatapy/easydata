@@ -19,12 +19,15 @@ class BasePriceFloat(Text, ABC):
         decimals: Optional[int] = None,
         min_value: Optional[Union[float, int]] = None,
         max_value: Optional[Union[float, int]] = None,
+        normalize: bool = False,
         **kwargs,
     ):
 
         self.__decimals = decimals
         self.__min_value = min_value
         self.__max_value = max_value
+
+        kwargs["normalize"] = normalize
 
         super().__init__(
             *args,
@@ -74,19 +77,14 @@ class BasePriceFloat(Text, ABC):
             decimals=self._decimals,
         )
 
-        return None if value is None else self._process_min_max_value(value)
-
-    def _process_min_max_value(self, value: float) -> Optional[float]:
-        min_value = self._min_value
-        max_value = self._max_value
-
-        if min_value and value < min_value:
+        if value is None:
             return None
 
-        if max_value and value > max_value:
-            return None
-
-        return value
+        return price.process_min_max_value(
+            value,
+            min_value=self._min_value,
+            max_value=self._max_value,
+        )
 
 
 class PriceFloat(BasePriceFloat):
