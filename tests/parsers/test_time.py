@@ -41,6 +41,9 @@ def test_datetime_config():
     "test_data, result",
     [
         (test_date_text, "12/10/2018"),
+        ("17 Sep 2022", "09/17/2022"),
+        ("Sep 17 2022", "09/17/2022"),
+        ("Sep. 17 2022", "09/17/2022"),
     ],
 )
 def test_date(test_data, result):
