@@ -10,7 +10,7 @@ from easydata.parsers.list import *  # noqa: F401 F403
 from easydata.parsers.math import *  # noqa: F401 F403
 from easydata.parsers.misc import *  # noqa: F401 F403
 from easydata.parsers.number import *  # noqa: F401 F403
-from easydata.parsers.price import PriceFloat, PriceInt, PriceText
+from easydata.parsers.price import PriceFloat, PriceInt, PriceText  # noqa: F401 F403
 from easydata.parsers.text import *  # noqa: F401 F403
 from easydata.parsers.time import *  # noqa: F401 F403
 from easydata.parsers.url import *  # noqa: F401 F403
