@@ -237,7 +237,9 @@ def test_item_model_with_multi_items():
             ed.StackedModel(
                 options=ed.List(
                     query=ed.jp("options"),
-                    parser=ed.ItemDict(quantity=ed.Bool(ed.Int(ed.jp("quantity")))),
+                    parser=ed.ItemDict(
+                        quantity=ed.Bool(ed.SearchInt(ed.jp("quantity")))
+                    ),
                 ),
             ),
             [

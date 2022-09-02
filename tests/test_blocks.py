@@ -96,7 +96,7 @@ def test_block_parser_model(block_parser_model, result):
             },
         ),
         (
-            ed.BlockSimpleFloatModel(
+            ed.BlockSimpleSearchFloatModel(
                 price=ed.jp("price"),
                 sale_price=ed.jp("sale_price"),
             ),
@@ -106,7 +106,7 @@ def test_block_parser_model(block_parser_model, result):
             },
         ),
         (
-            ed.BlockSimpleIntModel(
+            ed.BlockSimpleSearchIntModel(
                 price=ed.jp("price"),
                 sale_price=ed.jp("sale_price"),
             ),

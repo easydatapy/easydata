@@ -123,7 +123,7 @@ class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
         val_parser=ed.Bool(
             ed.jp(
                 "stock_data[?id==`{stock_id}`] | [0].stock",
-                params={"stock_id": ed.Int(ed.jp("stock_id"))},
+                params={"stock_id": ed.SearchInt(ed.jp("stock_id"))},
             ),
             source="main",
         ),

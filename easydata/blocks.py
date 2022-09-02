@@ -4,7 +4,7 @@ from typing import Optional, Type
 from easydata.models import ItemModel
 from easydata.parsers.base import BaseData
 from easydata.parsers.data import Data
-from easydata.parsers.number import Float, Int
+from easydata.parsers.number import SearchFloat, SearchInt
 from easydata.parsers.price import PriceFloat, PriceInt, PriceText
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearch
@@ -13,8 +13,8 @@ __all__ = (
     "BlockParserModel",
     "BlockSimpleDataModel",
     "BlockSimpleTextModel",
-    "BlockSimpleFloatModel",
-    "BlockSimpleIntModel",
+    "BlockSimpleSearchFloatModel",
+    "BlockSimpleSearchIntModel",
     "BlockSimplePriceFloatModel",
     "BlockSimplePriceIntModel",
     "BlockSimplePriceTextModel",
@@ -85,12 +85,12 @@ class BlockSimpleTextModel(BlockSimpleBaseModel):
     default_parser_cls = Text
 
 
-class BlockSimpleFloatModel(BlockSimpleBaseModel):
-    default_parser_cls = Float
+class BlockSimpleSearchFloatModel(BlockSimpleBaseModel):
+    default_parser_cls = SearchFloat
 
 
-class BlockSimpleIntModel(BlockSimpleBaseModel):
-    default_parser_cls = Int
+class BlockSimpleSearchIntModel(BlockSimpleBaseModel):
+    default_parser_cls = SearchInt
 
 
 class BlockSimplePriceFloatModel(BlockSimpleBaseModel):

@@ -3,14 +3,14 @@ from typing import Any
 from easydata.parsers.price import BasePriceFloat
 
 __all__ = (
-    "Float",
-    "Int",
-    "FloatText",
-    "IntText",
+    "SearchFloat",
+    "SearchInt",
+    "SearchFloatText",
+    "SearchIntText",
 )
 
 
-class Float(BasePriceFloat):
+class SearchFloat(BasePriceFloat):
     @property
     def _decimals_config(self):
         return self.config["ED_NUMBER_DECIMALS"]
@@ -24,7 +24,7 @@ class Float(BasePriceFloat):
         return self.config["ED_NUMBER_MAX_VALUE"]
 
 
-class Int(Float):
+class SearchInt(SearchFloat):
     def parse_value(
         self,
         value: Any,
@@ -36,7 +36,7 @@ class Int(Float):
         return int(value) if value else None
 
 
-class FloatText(Float):
+class SearchFloatText(SearchFloat):
     def parse_value(
         self,
         value: Any,
@@ -48,7 +48,7 @@ class FloatText(Float):
         return str(value) if value else None
 
 
-class IntText(Int):
+class SearchIntText(SearchInt):
     def parse_value(
         self,
         value: Any,

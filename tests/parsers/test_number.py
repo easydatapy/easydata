@@ -14,7 +14,7 @@ from easydata import parsers
     ],
 )
 def test_float_text(test_data, result):
-    assert parsers.FloatText().parse(test_data) == result
+    assert parsers.SearchFloatText().parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -32,7 +32,7 @@ def test_float_text(test_data, result):
     ],
 )
 def test_float(test_data, result):
-    assert parsers.Float().parse(test_data) == result
+    assert parsers.SearchFloat().parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -47,7 +47,7 @@ def test_float(test_data, result):
     ],
 )
 def test_float_decimals(decimals, test_data, result):
-    assert parsers.Float(decimals=decimals).parse(test_data) == result
+    assert parsers.SearchFloat(decimals=decimals).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -62,7 +62,7 @@ def test_float_decimals(decimals, test_data, result):
     ],
 )
 def test_float_min_value(min_value, test_data, result):
-    assert parsers.Float(min_value=min_value).parse(test_data) == result
+    assert parsers.SearchFloat(min_value=min_value).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -77,7 +77,7 @@ def test_float_min_value(min_value, test_data, result):
     ],
 )
 def test_float_max_value(max_value, test_data, result):
-    assert parsers.Float(max_value=max_value).parse(test_data) == result
+    assert parsers.SearchFloat(max_value=max_value).parse(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -89,7 +89,7 @@ def test_float_max_value(max_value, test_data, result):
     ],
 )
 def test_float_config(config_name, config_value, test_data, result):
-    float_parser = parsers.Float()
+    float_parser = parsers.SearchFloat()
     float_parser.init_config({config_name: config_value})
 
     assert float_parser.parse(test_data) == result
