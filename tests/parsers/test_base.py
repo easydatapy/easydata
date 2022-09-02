@@ -72,6 +72,25 @@ def test_base_data_default_from_item():
 
 
 @pytest.mark.parametrize(
+    "parser, test_data, result",
+    [
+        (ed.Data(), [], []),
+        (ed.Data(), {}, {}),
+        (ed.Data(), False, False),
+        (ed.Data(), "", ""),
+        (ed.Data(), None, None),
+        (ed.Data(empty_as_none=True), [], None),
+        (ed.Data(empty_as_none=True), {}, None),
+        # Boolean false is not considered as empty
+        (ed.Data(empty_as_none=True), False, False),
+        (ed.Data(empty_as_none=True), "", None),
+    ],
+)
+def test_base_data_empty_as_none(parser, test_data, result):
+    assert parser.parse(test_data) == result
+
+
+@pytest.mark.parametrize(
     "query, source, test_data, result",
     [
         (ed.jp("stock"), "additional_data", db, True),

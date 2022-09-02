@@ -47,6 +47,7 @@ class BaseData(Base, ABC):
         source: Optional[str] = None,
         process_raw_value: Optional[Union[Callable, Base]] = None,
         process_value: Optional[Union[Callable, Base]] = None,
+        empty_as_none: bool = False,
         debug: bool = False,
         debug_source: bool = None,
     ):
@@ -61,6 +62,7 @@ class BaseData(Base, ABC):
         self._source = source
         self._process_raw_value = process_raw_value
         self._process_value = process_value
+        self._empty_as_none = empty_as_none
         self._debug = debug
         self._debug_source = debug_source
 
@@ -103,6 +105,10 @@ class BaseData(Base, ABC):
 
         if self._process_value:
             value = custom_process_value(self._process_value, value, data)
+
+        if self._empty_as_none and not value:
+            if not isinstance(value, bool):  # False shouldn't be considered empty
+                value = None
 
         return self._process_default_value(value, data)
 
