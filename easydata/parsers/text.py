@@ -125,7 +125,7 @@ class Str(Text):
     def __init__(
         self,
         *args,
-        normalize: False,
+        normalize: bool = False,
         escape_new_lines: bool = False,
         **kwargs,
     ):
@@ -134,4 +134,4 @@ class Str(Text):
 
         kwargs["escape_new_lines"] = escape_new_lines
 
-        super(Str, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
