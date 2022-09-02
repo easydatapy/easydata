@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from easydata.exceptions import DropItem
 
@@ -23,8 +23,6 @@ ED_DATETIME_LOCALES: Optional[List[str]] = None
 ED_DATETIME_REGION: Optional[str] = None
 
 # Config attributes used by url parsers
-ED_URL_DOMAIN: Optional[str] = None
-
 ED_URL_PROTOCOL: str = "https"
 
 # Config attributes used by DataXmlToDictProcessor
