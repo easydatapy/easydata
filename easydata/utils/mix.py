@@ -10,6 +10,19 @@ from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
 
 
+def _parse_float(
+    value: Any,
+) -> Optional[float]:
+
+    if isinstance(value, float):
+        return value
+
+    if isinstance(value, int):
+        return float(value)
+
+    return float(value) if is_str_float(value) else None
+
+
 def unique_list(list_data: list) -> list:
     unique_list_data = []
 
@@ -265,3 +278,25 @@ def validate_parser(
 
     if parser and not isinstance(parser, Base):
         raise TypeError("Wrong parser argument type. It must inherit Base parser.")
+
+
+def is_str_float(value: str) -> bool:
+    try:
+        float(value)
+
+        return True
+    except ValueError:
+        return False
+
+
+def parse_float(
+    value: Any,
+    decimals: Optional[int] = None,
+) -> Optional[float]:
+
+    value = _parse_float(value)
+
+    if value and decimals is not None:
+        return round(value, decimals)
+
+    return value
