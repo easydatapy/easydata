@@ -18,6 +18,7 @@ test_url_nested = (
 )
 def test_url_from_text(test_data, result):
     url_parser = ed.Url(from_text=True)
+
     assert url_parser.parse(test_data) == result
 
 
@@ -30,6 +31,7 @@ def test_url_from_text(test_data, result):
 )
 def test_url_qs(qs, test_data, result):
     url_parser = ed.Url(qs=qs)
+
     assert url_parser.parse(test_data) == result
 
 
@@ -45,6 +47,7 @@ def test_url_qs(qs, test_data, result):
 )
 def test_url_remove_qs(remove_qs, test_data, result):
     url_parser = ed.Url(remove_qs=remove_qs)
+
     assert url_parser.parse(test_data) == result
 
 
@@ -57,6 +60,7 @@ def test_url_remove_qs(remove_qs, test_data, result):
 )
 def test_url_default_value(default, test_data, result):
     url_parser = ed.Url(default=default)
+
     assert url_parser.parse(test_data) == result
 
 
@@ -69,6 +73,7 @@ def test_url_default_value(default, test_data, result):
 )
 def test_url_domain(domain, test_data, result):
     url_parser = ed.Url(domain=domain)
+
     assert url_parser.parse(test_data) == result
 
 
@@ -80,6 +85,7 @@ def test_url_domain(domain, test_data, result):
 )
 def test_url_normalize(test_url, result):
     url_parser = ed.Url(normalize=True)
+
     assert url_parser.parse(test_url) == result
 
 
@@ -98,6 +104,7 @@ def test_url_normalize(test_url, result):
 )
 def test_url_from_qs(test_url, query_key, qs, result):
     url_parser = ed.Url(from_qs=query_key, qs=qs)
+
     assert url_parser.parse(test_url) == result
 
 
@@ -115,4 +122,5 @@ def test_url_config(config_dict, result):
     url_parser = ed.Url()
 
     url_parser.init_config(config_dict)
+
     assert url_parser.parse(test_url_partial) == result
