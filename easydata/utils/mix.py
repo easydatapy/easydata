@@ -1,5 +1,5 @@
 from types import GeneratorType
-from typing import Any, Callable, List, Optional, Union, TYPE_CHECKING
+from typing import Any, Callable, List, Optional, Union
 
 from easytxt.text import to_list as multiply_to_list
 from pyquery import PyQuery
@@ -8,9 +8,6 @@ from easydata.config.loader import ConfigLoader
 from easydata.data import DataBag
 from easydata.parsers.base import Base
 from easydata.processors.base import BaseProcessor
-
-if TYPE_CHECKING:
-    from easydata.models import ItemModel
 
 
 def unique_list(list_data: list) -> list:
@@ -267,4 +264,4 @@ def validate_parser(
 ):
 
     if parser and not isinstance(parser, Base):
-        raise TypeError("Wrong parser argument type. It must inherit Base Parser.")
+        raise TypeError("Wrong parser argument type. It must inherit Base parser.")
