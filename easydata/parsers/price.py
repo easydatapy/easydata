@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Union
 
-from easydata.parsers.text import Text
+from easydata.parsers.text import Str
 from easydata.utils import price
 
 __all__ = (
@@ -13,7 +13,7 @@ __all__ = (
 )
 
 
-class BaseNum(Text, ABC):
+class BaseNum(Str, ABC):
     def __init__(
         self,
         *args,
@@ -37,10 +37,12 @@ class BaseNum(Text, ABC):
 
     @property
     def _decimals(self):
-        if self.__decimals is False or isinstance(self.__decimals, int):
+        if isinstance(self.__decimals, int):
             return self.__decimals
 
-        return self.__decimals or self._decimals_config
+        decimals = self.__decimals or self._decimals_config
+
+        return decimals if isinstance(decimals, int) else None
 
     @property
     def _min_value(self):
@@ -90,25 +92,43 @@ class BaseNum(Text, ABC):
 
 
 class BasePriceFloat(BaseNum, ABC):
+    def __init__(
+        self,
+        *args,
+        currency_hint: Optional[str] = None,
+        decimal_separator: Optional[str] = None,
+        **kwargs,
+    ):
+
+        self._currency_hint = currency_hint
+        self._decimal_separator = decimal_separator
+
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
     def _parse_num_value(self, value: Any):
         return price.to_float(
             price_value=value,
             decimals=self._decimals,
+            currency_hint=self._currency_hint,
+            decimal_separator=self._decimal_separator,
         )
 
 
 class PriceFloat(BasePriceFloat):
     @property
-    def _decimals_config(self):
-        return self.config["ED_PRICE_DECIMALS"]
+    def _decimals_config(self) -> Optional[int]:
+        return self.config.get("ED_PRICE_DECIMALS")
 
     @property
-    def _min_value_config(self):
-        return self.config["ED_PRICE_MIN_VALUE"]
+    def _min_value_config(self) -> Optional[int]:
+        return self.config.get("ED_PRICE_MIN_VALUE")
 
     @property
-    def _max_value_config(self):
-        return self.config["ED_PRICE_MAX_VALUE"]
+    def _max_value_config(self) -> Optional[int]:
+        return self.config.get("ED_PRICE_MAX_VALUE")
 
 
 class PriceInt(PriceFloat):
