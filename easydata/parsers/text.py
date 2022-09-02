@@ -5,7 +5,10 @@ from pyquery import PyQuery
 
 from easydata.parsers.base import BaseData
 
-__all__ = ("Text",)
+__all__ = (
+    "Text",
+    "Str",
+)
 
 
 class Text(BaseData):
@@ -31,6 +34,7 @@ class Text(BaseData):
         add_stop: Optional[Union[bool, str]] = None,
         separator: str = " ",
         index: Optional[int] = None,
+        strip: bool = False,
         **kwargs,
     ):
 
@@ -52,6 +56,7 @@ class Text(BaseData):
         self._add_stop = add_stop
         self._separator = separator
         self._index = index
+        self._strip = strip
 
         self.__language = language
 
@@ -89,6 +94,9 @@ class Text(BaseData):
         if value is None:
             return value
 
+        if isinstance(value, str) and self._strip:
+            value = value.strip()
+
         value = parse_string(
             raw_text=value,
             normalize=self._normalize,
@@ -111,3 +119,19 @@ class Text(BaseData):
         )
 
         return value if value else None
+
+
+class Str(Text):
+    def __init__(
+        self,
+        *args,
+        normalize: False,
+        escape_new_lines: bool = False,
+        **kwargs,
+    ):
+
+        kwargs["normalize"] = normalize
+
+        kwargs["escape_new_lines"] = escape_new_lines
+
+        super(Str, self).__init__(*args, **kwargs)
