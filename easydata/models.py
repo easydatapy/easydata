@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Any, Callable, Iterator, List, Optional
 
 from easydata.managers import ModelManager
+from easydata.parsers.base import Base
 from easydata.processors.data import DataBaseProcessor
 from easydata.processors.item import ItemBaseProcessor
 
@@ -11,6 +12,7 @@ __all__ = (
     "ItemModel",
     "StackedMixin",
     "StackedModel",
+    "StackedParser",
 )
 
 
@@ -133,3 +135,19 @@ class StackedMixin:
 
 class StackedModel(StackedMixin, ItemModel):
     pass
+
+
+class StackedParser(StackedModel, Base):
+    def parse(
+        self,
+        data: Any,
+        parent_data: Any = None,
+        with_parent_data: bool = False,
+    ) -> Any:
+
+        parent_data = parent_data if with_parent_data else data
+
+        return self.parse_item(
+            data=parent_data,
+            parent_data=data,
+        )
