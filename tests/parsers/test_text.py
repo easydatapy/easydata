@@ -47,5 +47,23 @@ import easydata as ed
         (ed.Text(capitalize=True), "Easybook pro 13", "Easybook pro 13"),
     ],
 )
-def test_text_parser(parser, test_data, result):
+def test_text(parser, test_data, result):
+    assert parser.parse(test_data) == result
+
+
+@pytest.mark.parametrize(
+    "parser, test_data, result",
+    [
+        (ed.Str(), "Easybook Pro 13", "Easybook Pro 13"),
+        (ed.Str(), "easybook pro 13", "easybook pro 13"),
+        (ed.Str(), " easybook pro   13", "easybook pro 13"),
+        (ed.Str(), "Easybook Pro\n13", "Easybook Pro\n13"),
+        (
+            ed.Str(),
+            "Easybook Pro 13 &lt;3 uÌˆnicode",
+            "Easybook Pro 13 &lt;3 uÌˆnicode",
+        ),
+    ],
+)
+def test_str(parser, test_data, result):
     assert parser.parse(test_data) == result
