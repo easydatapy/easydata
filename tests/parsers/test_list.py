@@ -1,8 +1,9 @@
 import pytest
 
 from easydata import parsers
+from easydata.models import StackedParser
 from easydata.queries import jp, pq
-from tests.factory import data_html, data_list
+from tests.factory import data_dict, data_html, data_list
 
 expected_urls = [
     "https://demo.com/imgs/1.jpg",
@@ -53,6 +54,21 @@ def test_list(query, parser, test_data, result):
     list_parser = parsers.List(query=query, parser=parser)
 
     assert list_parser.parse(test_data) == result
+
+
+def test_list_stacked_parser():
+    list_parser = parsers.List(
+        query=jp("variants"),
+        parser=StackedParser(
+            color=parsers.Text(jp("color"), uppercase=True),
+            stocked=parsers.Bool(jp("stock")),
+        ),
+    )
+
+    assert list_parser.parse(data_dict.variants_data) == [
+        {"color": "BLACK", "stocked": True},
+        {"color": "GRAY", "stocked": False},
+    ]
 
 
 def test_list_config():
