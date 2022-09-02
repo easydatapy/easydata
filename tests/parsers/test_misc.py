@@ -5,7 +5,7 @@ from tests.factory import data_dict
 
 
 @pytest.mark.parametrize(
-    "string_format_parser, test_data, result",
+    "parser, test_data, result",
     [
         (
             ed.StringFormat(
@@ -17,16 +17,14 @@ from tests.factory import data_dict
             "https://demo.com/easybook-pro-15.html?id=123",
         ),
         (
-            ed.StringFormat(
-                "https://demo.com/easybook-pro-15.html?id=123",
-            ),
+            ed.StringFormat("https://demo.com/easybook-pro-15.html?id=123"),
             data_dict.item_with_options,
             "https://demo.com/easybook-pro-15.html?id=123",
         ),
     ],
 )
-def test_string_format(string_format_parser, test_data, result):
-    assert string_format_parser.parse(test_data) == result
+def test_string_format(parser, test_data, result):
+    assert parser.parse(test_data) == result
 
 
 def test_string_format_value_error():
