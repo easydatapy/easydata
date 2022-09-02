@@ -16,7 +16,7 @@ def test_to_float(test_data, result):
     [
         ("Was 25.9924", 3, 25.992),
         ("Was 25.9926", 3, 25.993),
-        ("Was 25.9924", False, 25.9924),
+        ("Was 25.9924", None, 25.9924),
     ],
 )
 def test_to_float_decimals(test_data, decimals, result):
@@ -46,6 +46,11 @@ def test_get_discount(normal_price, sale_price, decimals, discount):
     assert price.get_discount(normal_price, sale_price, decimals) == discount
 
 
-@pytest.mark.parametrize("normal_price, sale_price, discount", [(29.99, 21.99, 27)])
+@pytest.mark.parametrize(
+    "normal_price, sale_price, discount",
+    [
+        (29.99, 21.99, 27),
+    ],
+)
 def test_get_discount_no_decimals(normal_price, sale_price, discount):
     assert price.get_discount(normal_price, sale_price, no_decimals=True) == discount
