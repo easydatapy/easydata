@@ -1,10 +1,7 @@
 import pytest
 
+import easydata as ed
 from easydata.data import DataBag
-from easydata.models import ItemModel
-from easydata.parsers.data import Data
-from easydata.parsers.text import Text
-from easydata.queries import jp
 from tests.factory import data_dict
 
 db = DataBag(main=data_dict.item_with_options, additional_data=data_dict.stock)
@@ -15,20 +12,20 @@ def process_raw_value(value, data):
 
 
 def test_base_data_query():
-    item_data = Data(query=jp("info.name"))
+    item_data = ed.Data(query=ed.jp("info.name"))
     assert item_data.parse(db) == "EasyBook pro 15"
 
 
 def test_base_data_add_query():
-    item_data = Data()
+    item_data = ed.Data()
 
-    item_data.add_query(jp("info.name"))
+    item_data.add_query(ed.jp("info.name"))
 
     assert item_data.parse(db) == "EasyBook pro 15"
 
 
 def test_base_data_add_source():
-    item_data = Data()
+    item_data = ed.Data()
 
     # Check default source name
     assert item_data.source == "main"
@@ -40,35 +37,35 @@ def test_base_data_add_source():
 
 
 def test_base_data_from_item():
-    item_model = ItemModel()
-    item_model.item_name = Data(query=jp("title"))
-    item_model.item_brand = Data(from_item="name")
+    item_model = ed.ItemModel()
+    item_model.item_name = ed.Data(query=ed.jp("title"))
+    item_model.item_brand = ed.Data(from_item="name")
 
     result = item_model.parse_item(data_dict.title)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
 
 
 def test_base_data_field_query_as_first_parameter():
-    item_data = Data(jp("info.name"))
+    item_data = ed.Data(ed.jp("info.name"))
     assert item_data.parse(db) == "EasyBook pro 15"
 
 
 @pytest.mark.parametrize(
     "query, default, test_data, result",
     [
-        (jp("info.namewrong"), "Easybook Def 13", db, "Easybook Def 13"),
-        (jp("info.name"), "Easybook Def 13", db, "EasyBook pro 15"),
+        (ed.jp("info.namewrong"), "Easybook Def 13", db, "Easybook Def 13"),
+        (ed.jp("info.name"), "Easybook Def 13", db, "EasyBook pro 15"),
     ],
 )
 def test_base_data_default(query, default, test_data, result):
-    item_data = Data(query, default=default)
+    item_data = ed.Data(query, default=default)
     assert item_data.parse(test_data) == result
 
 
 def test_base_data_default_from_item():
-    item_model = ItemModel()
-    item_model.item_name = Data(query=jp("title"))
-    item_model.item_brand = Data(query=jp("brandwrong"), default_from_item="name")
+    item_model = ed.ItemModel()
+    item_model.item_name = ed.Data(query=ed.jp("title"))
+    item_model.item_brand = ed.Data(query=ed.jp("brandwrong"), default_from_item="name")
 
     result = item_model.parse_item(data_dict.title)
     assert result == {"brand": "Easybook Pro 13", "name": "Easybook Pro 13"}
@@ -77,17 +74,17 @@ def test_base_data_default_from_item():
 @pytest.mark.parametrize(
     "query, source, test_data, result",
     [
-        (jp("stock"), "additional_data", db, True),
+        (ed.jp("stock"), "additional_data", db, True),
         (None, "additional_data", db, {"stock": True}),
     ],
 )
 def test_base_data_field_different_source(query, source, test_data, result):
-    item_data = Data(query, source=source)
+    item_data = ed.Data(query, source=source)
     assert item_data.parse(test_data) == result
 
 
 def test_base_data_with_query_source():
-    item_data = Data(query=jp("stock", source="additional_data"))
+    item_data = ed.Data(query=ed.jp("stock", source="additional_data"))
     assert item_data.parse(db) is True
 
 
@@ -95,25 +92,25 @@ def test_base_data_with_query_source():
     "query, process_raw_value_callback, test_data, result",
     [
         (
-            jp("info.name"),
+            ed.jp("info.name"),
             lambda value, data: value.replace("15", "13"),
             db,
             "EasyBook pro 13",
         ),
         (
-            jp("info.name"),
-            Text(replace_keys=[("15", "13")]),
+            ed.jp("info.name"),
+            ed.Text(replace_keys=[("15", "13")]),
             db,
             "EasyBook pro 13",
         ),
-        (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
+        (ed.jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
 )
 def test_base_data_field_process_raw_value(
     query, process_raw_value_callback, test_data, result
 ):
 
-    item_data = Data(query, process_raw_value=process_raw_value_callback)
+    item_data = ed.Data(query, process_raw_value=process_raw_value_callback)
     assert item_data.parse(test_data) == result
 
 
@@ -121,7 +118,7 @@ def test_base_data_field_process_raw_value(
     "query, process_value_callback, test_data, result",
     [
         (
-            jp("info.name"),
+            ed.jp("info.name"),
             lambda value, data: "{} {}".format(
                 value, str(data["additional_data"]["stock"])
             ),
@@ -130,16 +127,16 @@ def test_base_data_field_process_raw_value(
         ),
         (
             None,
-            Text(remove_keys=["'"], split_keys=[("Easy", -1), "pro"]),
+            ed.Text(remove_keys=["'"], split_keys=[("Easy", -1), "pro"]),
             "EasyBook' pro 15",
             "Book",
         ),
-        (jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
+        (ed.jp("info.name"), process_raw_value, db, "EasyBook pro 15 True"),
     ],
 )
 def test_base_data_field_process_value(
     query, process_value_callback, test_data, result
 ):
 
-    item_data = Data(query, process_value=process_value_callback)
+    item_data = ed.Data(query, process_value=process_value_callback)
     assert item_data.parse(test_data) == result

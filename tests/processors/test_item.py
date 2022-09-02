@@ -1,12 +1,12 @@
 import pytest
 
-from easydata import processors
+import easydata as ed
 
 
 def test_item_merge_into_list_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeIntoListProcessor(
+    item = ed.ItemKeysMergeIntoListProcessor(
         new_item_key="breadcrumbs", item_keys=["category", "subcategory"]
     ).parse(test_item)
 
@@ -19,7 +19,7 @@ def test_item_merge_into_list_processor():
 def test_item_merge_into_list_processor_preserve_original():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeIntoListProcessor(
+    item = ed.ItemKeysMergeIntoListProcessor(
         new_item_key="breadcrumbs",
         item_keys=["category", "subcategory"],
         preserve_original=True,
@@ -34,7 +34,7 @@ def test_item_merge_into_list_processor_preserve_original():
 def test_item_merge_into_list_processor_ignore_none():
     test_item = {"category": "electronics", "subcategory": "phones", "type": None}
 
-    item = processors.ItemKeysMergeIntoListProcessor(
+    item = ed.ItemKeysMergeIntoListProcessor(
         new_item_key="breadcrumbs", item_keys=["category", "subcategory", "type"]
     ).parse(test_item)
 
@@ -44,7 +44,7 @@ def test_item_merge_into_list_processor_ignore_none():
 def test_item_merge_into_list_processor_ignore_none_false():
     test_item = {"category": "electronics", "subcategory": "phones", "type": None}
 
-    item = processors.ItemKeysMergeIntoListProcessor(
+    item = ed.ItemKeysMergeIntoListProcessor(
         new_item_key="breadcrumbs",
         item_keys=["category", "subcategory", "type"],
         ignore_none=False,
@@ -57,7 +57,7 @@ def test_item_merge_into_list_processor_wrong_field_exception():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
     with pytest.raises(KeyError):
-        processors.ItemKeysMergeIntoListProcessor(
+        ed.ItemKeysMergeIntoListProcessor(
             new_item_key="breadcrumbs", item_keys=["category", "subcategory", "type"]
         ).parse(test_item)
 
@@ -65,7 +65,7 @@ def test_item_merge_into_list_processor_wrong_field_exception():
 def test_item_merge_into_dict_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeIntoDictProcessor(
+    item = ed.ItemKeysMergeIntoDictProcessor(
         new_item_key="breadcrumbs", item_keys=["category", "subcategory"]
     ).parse(test_item)
 
@@ -75,7 +75,7 @@ def test_item_merge_into_dict_processor():
 def test_item_merge_processor():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeProcessor(
+    item = ed.ItemKeysMergeProcessor(
         new_item_key="breadcrumbs", item_keys=["category", "subcategory"]
     ).parse(test_item)
 
@@ -85,7 +85,7 @@ def test_item_merge_processor():
 def test_item_merge_processor_custom_separator():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeProcessor(
+    item = ed.ItemKeysMergeProcessor(
         new_item_key="breadcrumbs",
         item_keys=["category", "subcategory"],
         separator=" > ",
@@ -97,7 +97,7 @@ def test_item_merge_processor_custom_separator():
 def test_item_merge_processor_preserve_original():
     test_item = {"category": "electronics", "subcategory": "phones"}
 
-    item = processors.ItemKeysMergeProcessor(
+    item = ed.ItemKeysMergeProcessor(
         new_item_key="breadcrumbs",
         item_keys=["category", "subcategory"],
         separator=" > ",
@@ -113,7 +113,7 @@ def test_item_merge_processor_preserve_original():
 def test_item_to_str_processor():
     test_item = {"price": 19.99, "price_int": 22, "price_none": None}
 
-    item = processors.ItemValueToStrProcessor(
+    item = ed.ItemValueToStrProcessor(
         item_keys=["price", "price_int", "price_none"]
     ).parse(test_item)
 
@@ -123,7 +123,7 @@ def test_item_to_str_processor():
 def test_item_to_str_processor_none_as_empty_string_false():
     test_item = {"price_none": None}
 
-    item = processors.ItemValueToStrProcessor(
+    item = ed.ItemValueToStrProcessor(
         item_keys=["price_none"], none_as_empty_string=False
     ).parse(test_item)
 
@@ -133,7 +133,7 @@ def test_item_to_str_processor_none_as_empty_string_false():
 def test_item_remove_processor():
     test_item = {"price": 19.99, "price_int": 22, "price_none": None}
 
-    item = processors.ItemRemoveKeysProcessor(item_keys=["price", "price_none"]).parse(
+    item = ed.ItemRemoveKeysProcessor(item_keys=["price", "price_none"]).parse(
         test_item
     )
 
@@ -152,7 +152,7 @@ def test_item_discount_processor(price, sale_price, result):
 
     test_item = {"price": price, "sale_price": sale_price}
 
-    item = processors.ItemDiscountProcessor().parse(test_item)
+    item = ed.ItemDiscountProcessor().parse(test_item)
 
     assert item["discount"] == result
 
@@ -160,7 +160,7 @@ def test_item_discount_processor(price, sale_price, result):
 def test_item_discount_processor_custom_keys():
     test_item = {"old_price": "29.99", "price": 22}
 
-    item = processors.ItemDiscountProcessor(
+    item = ed.ItemDiscountProcessor(
         item_price_key="old_price",
         item_sale_price_key="price",
         item_discount_key="pdiscount",
@@ -180,7 +180,7 @@ def test_item_discount_processor_custom_keys_config():
         "ED_ITEM_DISCOUNT_ITEM_DISCOUNT_KEY": "pdiscount",
     }
 
-    discount_processor = processors.ItemDiscountProcessor()
+    discount_processor = ed.ItemDiscountProcessor()
     discount_processor.init_config(config_params)
 
     item = discount_processor.parse(test_item)
@@ -200,7 +200,7 @@ def test_item_discount_processor_decimals(price, sale_price, decimals, result):
 
     test_item = {"price": price, "sale_price": sale_price}
 
-    item = processors.ItemDiscountProcessor(decimals=decimals).parse(test_item)
+    item = ed.ItemDiscountProcessor(decimals=decimals).parse(test_item)
 
     assert item["discount"] == result
 
@@ -208,7 +208,7 @@ def test_item_discount_processor_decimals(price, sale_price, decimals, result):
 def test_item_discount_processor_decimals_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    discount_processor = processors.ItemDiscountProcessor()
+    discount_processor = ed.ItemDiscountProcessor()
     discount_processor.init_config({"ED_ITEM_DISCOUNT_DECIMALS": 4})
 
     item = discount_processor.parse(test_item)
@@ -219,7 +219,7 @@ def test_item_discount_processor_decimals_config():
 def test_item_discount_processor_no_decimals():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    item = processors.ItemDiscountProcessor(no_decimals=True).parse(test_item)
+    item = ed.ItemDiscountProcessor(no_decimals=True).parse(test_item)
 
     assert item["discount"] == 27
 
@@ -227,7 +227,7 @@ def test_item_discount_processor_no_decimals():
 def test_item_discount_processor_no_decimals_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    discount_processor = processors.ItemDiscountProcessor()
+    discount_processor = ed.ItemDiscountProcessor()
     discount_processor.init_config({"ED_ITEM_DISCOUNT_NO_DECIMALS": True})
 
     item = discount_processor.parse(test_item)
@@ -238,9 +238,7 @@ def test_item_discount_processor_no_decimals_config():
 def test_item_discount_processor_remove_item_sale_price_key():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    item = processors.ItemDiscountProcessor(remove_item_sale_price_key=True).parse(
-        test_item
-    )
+    item = ed.ItemDiscountProcessor(remove_item_sale_price_key=True).parse(test_item)
 
     assert item == {"price": 29.99, "discount": 26.68}
 
@@ -248,7 +246,7 @@ def test_item_discount_processor_remove_item_sale_price_key():
 def test_item_discount_processor_remove_item_sale_price_key_config():
     test_item = {"price": 29.99, "sale_price": 21.99}
 
-    discount_processor = processors.ItemDiscountProcessor()
+    discount_processor = ed.ItemDiscountProcessor()
 
     custom_config = {"ED_ITEM_DISCOUNT_REMOVE_ITEM_SALE_PRICE_KEY": True}
     discount_processor.init_config(custom_config)

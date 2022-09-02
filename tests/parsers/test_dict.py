@@ -1,7 +1,6 @@
 import pytest
 
-from easydata import parsers
-from easydata.queries import jp, pq
+import easydata as ed
 from tests.factory import data_dict, data_html
 
 EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
@@ -11,11 +10,11 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
     "dict_parser, test_data, results",
     [
         (
-            parsers.Dict(
-                pq("#size-variants li::items"),
-                key_parser=parsers.Text(pq("::text")),
-                val_parser=parsers.Bool(
-                    pq("::attr(size-stock)"),
+            ed.Dict(
+                ed.pq("#size-variants li::items"),
+                key_parser=ed.Text(ed.pq("::text")),
+                val_parser=ed.Bool(
+                    ed.pq("::attr(size-stock)"),
                     contains=["true"],
                 ),
             ),
@@ -23,11 +22,11 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(
-                pq("#size-variants li::items"),
-                key_query=pq("::text"),
-                val_parser=parsers.Bool(
-                    pq("::attr(size-stock)"),
+            ed.Dict(
+                ed.pq("#size-variants li::items"),
+                key_query=ed.pq("::text"),
+                val_parser=ed.Bool(
+                    ed.pq("::attr(size-stock)"),
                     contains=["true"],
                 ),
             ),
@@ -35,73 +34,71 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(
-                pq("#size-variants li::items"),
-                key_query=pq("::text"),
-                val_query=pq("::attr(size-stock)"),
+            ed.Dict(
+                ed.pq("#size-variants li::items"),
+                key_query=ed.pq("::text"),
+                val_query=ed.pq("::attr(size-stock)"),
             ),
             data_html.sizes,
             {"l": "true", "xl": "false", "xxl": "true"},
         ),
         (
-            parsers.Dict(
-                jp("sizes"),
-                key_parser=parsers.Text(),
-                val_parser=parsers.Bool(),
+            ed.Dict(
+                ed.jp("sizes"),
+                key_parser=ed.Text(),
+                val_parser=ed.Bool(),
             ),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(jp("sizes")),
+            ed.Dict(ed.jp("sizes")),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(
-                jp("sizes"),
-                key_parser=parsers.Text(),
+            ed.Dict(
+                ed.jp("sizes"),
+                key_parser=ed.Text(),
             ),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(
-                jp("sizes"),
-                val_parser=parsers.Bool(),
+            ed.Dict(
+                ed.jp("sizes"),
+                val_parser=ed.Bool(),
             ),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
         ),
         (
-            parsers.Dict(
-                jp("sizes"),
-                key_parser=parsers.Text(),
-                val_parser=parsers.Text(),
+            ed.Dict(
+                ed.jp("sizes"),
+                key_parser=ed.Text(),
+                val_parser=ed.Text(),
             ),
             data_dict.sizes,
             {"l": "True", "xl": "False", "xxl": "True"},
+        ),
+        (
+            ed.Dict(
+                val_parser=ed.PriceFloat(),
+            ).init_config({"ED_PRICE_DECIMALS": 3}),
+            {"price": "123.4537"},
+            {"price": 123.454},
+        ),
+        (
+            ed.Dict(
+                val_parser=ed.PriceFloat(decimals=2),
+            ).init_config({"ED_PRICE_DECIMALS": 3}),
+            {"price": "123.4537"},
+            {"price": 123.45},
         ),
     ],
 )
 def test_dict(dict_parser, test_data, results):
     assert dict_parser.parse(test_data) == results
-
-
-def test_dict_config():
-    dict_parser = parsers.Dict(val_parser=parsers.PriceFloat())
-
-    dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
-
-    assert dict_parser.parse({"price": "123.4537"}) == {"price": 123.454}
-
-
-def test_dict_config_override():
-    dict_parser = parsers.Dict(val_parser=parsers.PriceFloat(decimals=4))
-
-    dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
-
-    assert dict_parser.parse({"price": "123.4537"}) == {"price": 123.4537}
 
 
 @pytest.mark.parametrize(
@@ -160,15 +157,15 @@ def test_dict_config_override():
     ],
 )
 def test_dict_variations(test_data, result, properties):
-    dict_parser = parsers.Dict(**properties)
+    dict_parser = ed.Dict(**properties)
     assert dict_parser.parse(test_data) == result
 
 
 def test_bool_dict():
-    bool_dict_parser = parsers.BoolDict(
-        pq("#size-variants li::items"),
-        key_query=pq("::text"),
-        val_query=pq("::attr(size-stock)"),
+    bool_dict_parser = ed.BoolDict(
+        ed.pq("#size-variants li::items"),
+        key_query=ed.pq("::text"),
+        val_query=ed.pq("::attr(size-stock)"),
     )
 
     expected_text_result = {"l": True, "xl": False, "xxl": True}
@@ -210,71 +207,64 @@ def test_bool_dict():
     ],
 )
 def test_bool_dict_variations(test_data, result, properties):
-    bool_dict_parser = parsers.BoolDict(**properties)
+    bool_dict_parser = ed.BoolDict(**properties)
     assert bool_dict_parser.parse(test_data) == result
 
 
 @pytest.mark.parametrize(
-    "test_data, result, properties",
+    "parser, test_data, result",
     [
         (
+            ed.PriceFloatDict(),
             {"price": "123.4537", "sale_price": "55.2145"},
-            {"price": 123.45, "sale_price": 55.21},
-            {},
+            {"price": 123.4537, "sale_price": 55.2145},
         ),
         (
+            ed.PriceFloatDict(val_decimals=3),
             {"price": "123.4537", "sale_price": "55.2145"},
             {"price": 123.454, "sale_price": 55.215},
-            {"val_decimals": 3},
         ),
         (
+            ed.PriceFloatDict(val_min_value=3),
             {"price": "123.4537", "sale_price": 1.99},
-            {"price": 123.45, "sale_price": None},
-            {"val_min_value": 3},
+            {"price": 123.4537, "sale_price": None},
         ),
         (
+            ed.PriceFloatDict(
+                val_min_value=3,
+                ignore_non_values=True,
+                val_decimals=2,
+            ),
             {"price": "123.4537", "sale_price": 1.99},
             {"price": 123.45},
-            {"val_min_value": 3, "ignore_non_values": True},
         ),
-    ],
-)
-def test_price_float_dict_variations(test_data, result, properties):
-    price_dict_parser = parsers.PriceFloatDict(**properties)
-    assert price_dict_parser.parse(test_data) == result
-
-
-def test_price_float_dict_config():
-    price_dict_parser = parsers.PriceFloatDict()
-
-    price_dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
-
-    assert price_dict_parser.parse({"price": "123.4537"}) == {"price": 123.454}
-
-
-def test_price_float_dict_config_override():
-    price_dict_parser = parsers.PriceFloatDict(val_decimals=4)
-
-    price_dict_parser.init_config({"ED_PRICE_DECIMALS": 3})
-
-    assert price_dict_parser.parse({"price": "123.4537"}) == {"price": 123.4537}
-
-
-@pytest.mark.parametrize(
-    "test_data, result, properties",
-    [
         (
+            ed.PriceFloatDict().init_config({"ED_PRICE_DECIMALS": 3}),
+            {"price": "123.4537"},
+            {"price": 123.454},
+        ),
+        (
+            ed.PriceFloatDict(
+                val_decimals=4,
+            ).init_config({"ED_PRICE_DECIMALS": 3}),
+            {"price": "123.4537"},
+            {"price": 123.4537},
+        ),
+        (
+            ed.PriceTextDict(),
             {"price": "123.4537", "sale_price": "55.2145"},
-            {"price": "123.45", "sale_price": "55.21"},
-            {},
+            {"price": "123.4537", "sale_price": "55.2145"},
         ),
         (
+            ed.PriceTextDict(
+                val_decimals=2,
+                val_min_value=3,
+                ignore_non_values=True,
+            ),
             {"price": "123.4537", "sale_price": "1.99"},
             {"price": "123.45"},
-            {"val_min_value": 3, "ignore_non_values": True},
         ),
     ],
 )
-def test_price_text_dict_variations(test_data, result, properties):
-    price_dict_parser = parsers.PriceTextDict(**properties)
-    assert price_dict_parser.parse(test_data) == result
+def test_price_dict_variations(parser, test_data, result):
+    assert parser.parse(test_data) == result

@@ -3,8 +3,7 @@ import json
 import pytest
 from pyquery import PyQuery
 
-from easydata import parsers, processors
-from easydata.queries import jp, key, pq
+import easydata as ed
 from tests.factory import data_dict, data_html
 
 html_paragraph_text = "<p>Sample text</p>"
@@ -19,7 +18,7 @@ html_paragraph_text = "<p>Sample text</p>"
 )
 def test_data_processor(source, data_type):
     db = next(
-        processors.DataProcessor(
+        ed.DataProcessor(
             process_source_data=lambda source_data: PyQuery(source_data)
         ).parse_data(html_paragraph_text)
     )
@@ -35,7 +34,7 @@ def test_data_processor(source, data_type):
     ],
 )
 def test_data_to_pq_processor(source, data_type):
-    db = next(processors.DataToPqProcessor().parse_data(html_paragraph_text))
+    db = next(ed.DataToPqProcessor().parse_data(html_paragraph_text))
 
     assert isinstance(db[source], data_type)
 
@@ -49,7 +48,7 @@ def test_data_to_pq_processor(source, data_type):
 )
 def test_data_to_pq_processor_new_source(new_source, source, data_type):
     db = next(
-        processors.DataToPqProcessor(
+        ed.DataToPqProcessor(
             new_source=new_source,
         ).parse_data(html_paragraph_text)
     )
@@ -60,7 +59,7 @@ def test_data_to_pq_processor_new_source(new_source, source, data_type):
 def test_data_from_query_processor():
     test_dict = {"info": {"title": "EasyBook"}}
 
-    db = next(processors.DataFromQueryProcessor(jp("info")).parse_data(test_dict))
+    db = next(ed.DataFromQueryProcessor(ed.jp("info")).parse_data(test_dict))
 
     assert db["main"]["title"] == "EasyBook"
 
@@ -68,7 +67,7 @@ def test_data_from_query_processor():
 def test_data_from_re_processor():
     test_text = 'var config = {"title": "EasyBook"};'
 
-    data_processor = processors.DataTextFromReProcessor(
+    data_processor = ed.DataTextFromReProcessor(
         query=r"var config = (.*?);",
         new_source="config_json",
     )
@@ -99,7 +98,7 @@ def test_data_from_re_processor_dotall_ignore_case(
     };
     """
 
-    data_processor = processors.DataTextFromReProcessor(
+    data_processor = ed.DataTextFromReProcessor(
         query=query,
         dotall=dotall,
         ignore_case=ignore_case,
@@ -119,7 +118,7 @@ def test_data_from_re_processor_dotall_ignore_case(
 def test_data_from_re_processor_none():
     test_text = 'var config = {"title": "EasyBook"};'
 
-    data_processor = processors.DataTextFromReProcessor(
+    data_processor = ed.DataTextFromReProcessor(
         query=r"var config_wrong = (.*?);",
         new_source="config_json",
         none_if_empty=True,
@@ -131,7 +130,7 @@ def test_data_from_re_processor_none():
 
 
 def test_data_json_to_dict_processors():
-    data_processor = processors.DataJsonToDictProcessor()
+    data_processor = ed.DataJsonToDictProcessor()
 
     json_dict = next(data_processor.parse_data('{"title": "EasyBook"}'))
 
@@ -146,7 +145,7 @@ def test_data_yaml_to_dict_processors():
       price: 999.8989
     """
 
-    data_processor = processors.DataYamlToDictProcessor()
+    data_processor = ed.DataYamlToDictProcessor()
 
     json_dict = next(data_processor.parse_data(test_text))
 
@@ -156,7 +155,7 @@ def test_data_yaml_to_dict_processors():
 def test_data_json_from_re_to_dict_processor():
     test_text = 'var config = {"title": "EasyBook"};'
 
-    data_processor = processors.DataJsonFromReToDictProcessor(
+    data_processor = ed.DataJsonFromReToDictProcessor(
         query=r"var config = (.*?);",
         new_source="config_json",
     )
@@ -167,9 +166,9 @@ def test_data_json_from_re_to_dict_processor():
 
 
 def test_data_variants_processor():
-    iter_db = processors.DataVariantsProcessor(
-        query=jp("variants"),
-        key_query=key("color"),
+    iter_db = ed.DataVariantsProcessor(
+        query=ed.jp("variants"),
+        key_query=ed.key("color"),
     ).parse_data(data_dict.variants_data)
 
     db_list = list(iter_db)
@@ -183,9 +182,9 @@ def test_data_variants_processor():
 
 def test_data_variants_processor_html():
     # Lets test with HTML data and pq selector
-    iter_db = processors.DataVariantsProcessor(
-        query=pq("#color-variants .color::items"),
-        key_parser=parsers.Text(pq("::text"), uppercase=True),
+    iter_db = ed.DataVariantsProcessor(
+        query=ed.pq("#color-variants .color::items"),
+        key_parser=ed.Text(ed.pq("::text"), uppercase=True),
         new_source="color_data",
     ).parse_data(data_html.prices_and_variants)
 
@@ -202,9 +201,9 @@ def test_data_variants_processor_html():
 
 def test_data_variants_processor_multi_values():
     # Lets test with multi_values set to True
-    iter_db = processors.DataVariantsProcessor(
-        query=jp("data.variants"),
-        key_query=key("color"),
+    iter_db = ed.DataVariantsProcessor(
+        query=ed.jp("data.variants"),
+        key_query=ed.key("color"),
         new_source="color_data",
     ).parse_data(data_dict.variants_data_multi)
 

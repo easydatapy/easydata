@@ -1,8 +1,6 @@
 import pytest
 
-from easydata import parsers
-from easydata.models import StackedParser
-from easydata.queries import jp, pq
+import easydata as ed
 from tests.factory import data_dict, data_html, data_list
 
 expected_urls = [
@@ -40,28 +38,28 @@ expected_multiplied_urls = [
     "query, parser, test_data, result",
     [
         (
-            pq("#images img::items"),
-            parsers.Url(pq("::src")),
+            ed.pq("#images img::items"),
+            ed.Url(ed.pq("::src")),
             data_html.images,
             expected_urls,
         ),
-        (pq("#images img::src-items"), parsers.Url(), data_html.images, expected_urls),
-        (pq("#images img::src-items"), None, data_html.images, expected_urls),
+        (ed.pq("#images img::src-items"), ed.Url(), data_html.images, expected_urls),
+        (ed.pq("#images img::src-items"), None, data_html.images, expected_urls),
         (None, None, ["hello", "World &lt;3"], ["hello", "World &lt;3"]),
     ],
 )
 def test_list(query, parser, test_data, result):
-    list_parser = parsers.List(query=query, parser=parser)
+    list_parser = ed.List(query=query, parser=parser)
 
     assert list_parser.parse(test_data) == result
 
 
 def test_list_stacked_parser():
-    list_parser = parsers.List(
-        query=jp("variants"),
-        parser=StackedParser(
-            color=parsers.Text(jp("color"), uppercase=True),
-            stocked=parsers.Bool(jp("stock")),
+    list_parser = ed.List(
+        query=ed.jp("variants"),
+        parser=ed.StackedParser(
+            color=ed.Text(ed.jp("color"), uppercase=True),
+            stocked=ed.Bool(ed.jp("stock")),
         ),
     )
 
@@ -73,7 +71,7 @@ def test_list_stacked_parser():
 
 def test_list_config():
     # Lets test if config settings are correctly passed to a child Url parser!
-    list_parser = parsers.List(parser=parsers.Url())
+    list_parser = ed.List(parser=ed.Url())
     list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
     assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.com/imgs/1.jpg"]
@@ -81,32 +79,36 @@ def test_list_config():
 
 def test_list_config_override():
     # Lets test if config settings can get overriden
-    list_parser = parsers.List(parser=parsers.Url(domain="https://demo.net"))
+    list_parser = ed.List(parser=ed.Url(domain="https://demo.net"))
     list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
     assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.net/imgs/1.jpg"]
 
 
 def test_list_unique_true():
-    list_parser = parsers.List(
-        pq("#image-container img::items"), parsers.Url(pq("::src")), unique=True
+    list_parser = ed.List(
+        ed.pq("#image-container img::items"),
+        ed.Url(ed.pq("::src")),
+        unique=True,
     )
 
     assert list_parser.parse(data_html.images) == expected_urls
 
 
 def test_list_unique_default():
-    list_parser = parsers.List(
-        pq("#image-container img::items"),
-        parsers.Url(pq("::src")),
+    list_parser = ed.List(
+        ed.pq("#image-container img::items"),
+        ed.Url(ed.pq("::src")),
     )
 
     assert list_parser.parse(data_html.images) == expected_urls
 
 
 def test_list_unique_false():
-    list_parser = parsers.List(
-        pq("#image-container img::items"), parsers.Url(pq("::src")), unique=False
+    list_parser = ed.List(
+        ed.pq("#image-container img::items"),
+        ed.Url(ed.pq("::src")),
+        unique=False,
     )
 
     assert list_parser.parse(data_html.images) == expected_urls_non_unique
@@ -122,7 +124,7 @@ def test_list_unique_false():
     ],
 )
 def test_list_max_num(max_num, result):
-    list_parser = parsers.List(max_num=max_num)
+    list_parser = ed.List(max_num=max_num)
 
     assert list_parser.parse(["one", "two", "three", "four"]) == result
 
@@ -153,7 +155,7 @@ def test_list_max_num(max_num, result):
     ],
 )
 def test_list_split_key(test_text, split_key, result):
-    list_parser = parsers.List(split_key=split_key)
+    list_parser = ed.List(split_key=split_key)
 
     assert list_parser.parse(test_text) == result
 
@@ -161,8 +163,8 @@ def test_list_split_key(test_text, split_key, result):
 def test_list_allow_callables():
     test_text = "name,surname,age,country_code,country_group"
 
-    list_parser = parsers.List(
-        parser=parsers.Text(),
+    list_parser = ed.List(
+        parser=ed.Text(),
         split_key=",",
         preprocess_allow=lambda v, d: "country" not in v.lower(),
         process_allow=lambda v, d: "name" in v.lower(),
@@ -175,8 +177,8 @@ def test_list_allow_callables():
 def test_list_allow_callables_type_error():
     test_name_list = ["name", "surname"]
 
-    list_parser = parsers.List(
-        parser=parsers.Text(),
+    list_parser = ed.List(
+        parser=ed.Text(),
         preprocess_allow=lambda v, d: None,
     )
 
@@ -189,13 +191,13 @@ def test_list_allow_callables_type_error():
 def test_text_list():
     test_bad_char_list = ["uÌˆnicode", "Pro 13 &lt;3"]
 
-    list_parser = parsers.TextList()
+    list_parser = ed.TextList()
     expected_result = ["ünicode", "Pro 13 <3"]
     assert list_parser.parse(test_bad_char_list) == expected_result
 
 
 def test_text_list_allow():
-    list_parser = parsers.TextList(parser=parsers.Url(), allow=["1.jp", "3.jp"])
+    list_parser = ed.TextList(parser=ed.Url(), allow=["1.jp", "3.jp"])
 
     expected_allowed_url_list = [
         "https://demo.com/imgs/1.jpg",
@@ -206,7 +208,7 @@ def test_text_list_allow():
 
 
 def test_text_list_callow():
-    list_parser = parsers.TextList(parser=parsers.Url(), callow=["1.JP", "3.jp"])
+    list_parser = ed.TextList(parser=ed.Url(), callow=["1.JP", "3.jp"])
 
     assert list_parser.parse(data_list.images) == [expected_urls[2]]
 
@@ -220,7 +222,7 @@ def test_text_list_callow():
     ],
 )
 def test_text_list_from_allow(from_allow, result):
-    list_parser = parsers.TextList(parser=parsers.Url(), from_allow=from_allow)
+    list_parser = ed.TextList(parser=ed.Url(), from_allow=from_allow)
 
     assert list_parser.parse(data_list.images) == result
 
@@ -233,7 +235,7 @@ def test_text_list_from_allow(from_allow, result):
     ],
 )
 def test_text_list_from_callow(from_callow, result):
-    list_parser = parsers.TextList(parser=parsers.Url(), from_callow=from_callow)
+    list_parser = ed.TextList(parser=ed.Url(), from_callow=from_callow)
 
     assert list_parser.parse(data_list.images) == result
 
@@ -247,7 +249,7 @@ def test_text_list_from_callow(from_callow, result):
     ],
 )
 def test_text_list_to_allow(to_allow, result):
-    list_parser = parsers.TextList(parser=parsers.Url(), to_allow=to_allow)
+    list_parser = ed.TextList(parser=ed.Url(), to_allow=to_allow)
 
     assert list_parser.parse(data_list.images) == result
 
@@ -260,7 +262,7 @@ def test_text_list_to_allow(to_allow, result):
     ],
 )
 def test_text_list_to_callow(to_callow, result):
-    list_parser = parsers.TextList(parser=parsers.Url(), to_callow=to_callow)
+    list_parser = ed.TextList(parser=ed.Url(), to_callow=to_callow)
 
     assert list_parser.parse(data_list.images) == result
 
@@ -273,13 +275,13 @@ def test_text_list_to_callow(to_callow, result):
     ],
 )
 def test_text_list_deny(deny, result):
-    list_parser = parsers.TextList(parser=parsers.Url(), deny=deny)
+    list_parser = ed.TextList(parser=ed.Url(), deny=deny)
 
     assert list_parser.parse(data_list.images) == result
 
 
 def test_text_list_cdeny():
-    list_parser = parsers.TextList(parser=parsers.Url(), cdeny=["1.JP", "3.jp"])
+    list_parser = ed.TextList(parser=ed.Url(), cdeny=["1.JP", "3.jp"])
 
     assert list_parser.parse(data_list.images) == expected_urls[:2]
 
@@ -300,7 +302,7 @@ def test_text_list_cdeny():
     ],
 )
 def test_text_list_split_key(test_text, split_key, result):
-    text_list_parser = parsers.TextList(split_key=split_key)
+    text_list_parser = ed.TextList(split_key=split_key)
 
     assert text_list_parser.parse(test_text) == result
 
@@ -314,8 +316,8 @@ def test_text_list_split_key(test_text, split_key, result):
     ],
 )
 def test_text_list_multiply_keys(test_data, result):
-    list_parser = parsers.TextList(
-        parser=parsers.Text(),
+    list_parser = ed.TextList(
+        parser=ed.Text(),
         multiply_keys=[("1.jpg", ["1.jpg", "2.jpg", "3.jpg", "4.jpg"])],
     )
 
@@ -337,12 +339,12 @@ def test_url_list():
         "https://demo.com/imgs/4.jpg",
     ]
 
-    assert parsers.UrlList().parse(bad_img_urls) == expected_fixed_img_urls
+    assert ed.UrlList().parse(bad_img_urls) == expected_fixed_img_urls
 
 
 def test_url_list_config():
     # Lets test if config settings are correctly passed to a child Url parser!
-    url_list_parser = parsers.UrlList()
+    url_list_parser = ed.UrlList()
     url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
     assert url_list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.com/imgs/1.jpg"]
@@ -350,7 +352,7 @@ def test_url_list_config():
 
 def test_url_list_config_override():
     # Lets test if config settings can get overriden
-    url_list_parser = parsers.UrlList(domain="https://demo.net")
+    url_list_parser = ed.UrlList(domain="https://demo.net")
     url_list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
 
     assert url_list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.net/imgs/1.jpg"]
@@ -390,8 +392,8 @@ def test_email_search_list_html(query, result):
         </body>
     """
 
-    email_search_list_parser = parsers.EmailSearchList(
-        query=pq(query),
+    email_search_list_parser = ed.EmailSearchList(
+        query=ed.pq(query),
     )
 
     assert email_search_list_parser.parse(test_email_html) == result
@@ -446,6 +448,6 @@ def test_email_search_list_dict(query, result):
         "additional_contacts": ["support@easydatapy.com", "support2@easydatapy.com"],
     }
 
-    email_search_list_parser = parsers.EmailSearchList(query=jp(query))
+    email_search_list_parser = ed.EmailSearchList(query=ed.jp(query))
 
     assert email_search_list_parser.parse(test_email_dict) == result

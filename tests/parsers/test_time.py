@@ -1,6 +1,6 @@
 import pytest
 
-from easydata import parsers
+import easydata as ed
 
 test_date_text = "Fri, 10 Dec 2018 10:55:50"
 
@@ -16,7 +16,7 @@ test_date_sentence = "It has happened on 10 Dec 2018 at 10:55:50."
     ],
 )
 def test_datetime(test_data, result):
-    time_parser = parsers.DateTime()
+    time_parser = ed.DateTime()
     assert time_parser.parse(test_data) == result
 
 
@@ -27,12 +27,12 @@ def test_datetime(test_data, result):
     ],
 )
 def test_datetime_custom_datetime_format(datetime_format, test_data, result):
-    time_parser = parsers.DateTime(datetime_format=datetime_format)
+    time_parser = ed.DateTime(datetime_format=datetime_format)
     assert time_parser.parse(test_data) == result
 
 
 def test_datetime_config():
-    time_parser = parsers.DateTime()
+    time_parser = ed.DateTime()
     time_parser.init_config({"ED_DATETIME_FORMAT": "%d.%m.%Y %H:%M:%S"})
     assert time_parser.parse(test_date_text) == "10.12.2018 10:55:50"
 
@@ -47,7 +47,7 @@ def test_datetime_config():
     ],
 )
 def test_date(test_data, result):
-    time_parser = parsers.Date()
+    time_parser = ed.Date()
     assert time_parser.parse(test_data) == result
 
 
@@ -58,12 +58,12 @@ def test_date(test_data, result):
     ],
 )
 def test_date_custom_date_format(date_format, test_data, result):
-    time_parser = parsers.Date(date_format=date_format)
+    time_parser = ed.Date(date_format=date_format)
     assert time_parser.parse(test_data) == result
 
 
 def test_date_config():
-    time_parser = parsers.Date()
+    time_parser = ed.Date()
     time_parser.init_config({"ED_DATE_FORMAT": "%d.%m.%Y"})
     assert time_parser.parse(test_date_text) == "10.12.2018"
 
@@ -75,7 +75,7 @@ def test_date_config():
     ],
 )
 def test_time(test_data, result):
-    time_parser = parsers.Time()
+    time_parser = ed.Time()
     assert time_parser.parse(test_data) == result
 
 
@@ -86,12 +86,12 @@ def test_time(test_data, result):
     ],
 )
 def test_time_custom_time_format(time_format, test_data, result):
-    time_parser = parsers.Time(time_format=time_format)
+    time_parser = ed.Time(time_format=time_format)
     assert time_parser.parse(test_data) == result
 
 
 def test_time_config():
-    time_parser = parsers.Time()
+    time_parser = ed.Time()
     time_parser.init_config({"ED_TIME_FORMAT": "%H-%M-%S"})
     assert time_parser.parse(test_date_text) == "10-55-50"
 
@@ -103,7 +103,7 @@ def test_time_config():
     ],
 )
 def test_year(test_data, result):
-    time_parser = parsers.Year()
+    time_parser = ed.Year()
     assert time_parser.parse(test_data) == "2018"
 
 
@@ -116,7 +116,7 @@ def test_year(test_data, result):
     ],
 )
 def test_year_min_year(min_year, test_data, result):
-    time_parser = parsers.Year(min_year=min_year)
+    time_parser = ed.Year(min_year=min_year)
     assert time_parser.parse(test_data) == result
 
 
@@ -129,7 +129,7 @@ def test_year_min_year(min_year, test_data, result):
     ],
 )
 def test_year_max_year(max_year, test_data, result):
-    time_parser = parsers.Year(max_year=max_year)
+    time_parser = ed.Year(max_year=max_year)
     assert time_parser.parse(test_data) == result
 
 
@@ -140,7 +140,7 @@ def test_year_max_year(max_year, test_data, result):
     ],
 )
 def test_datetime_search(test_data, result):
-    time_parser = parsers.DateTimeSearch()
+    time_parser = ed.DateTimeSearch()
     assert time_parser.parse(test_data) == result
 
 
@@ -151,7 +151,7 @@ def test_datetime_search(test_data, result):
     ],
 )
 def test_date_search(test_data, result):
-    time_parser = parsers.DateSearch()
+    time_parser = ed.DateSearch()
     assert time_parser.parse(test_data) == result
 
 
@@ -162,7 +162,7 @@ def test_date_search(test_data, result):
     ],
 )
 def test_time_search(test_data, result):
-    time_parser = parsers.TimeSearch()
+    time_parser = ed.TimeSearch()
     assert time_parser.parse(test_data) == result
 
 
@@ -174,5 +174,5 @@ def test_time_search(test_data, result):
     ],
 )
 def test_year_search(test_data, result):
-    time_parser = parsers.YearSearch()
+    time_parser = ed.YearSearch()
     assert time_parser.parse(test_data) == result

@@ -1,8 +1,7 @@
 import pytest
 
-from easydata import parsers
+import easydata as ed
 from easydata.data import DataBag
-from easydata.queries import jp, pq
 from tests.factory import data_html
 
 
@@ -11,36 +10,36 @@ from tests.factory import data_html
     [
         (
             (
-                parsers.Text(pq(".brand-wrong::text")),
-                parsers.Text(pq(".brand::text")),
+                ed.Text(ed.pq(".brand-wrong::text")),
+                ed.Text(ed.pq(".brand::text")),
             ),
             "EasyData",
         ),
         (
             (
-                parsers.Text(pq(".brand::text")),
-                parsers.Text(pq("#name::text")),
+                ed.Text(ed.pq(".brand::text")),
+                ed.Text(ed.pq("#name::text")),
             ),
             "EasyData",
         ),
         (
             (
-                parsers.Text(pq(".brand-wrong::text")),
-                parsers.Text(pq(".brand-wrong-again::text")),
+                ed.Text(ed.pq(".brand-wrong::text")),
+                ed.Text(ed.pq(".brand-wrong-again::text")),
             ),
             None,
         ),
         (
             (
-                parsers.Bool(pq(".brand::text"), contains=["WrongData"]),
-                parsers.Bool(pq(".brand::text"), contains=["EasyData"]),
+                ed.Bool(ed.pq(".brand::text"), contains=["WrongData"]),
+                ed.Bool(ed.pq(".brand::text"), contains=["EasyData"]),
             ),
             True,
         ),
         (
             (
-                parsers.List(pq(".brand-wrong::text-items")),
-                parsers.Text(pq(".brand::text")),
+                ed.List(ed.pq(".brand-wrong::text-items")),
+                ed.Text(ed.pq(".brand::text")),
             ),
             "EasyData",
         ),
@@ -52,7 +51,7 @@ def test_or(test_parsers, result):
         <p id="name">Easybook Pro 13</p>
     """
 
-    or_parser = parsers.Or(*test_parsers)
+    or_parser = ed.Or(*test_parsers)
     assert or_parser.parse(test_html) == result
 
 
@@ -61,17 +60,15 @@ def test_or(test_parsers, result):
     [
         (
             (
-                parsers.List(pq(".brand-wrong::text-items")),
-                parsers.Text(pq(".brand::text")),
+                ed.List(ed.pq(".brand-wrong::text-items")),
+                ed.Text(ed.pq(".brand::text")),
             ),
             [],
         ),
         (
             (
-                parsers.Bool(pq(".brand::text"), contains=["WrongData"]),
-                parsers.Bool(
-                    pq(".brand::text"), default=False, contains=["Wrong2Data"]
-                ),
+                ed.Bool(ed.pq(".brand::text"), contains=["WrongData"]),
+                ed.Bool(ed.pq(".brand::text"), default=False, contains=["Wrong2Data"]),
             ),
             False,
         ),
@@ -82,7 +79,7 @@ def test_or_strict_none_is_true(test_parsers, result):
         <p class="brand">EasyData</p>
     """
 
-    or_parser = parsers.Or(
+    or_parser = ed.Or(
         *test_parsers,
         strict_none=True,
     )
@@ -90,18 +87,26 @@ def test_or_strict_none_is_true(test_parsers, result):
 
 
 def test_with():
-    with_parser = parsers.With(
-        parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
-        parsers.DateTimeSearch(),
+    with_parser = ed.With(
+        ed.Sentences(
+            ed.pq("#description .features::text"),
+            allow=["date added"],
+        ),
+        ed.DateTimeSearch(),
     )
     assert with_parser.parse(data_html.features) == "12/12/2018 10:55:00"
 
-    with_parser = parsers.With(
-        parsers.Sentences(pq("#description .features::text"), allow=["date added"]),
-        parsers.Text(split_key=("added:", -1)),
-        parsers.DateTime(),
+    assert (
+        ed.With(
+            ed.Sentences(
+                ed.pq("#description .features::text"),
+                allow=["date added"],
+            ),
+            ed.Text(split_key=("added:", -1)),
+            ed.DateTime(),
+        ).parse(data_html.features)
+        == "12/12/2018 10:55:00"
     )
-    assert with_parser.parse(data_html.features) == "12/12/2018 10:55:00"
 
 
 def test_join_text():
@@ -110,13 +115,15 @@ def test_join_text():
         <p id="name">Easybook Pro 13</p>
     """
 
-    join_text_parser = parsers.ConcatText(
-        parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text"))
+    join_text_parser = ed.ConcatText(
+        ed.Text(ed.pq(".brand::text")),
+        ed.Text(ed.pq("#name::text")),
     )
     assert join_text_parser.parse(test_html) == "EasyData Easybook Pro 13"
 
-    join_text_parser = parsers.ConcatText(
-        parsers.Text(pq(".brand-wrong-selector::text")), parsers.Text(pq("#name::text"))
+    join_text_parser = ed.ConcatText(
+        ed.Text(ed.pq(".brand-wrong-selector::text")),
+        ed.Text(ed.pq("#name::text")),
     )
     assert join_text_parser.parse(test_html) == "Easybook Pro 13"
 
@@ -127,21 +134,26 @@ def test_join_text_custom_separator():
         <p id="name">Easybook Pro 13</p>
     """
 
-    join_text_parser = parsers.ConcatText(
-        parsers.Text(pq(".brand::text")), parsers.Text(pq("#name::text")), separator="-"
+    assert (
+        ed.ConcatText(
+            ed.Text(ed.pq(".brand::text")),
+            ed.Text(ed.pq("#name::text")),
+            separator="-",
+        ).parse(test_html)
+        == "EasyData-Easybook Pro 13"
     )
-    assert join_text_parser.parse(test_html) == "EasyData-Easybook Pro 13"
 
 
 def test_join_list():
     test_dict = {"features": ["gold color", "retina"], "specs": ["i7 proc", "16 gb"]}
 
-    join_list_parser = parsers.JoinList(
-        parsers.List(jp("features"), parser=parsers.Text()),
-        parsers.List(jp("specs"), parser=parsers.Text()),
+    join_list_parser = ed.JoinList(
+        ed.List(ed.jp("features"), parser=ed.Text()),
+        ed.List(ed.jp("specs"), parser=ed.Text()),
     )
 
     expected_result = ["gold color", "retina", "i7 proc", "16 gb"]
+
     assert join_list_parser.parse(test_dict) == expected_result
 
 
@@ -151,11 +163,17 @@ def test_join_dict():
         "specs": {"proc": "i7", "ram": "16 gb"},
     }
 
-    join_dict_parser = parsers.MergeDict(
-        parsers.Dict(
-            jp("features"), key_parser=parsers.Text(), val_parser=parsers.Text()
+    join_dict_parser = ed.MergeDict(
+        ed.Dict(
+            ed.jp("features"),
+            key_parser=ed.Text(),
+            val_parser=ed.Text(),
         ),
-        parsers.Dict(jp("specs"), key_parser=parsers.Text(), val_parser=parsers.Text()),
+        ed.Dict(
+            ed.jp("specs"),
+            key_parser=ed.Text(),
+            val_parser=ed.Text(),
+        ),
     )
 
     expected_result = {
@@ -178,11 +196,11 @@ def test_item_dict(ignore_non_values, result):
     test_features_dict = {"color": "gold", "display": "retina"}
     test_specs_dict = {"proc": "i7", "ram": "16 gb"}
 
-    item_dict_parser = parsers.ItemDict(
+    item_dict_parser = ed.ItemDict(
         ignore_non_values=ignore_non_values,
-        color=parsers.Text(jp("color")),
-        ram=parsers.Text(jp("ram"), source="specs"),
-        brand=parsers.Text(jp("features.brand")),
+        color=ed.Text(ed.jp("color")),
+        ram=ed.Text(ed.jp("ram"), source="specs"),
+        brand=ed.Text(ed.jp("features.brand")),
     )
 
     data_bag = DataBag(main=test_features_dict, specs=test_specs_dict)
@@ -190,10 +208,10 @@ def test_item_dict(ignore_non_values, result):
 
 
 def test_item_dict_exception_on_non_values():
-    item_dict_parser = parsers.ItemDict(
+    item_dict_parser = ed.ItemDict(
         exception_on_non_values=True,
-        color=parsers.Text(jp("color")),
-        brand=parsers.Text(jp("features.brand")),
+        color=ed.Text(ed.jp("color")),
+        brand=ed.Text(ed.jp("features.brand")),
     )
 
     with pytest.raises(ValueError):
@@ -211,11 +229,11 @@ def test_value_list(ignore_non_values, result):
     test_features_dict = {"color": "gold", "display": "retina"}
     test_specs_dict = {"proc": "i7", "ram": "16 gb"}
 
-    value_list_parser = parsers.ValueList(
-        parsers.Text(jp("color")),
-        parsers.Bool(jp("display"), contains=["retina2"]),
-        parsers.Text(jp("ram"), source="specs"),
-        parsers.Text(jp("features.brand")),
+    value_list_parser = ed.ValueList(
+        ed.Text(ed.jp("color")),
+        ed.Bool(ed.jp("display"), contains=["retina2"]),
+        ed.Text(ed.jp("ram"), source="specs"),
+        ed.Text(ed.jp("features.brand")),
         ignore_non_values=ignore_non_values,
     )
 

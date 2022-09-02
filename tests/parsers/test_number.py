@@ -1,108 +1,97 @@
 import pytest
 
-from easydata import parsers
+import easydata as ed
 
 
 @pytest.mark.parametrize(
-    "test_data, result",
+    "parser,test_data,result",
     [
-        ("Was 99.9€", "99.9"),
-        ("1224,24", "1224.24"),
-        ("", None),
-        ("Was €", None),
-        ("Was null €", None),
+        (ed.Float(), 99.9424, 99.9424),
+        (ed.Float(), 99, 99.0),
+        (ed.Float(), 99.9, 99.9),
+        (ed.Float(), 99.900, 99.9),
+        (ed.Float(), 99.0, 99.0),
+        (ed.Float(), 0.99, 0.99),
+        (ed.Float(), 0.0001, 0.0001),
+        (ed.Float(), 0, 0.0),
+        (ed.Float(), "1224.24", 1224.24),
+        (ed.Float(), "-1224.1234", -1224.1234),
+        (ed.Float(), "Was €", None),
+        (ed.Float(), "3.330,90", None),
+        (ed.Float(), False, None),
+        (ed.Float(), True, None),
+        (ed.Float(parse_bool=True), True, 1.0),
+        (ed.Float(parse_bool=True), False, 0.0),
+        (ed.Float(decimals=2), "-1224.1234", -1224.12),
+        (ed.Float(decimals=2), "-1224.1294", -1224.13),
+        (ed.Float(decimals=2), None, None),
+        (ed.Int(), 99.0, 99),
+        (ed.Int(), 0.99, 0),
+        (ed.Int(), 0.0001, 0),
+        (ed.Int(), "1224.24", 1224),
+        (ed.Int(), "-1224.1234", -1224),
+        (ed.Int(), False, None),
+        (ed.Int(), True, None),
+        (ed.Int(parse_bool=True), True, 1),
+        (ed.Int(parse_bool=True), False, 0),
+        (ed.SearchFloat(), "Was 99.9€", 99.9),
+        (ed.SearchFloat(), "Was 99,90", 99.9),
+        (ed.SearchFloat(), "Was 3.330,90", 3330.9),
+        (ed.SearchFloat(), "Was 3,330.90", 3330.9),
+        (ed.SearchFloat(), "Was 0.99 EUR", 0.99),
+        (ed.SearchFloat(), 99.9, 99.9),
+        (ed.SearchFloat(), 99, 99.0),
+        (ed.SearchFloat(), 0, 0.0),
+        (ed.SearchFloat(), 0.15, 0.15),
+        (ed.SearchFloat(), "3.330,90", 3330.9),
+        (ed.SearchFloat(), "3.330,9324", 3330.9324),
+        (ed.SearchFloat(decimals=None), "3.330,9324", 3330.9324),
+        (ed.SearchFloat(decimals=2), "3.330,9324", 3330.93),
+        (ed.SearchFloat(decimals=2), "3220,32", 3220.32),
+        (ed.SearchFloat(decimals=3), "999.91264", 999.913),
+        (ed.SearchFloat(decimals=3), 999.91264, 999.913),
+        (ed.SearchFloat(decimals=2), "99.91264", 99.91),
+        (ed.SearchFloat(decimals=0), "999.91264", 1000),
+        (ed.SearchFloat(decimals=None), 999.91264215, 999.91264215),
+        (ed.SearchFloat(min_value=10), "15.99", 15.99),
+        (ed.SearchFloat(min_value=10), "10", 10.0),
+        (ed.SearchFloat(min_value=10), "9.99", None),
+        (ed.SearchFloat(min_value=10), None, None),
+        (ed.SearchFloat(min_value=10), 0, None),
+        (ed.SearchFloat(min_value=10), "Was null €", None),
+        (ed.SearchFloat(max_value=10), "9.99", 9.99),
+        (ed.SearchFloat(max_value=10), "10", 10.0),
+        (ed.SearchFloat(max_value=10), "15.99", None),
+        (ed.SearchFloat(max_value=10), None, None),
+        (ed.SearchFloat(max_value=10), 0, 0),
+        (ed.SearchFloat(max_value=10), "Was null €", None),
+        (ed.SearchFloatText(), "Was 99.9€", "99.9"),
+        (ed.SearchFloatText(), "1224,24", "1224.24"),
+        (ed.SearchFloatText(), "", None),
+        (ed.SearchFloatText(), "Was €", None),
+        (ed.SearchFloatText(), "Was null €", None),
+        (ed.SearchInt(), "Was 99.9€", 99),
+        (ed.SearchInt(), 99.9, 99),
+        (ed.SearchInt(), 99, 99),
+        (ed.SearchInt(), 0.15, 0),
+        (ed.SearchIntText(), 99.9, "99"),
+        (ed.SearchIntText(), 99, "99"),
+        (
+            ed.SearchFloat().init_config({"ED_NUMBER_DECIMALS": 3}),
+            999.91264,
+            999.913,
+        ),
+        (
+            ed.SearchFloat().init_config({"ED_NUMBER_MIN_VALUE": 10}),
+            9.99,
+            None,
+        ),
+        (
+            ed.SearchFloat().init_config({"ED_NUMBER_MAX_VALUE": 14}),
+            "15.99",
+            None,
+        ),
     ],
 )
-def test_float_text(test_data, result):
-    assert parsers.SearchFloatText().parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "test_data, result",
-    [
-        ("Was 99.9€", 99.9),
-        ("Was 99,90", 99.9),
-        ("Was 3.330,90", 3330.9),
-        ("Was 3,330.90", 3330.9),
-        ("Was 0.99 EUR", 0.99),
-        (99.9, 99.9),
-        (99, 99.0),
-        (0, 0.0),
-        (0.15, 0.15),
-    ],
-)
-def test_float(test_data, result):
-    assert parsers.SearchFloat().parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "decimals, test_data, result",
-    [
-        (3, "999.91264", 999.913),
-        (3, 999.91264, 999.913),
-        (2, "99.91264", 99.91),
-        (0, "999.91264", 1000),
-        (False, 999.91264215, 999.91264215),
-        (None, 999.91264215, 999.91264215),
-    ],
-)
-def test_float_decimals(decimals, test_data, result):
-    assert parsers.SearchFloat(decimals=decimals).parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "min_value, test_data, result",
-    [
-        (10, "15.99", 15.99),
-        (10, "10", 10.0),
-        (10, "9.99", None),
-        (10, None, None),
-        (10, 0, None),
-        (10, "Was null €", None),
-    ],
-)
-def test_float_min_value(min_value, test_data, result):
-    assert parsers.SearchFloat(min_value=min_value).parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "max_value, test_data, result",
-    [
-        (10, "9.99", 9.99),
-        (10, "10", 10.0),
-        (10, "15.99", None),
-        (10, None, None),
-        (10, 0, 0),
-        (10, "Was null €", None),
-    ],
-)
-def test_float_max_value(max_value, test_data, result):
-    assert parsers.SearchFloat(max_value=max_value).parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "config_name, config_value, test_data, result",
-    [
-        ("ED_NUMBER_DECIMALS", 3, 999.91264, 999.913),
-        ("ED_NUMBER_MIN_VALUE", 10, 9.99, None),
-        ("ED_NUMBER_MAX_VALUE", 14, "15.99", None),
-    ],
-)
-def test_float_config(config_name, config_value, test_data, result):
-    float_parser = parsers.SearchFloat()
-    float_parser.init_config({config_name: config_value})
-
-    assert float_parser.parse(test_data) == result
-
-
-@pytest.mark.parametrize(
-    "test_data, result",
-    [
-        ("Was 99.9€", 99),
-        (99.9, 99),
-        (99, 99),
-        (0.15, 0),
-    ],
-)
-def test_int(test_data, result):
-    assert parsers.PriceInt().parse(test_data) == result
+def test_float(parser, test_data, result):
+    assert parser.parse(test_data) == result

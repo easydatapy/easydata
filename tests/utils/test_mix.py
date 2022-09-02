@@ -78,3 +78,49 @@ def test_multiply_list_values_multiply_key(multiply_keys):
     )
 
     assert multiplied_values == ["its-one-s", "its-two-s", "its-three-s"]
+
+
+@pytest.mark.parametrize(
+    "value,result",
+    [
+        (True, True),
+        (0, True),
+        (False, True),
+        (1, True),
+        (-1, True),
+        (0.01, True),
+        (-0.01, True),
+        ("1234567", True),
+        ("", False),
+        ("NaN", True),
+        ("NaNananana BATMAN", False),
+        ("123.456", True),
+        ("123.E4", True),
+        (".1", True),
+        ("1,234", False),
+        ("NULL", False),
+        (",1", False),
+        ("123.EE4", False),
+        ("6.523537535629999e-07", True),
+        ("6e777777", True),
+        ("-iNF", True),
+        ("1.797693e+308", True),
+        ("infinity", True),
+        ("infinity and BEYOND", False),
+        ("12.34.56", False),
+        ("#56", False),
+        ("56%", False),
+        ("0E0", True),
+        ("x86E0", False),
+        ("86-5", False),
+        ("True", False),
+        ("+1e1^5", False),
+        ("+1e1", True),
+        ("+1e1.3", False),
+        ("+1.3P1", False),
+        ("-+1", False),
+        ("(1)", False),
+    ],
+)
+def test_is_str_float(value, result):
+    return mix.is_str_float(value) == result

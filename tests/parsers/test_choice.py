@@ -1,8 +1,7 @@
 import pytest
 
-from easydata import models, parsers
+import easydata as ed
 from easydata.data import DataBag
-from easydata.queries import jp, pq
 from tests.factory import data_dict, data_html
 
 
@@ -19,11 +18,11 @@ from tests.factory import data_dict, data_html
     ],
 )
 def test_choice_choices(test_data, result):
-    choice_parser = parsers.Choice(
+    choice_parser = ed.Choice(
         choices=[
             ("accessory", ["phone case"]),
             ("watch", "watch"),
-            ("monitor", parsers.Bool(ccontains=["LCD"])),
+            ("monitor", ed.Bool(ccontains=["LCD"])),
             ("notebook", [r"book\b"]),
             (
                 "phone",
@@ -53,12 +52,12 @@ def test_choice_lookup_queries_choice_bool_parser_source(
     result,
 ):
     def generate_choice_parser(**kwargs):
-        return parsers.Choice(
+        return ed.Choice(
             choices=[
                 (
                     "phone",
-                    parsers.Bool(
-                        query=jp(bool_query),
+                    ed.Bool(
+                        query=ed.jp(bool_query),
                         ccontains=["phone", "CELL"],
                         source="json_data",
                     ),
@@ -71,23 +70,23 @@ def test_choice_lookup_queries_choice_bool_parser_source(
     data_bag = DataBag(main=data_html.categories, json_data=data_dict.name)
 
     # Test lookup queries
-    choice_parser = generate_choice_parser(lookups=[pq(pq_query)])
+    choice_parser = generate_choice_parser(lookups=[ed.pq(pq_query)])
 
     assert choice_parser.parse(data_bag) == result
 
     # Test lookup parsers
-    choice_parser = generate_choice_parser(lookups=[parsers.Text(pq(pq_query))])
+    choice_parser = generate_choice_parser(lookups=[ed.Text(ed.pq(pq_query))])
 
     assert choice_parser.parse(data_bag) == result
 
 
 def test_choice_lookup_items():
-    class ProductModel(models.ItemModel):
-        _item_category = parsers.Text(pq("#accessory .name::text"))
+    class ProductModel(ed.ItemModel):
+        _item_category = ed.Text(ed.pq("#accessory .name::text"))
 
-        _item_name = parsers.Text(pq("#accessory .type::text"))
+        _item_name = ed.Text(ed.pq("#accessory .type::text"))
 
-        item_type = parsers.Choice(
+        item_type = ed.Choice(
             lookups=["name", "category"],
             choices=[
                 ("phone", ["mobile"]),
