@@ -9,7 +9,14 @@ __all__ = (
 
 
 class OrClause(QuerySearchBase):
-    def __init__(self, *query_searches):
+    def __init__(
+        self,
+        *query_searches,
+        strict_none: bool = True,
+    ):
+
+        self._strict_none = strict_none
+
         self._query_searches = query_searches
 
     def get(
@@ -26,7 +33,9 @@ class OrClause(QuerySearchBase):
                 parent_data=parent_data,
             )
 
-            if value is not None:
+            if self._strict_none and value is not None:
+                return value
+            elif not self._strict_none and value:
                 return value
 
         return None
