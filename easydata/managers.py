@@ -4,7 +4,7 @@ from easydata import models
 from easydata.data import DataBag
 from easydata.loaders import ObjectLoader
 from easydata.mixins import ConfigMixin
-from easydata.parsers import Base as BaseParser
+from easydata.parsers.base import Base as BaseParser
 from easydata.utils import mix
 
 __all__ = ("ModelManager",)

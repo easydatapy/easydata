@@ -1,10 +1,11 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any, Optional, Union
 
 from easydata.parsers.text import Text
 from easydata.utils import price
 
 __all__ = (
+    "BaseNum",
     "BasePriceFloat",
     "PriceFloat",
     "PriceInt",
@@ -12,7 +13,7 @@ __all__ = (
 )
 
 
-class BasePriceFloat(Text, ABC):
+class BaseNum(Text, ABC):
     def __init__(
         self,
         *args,
@@ -72,10 +73,7 @@ class BasePriceFloat(Text, ABC):
         if value is None:
             return None
 
-        value = price.to_float(
-            price_value=value,
-            decimals=self._decimals,
-        )
+        value = self._parse_num_value(value)
 
         if value is None:
             return None
@@ -84,6 +82,18 @@ class BasePriceFloat(Text, ABC):
             value,
             min_value=self._min_value,
             max_value=self._max_value,
+        )
+
+    @abstractmethod
+    def _parse_num_value(self, value: Any):
+        pass
+
+
+class BasePriceFloat(BaseNum, ABC):
+    def _parse_num_value(self, value: Any):
+        return price.to_float(
+            price_value=value,
+            decimals=self._decimals,
         )
 
 

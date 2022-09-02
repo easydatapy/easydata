@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Union
 from easytxt import parse_string, text
 from pyquery import PyQuery
 
-from easydata.parsers import BaseData
+from easydata.parsers.base import BaseData
 
 __all__ = ("Text",)
 

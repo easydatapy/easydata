@@ -10,7 +10,7 @@ __all__ = (
 )
 
 
-class SearchFloat(BasePriceFloat):
+class DefaultNumConfigMixin:
     @property
     def _decimals_config(self):
         return self.config["ED_NUMBER_DECIMALS"]
@@ -24,13 +24,16 @@ class SearchFloat(BasePriceFloat):
         return self.config["ED_NUMBER_MAX_VALUE"]
 
 
+class SearchFloat(DefaultNumConfigMixin, BasePriceFloat):
+    pass
+
+
 class SearchInt(SearchFloat):
     def parse_value(
         self,
         value: Any,
         data: Any,
     ):
-
         value = super().parse_value(value=value, data=data)
 
         return int(value) if value else None
@@ -42,7 +45,6 @@ class SearchFloatText(SearchFloat):
         value: Any,
         data: Any,
     ):
-
         value = super().parse_value(value=value, data=data)
 
         return str(value) if value else None
@@ -54,7 +56,6 @@ class SearchIntText(SearchInt):
         value: Any,
         data: Any,
     ):
-
         value = super().parse_value(value=value, data=data)
 
         return str(value) if value else None
