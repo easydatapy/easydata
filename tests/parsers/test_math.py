@@ -1,4 +1,5 @@
 import pytest
+from pyquery import PyQuery
 
 import easydata as ed
 
@@ -13,8 +14,22 @@ import easydata as ed
         (ed.Count(), (1, 2, 3, 4), 4),
         (ed.Count(count_bool=True), True, 1),
         (ed.Count(count_bool=True), False, 0),
-        # Test generator
         (ed.Count(), range(0, 4), 4),
+        (
+            ed.Count(ed.pq("li::items")),
+            PyQuery("<ul><li></li><li></li><li></li></ul>"),
+            3,
+        ),
+        (
+            ed.Count(ed.pq("li::text-items")),
+            PyQuery("<ul><li>1</li><li>2</li><li>3</li></ul>"),
+            3,
+        ),
+        (
+            ed.Count(ed.TextList(ed.pq("li::text-items"))),
+            PyQuery("<ul><li>1</li><li>2</li><li>3</li></ul>"),
+            3,
+        ),
     ],
 )
 def test_count(parser, test_data, result):
@@ -29,6 +44,10 @@ def test_count(parser, test_data, result):
         (ed.Count(), False),
         (ed.Count(), True),
         (ed.Count(), None),
+        (
+            ed.Count(ed.pq("li::iter")),
+            PyQuery("<ul><li></li><li></li><li></li></ul>"),
+        ),
     ],
 )
 def test_count_error(parser, test_data):
