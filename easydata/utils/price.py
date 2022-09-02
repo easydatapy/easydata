@@ -16,7 +16,7 @@ def to_float(
     if not price:
         return price
 
-    return round(price, decimals) if decimals is not False else price
+    return round(price, decimals) if decimals is not None else price
 
 
 def to_string(
