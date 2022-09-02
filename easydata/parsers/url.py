@@ -39,11 +39,11 @@ class Url(Text):
 
     @property
     def _domain(self):
-        return self.__domain or self.config["ED_URL_DOMAIN"]
+        return self.__domain or self.config.get("ED_URL_DOMAIN")
 
     @property
     def _protocol(self):
-        return self.__protocol or self.config["ED_URL_PROTOCOL"]
+        return self.__protocol or self.config.get("ED_URL_PROTOCOL")
 
     def parse_value(
         self,
