@@ -6,38 +6,38 @@ from tests.factory import data_html
 
 
 @pytest.mark.parametrize(
-    "test_parsers, result",
+    "parser, result",
     [
         (
-            (
+            ed.Or(
                 ed.Text(ed.pq(".brand-wrong::text")),
                 ed.Text(ed.pq(".brand::text")),
             ),
             "EasyData",
         ),
         (
-            (
+            ed.Or(
                 ed.Text(ed.pq(".brand::text")),
                 ed.Text(ed.pq("#name::text")),
             ),
             "EasyData",
         ),
         (
-            (
+            ed.Or(
                 ed.Text(ed.pq(".brand-wrong::text")),
                 ed.Text(ed.pq(".brand-wrong-again::text")),
             ),
             None,
         ),
         (
-            (
+            ed.Or(
                 ed.Bool(ed.pq(".brand::text"), contains=["WrongData"]),
                 ed.Bool(ed.pq(".brand::text"), contains=["EasyData"]),
             ),
             True,
         ),
         (
-            (
+            ed.Or(
                 ed.List(ed.pq(".brand-wrong::text-items")),
                 ed.Text(ed.pq(".brand::text")),
             ),
@@ -45,14 +45,13 @@ from tests.factory import data_html
         ),
     ],
 )
-def test_or(test_parsers, result):
+def test_or(parser, result):
     test_html = """
         <p class="brand">EasyData</p>
         <p id="name">Easybook Pro 13</p>
     """
 
-    or_parser = ed.Or(*test_parsers)
-    assert or_parser.parse(test_html) == result
+    assert parser.parse(test_html) == result
 
 
 @pytest.mark.parametrize(

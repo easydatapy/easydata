@@ -35,83 +35,110 @@ expected_multiplied_urls = [
 
 
 @pytest.mark.parametrize(
-    "query, parser, test_data, result",
+    "parser, test_data, result",
     [
+        # (
+        #     ed.List(
+        #         query=ed.pq("#images img::items"),
+        #         parser=ed.Url(ed.pq("::src")),
+        #     ),
+        #     data_html.images,
+        #     expected_urls,
+        # ),
+        # (
+        #     ed.List(
+        #         query=ed.pq("#images img::src-items"),
+        #         parser=ed.Url(),
+        #     ),
+        #     data_html.images,
+        #     expected_urls,
+        # ),
+        # (
+        #     ed.List(
+        #         query=ed.pq("#images img::src-items"),
+        #         parser=None,
+        #     ),
+        #     data_html.images,
+        #     expected_urls,
+        # ),
+        # (
+        #     ed.List(
+        #         query=None,
+        #         parser=None,
+        #     ),
+        #     ["hello", "World &lt;3"],
+        #     ["hello", "World &lt;3"],
+        # ),
+        # (
+        #     ed.List(
+        #         query=ed.jp("variants"),
+        #         parser=ed.StackedParser(
+        #             color=ed.Text(ed.jp("color"), uppercase=True),
+        #             stocked=ed.Bool(ed.jp("stock")),
+        #         ),
+        #     ),
+        #     data_dict.variants_data,
+        #     [
+        #         {"color": "BLACK", "stocked": True},
+        #         {"color": "GRAY", "stocked": False},
+        #     ],
+        # ),
+        # (
+        #     ed.List(parser=ed.Url()).init_config({"ED_URL_DOMAIN": "demo.com"}),
+        #     ["/imgs/1.jpg"],
+        #     ["https://demo.com/imgs/1.jpg"],
+        # ),
+        # (
+        #     ed.List(
+        #         parser=ed.Url(domain="https://demo.net")
+        #     ).init_config({"ED_URL_DOMAIN": "demo.com"}),
+        #     ["/imgs/1.jpg"],
+        #     ["https://demo.net/imgs/1.jpg"],
+        # ),
+        # (
+        #     ed.List(
+        #         ed.pq("#image-container img::items"),
+        #         parser=ed.Url(ed.pq("::src")),
+        #         unique=True,
+        #     ),
+        #     data_html.images,
+        #     expected_urls,
+        # ),
+        # (
+        #     ed.List(
+        #         ed.pq("#image-container img::items"),
+        #         parser=ed.Url(ed.pq("::src")),
+        #     ),
+        #     data_html.images,
+        #     expected_urls,
+        # ),
+        # (
+        #     ed.List(
+        #         ed.pq("#image-container img::items"),
+        #         parser=ed.Url(ed.pq("::src")),
+        #         unique=False,
+        #     ),
+        #     data_html.images,
+        #     expected_urls_non_unique,
+        # ),
         (
-            ed.pq("#images img::items"),
-            ed.Url(ed.pq("::src")),
-            data_html.images,
-            expected_urls,
-        ),
-        (ed.pq("#images img::src-items"), ed.Url(), data_html.images, expected_urls),
-        (ed.pq("#images img::src-items"), None, data_html.images, expected_urls),
-        (None, None, ["hello", "World &lt;3"], ["hello", "World &lt;3"]),
+            ed.List(
+                ed.jp("options"),
+                parser=ed.ItemDict(
+                    name=ed.Str(ed.key("name")),
+                    price=ed.Float(ed.key("price")),
+                ),
+            ),
+            data_dict.item_with_options,
+            [
+                {"name": "Monitor", "price": None},
+                {"name": "Mouse", "price": None},
+            ],
+        )
     ],
 )
-def test_list(query, parser, test_data, result):
-    list_parser = ed.List(query=query, parser=parser)
-
-    assert list_parser.parse(test_data) == result
-
-
-def test_list_stacked_parser():
-    list_parser = ed.List(
-        query=ed.jp("variants"),
-        parser=ed.StackedParser(
-            color=ed.Text(ed.jp("color"), uppercase=True),
-            stocked=ed.Bool(ed.jp("stock")),
-        ),
-    )
-
-    assert list_parser.parse(data_dict.variants_data) == [
-        {"color": "BLACK", "stocked": True},
-        {"color": "GRAY", "stocked": False},
-    ]
-
-
-def test_list_config():
-    # Lets test if config settings are correctly passed to a child Url parser!
-    list_parser = ed.List(parser=ed.Url())
-    list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
-
-    assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.com/imgs/1.jpg"]
-
-
-def test_list_config_override():
-    # Lets test if config settings can get overriden
-    list_parser = ed.List(parser=ed.Url(domain="https://demo.net"))
-    list_parser.init_config({"ED_URL_DOMAIN": "demo.com"})
-
-    assert list_parser.parse(["/imgs/1.jpg"]) == ["https://demo.net/imgs/1.jpg"]
-
-
-def test_list_unique_true():
-    list_parser = ed.List(
-        ed.pq("#image-container img::items"),
-        ed.Url(ed.pq("::src")),
-        unique=True,
-    )
-
-    assert list_parser.parse(data_html.images) == expected_urls
-
-
-def test_list_unique_default():
-    list_parser = ed.List(
-        ed.pq("#image-container img::items"),
-        ed.Url(ed.pq("::src")),
-    )
-
-    assert list_parser.parse(data_html.images) == expected_urls
-
-
-def test_list_unique_false():
-    list_parser = ed.List(
-        ed.pq("#image-container img::items"),
-        ed.Url(ed.pq("::src")),
-        unique=False,
-    )
-
-    assert list_parser.parse(data_html.images) == expected_urls_non_unique
+def test_list(parser, test_data, result):
+    assert parser.parse(test_data) == result
 
 
 @pytest.mark.parametrize(
