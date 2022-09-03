@@ -31,11 +31,13 @@ class DateTime(Text):
         date_formats: Optional[List[str]] = None,
         min_year: Optional[int] = None,
         max_year: Optional[int] = None,
+        today: bool = False,
         **kwargs,
     ):
 
         self._min_year = min_year
         self._max_year = max_year
+        self._today = today
 
         self.__locales = locales
         self.__region = region
@@ -74,6 +76,20 @@ class DateTime(Text):
     @property
     def _date_formats(self):
         return self.__date_formats or self.config["ED_DATETIME_FORMATS"]
+
+    def parse(
+        self,
+        data: Any,
+        parent_data: Any = None,
+        with_parent_data: bool = False,
+    ) -> Any:
+
+        if self._today:
+            datetime_obj = datetime.today()
+
+            return self._parse_datetime_obj_to_str(datetime_obj)
+
+        return super().parse(data, parent_data, with_parent_data)
 
     def parse_value(
         self,

@@ -14,6 +14,7 @@ test_date_sentence = "It has happened on 10 Dec 2018 at 10:55:50."
         (ed.Date(), "Fri, 10 Dec 2018 10:55:50", "12/10/2018"),
         (ed.Date(), "17 Sep 2022", "09/17/2022"),
         (ed.Date(), "Sep 17 2022", "09/17/2022"),
+        (ed.Date(today=True), "Sep 17 2022", "09/03/2022"),
         (ed.Date(), "Sep. 17 2022", "09/17/2022"),
         (ed.YearSearch(), test_date_sentence, "2018"),
         (ed.YearSearch(), "Some player signed 2010 Open 139th (British Open)", "2010"),
