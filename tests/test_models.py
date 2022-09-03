@@ -235,6 +235,14 @@ def test_item_model_with_multi_items():
         (
             data_dict.item_with_options,
             ed.StackedModel(
+                _brand_data=ed.Data(ed.jp("brand")),
+                brand=ed.Data(from_item="brand_data<jp>name"),
+            ),
+            [{"brand": "EasyData"}],
+        ),
+        (
+            data_dict.item_with_options,
+            ed.StackedModel(
                 options=ed.List(
                     query=ed.jp("options"),
                     parser=ed.ItemDict(
