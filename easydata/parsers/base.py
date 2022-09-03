@@ -6,6 +6,7 @@ from typing import Any, Callable, Optional, Union
 from easydata.data import DataBag
 from easydata.mixins import ConfigMixin
 from easydata.queries.base import QuerySearchBase
+from easydata.queries.jp import JMESPathSearch, JMESPathStrictSearch
 from easydata.utils import parse
 
 __all__ = (
@@ -35,6 +36,27 @@ def custom_process_value(
         return callback_or_parser.parse(value)
 
     return callback_or_parser(value, data)
+
+
+def _get_item_value_from_data_bag(
+    data: DataBag,
+    query: str,
+) -> Any:
+
+    if "<jp>" in query:
+        query, jp_query = tuple(query.split("<jp>"))
+
+        value = data.get(query)
+
+        return JMESPathSearch(jp_query).get(value)
+    elif "<jps>" in query:
+        query, jp_query = tuple(query.split("<jps>"))
+
+        value = data.get(query)
+
+        return JMESPathStrictSearch(jp_query).get(value)
+
+    return data.get(query)
 
 
 class BaseData(Base, ABC):
@@ -80,7 +102,10 @@ class BaseData(Base, ABC):
     ) -> Any:
 
         if self._from_item and isinstance(data, DataBag):
-            value = data.get(self._from_item)
+            value = _get_item_value_from_data_bag(
+                data=data,
+                query=self._from_item,
+            )
         else:
             parent_data = parent_data if with_parent_data else data
 
@@ -149,7 +174,10 @@ class BaseData(Base, ABC):
 
     def _process_default_value(self, value, data):
         if value is None and self._default_from_item is not None:
-            value = data.get(self._default_from_item)
+            value = _get_item_value_from_data_bag(
+                data=data,
+                query=self._default_from_item,
+            )
 
         if value is None and self._default is not None:
             return self._default
