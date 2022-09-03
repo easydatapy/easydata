@@ -1,22 +1,18 @@
-from typing import Any, Dict, Tuple
+from typing import Any, Callable, Optional
 
 from easydata.parsers.base import Base
 from easydata.typing import Parser
-from easydata.utils import parse
+from easydata.utils import mix, parse
 
 __all__ = (
-    "Or",
-    "With",
-    "Conditional",
-    "ConcatText",
-    "JoinList",
-    "MergeDict",
-    "ItemDict",
-    "ValueList",
+    "OR",
+    "WITH",
+    "SWITCH",
+    "IF",
 )
 
 
-class Or(Base):
+class OR(Base):
     _min_len_error_msg = "At least two parsers needs to be passed in order " "to use {}"
 
     def __init__(
@@ -58,7 +54,7 @@ class Or(Base):
             raise ValueError(self._min_len_error_msg.format(cls_name))
 
 
-class With(Or):
+class WITH(OR):
     def parse(
         self,
         data: Any,
@@ -84,15 +80,17 @@ class With(Or):
         return value
 
 
-class Conditional(Base):
+class SWITCH(Base):
     def __init__(
         self,
-        *args: Tuple[Parser, Parser],
-        default: Parser = None,
+        parser: Parser,
+        *cases,
+        default: Any = None,
     ):
 
-        self._condition_parsers = args
-        self._default_parser = default
+        self._parser = parser
+        self._cases = cases
+        self._default = default
 
     def parse(
         self,
@@ -101,154 +99,60 @@ class Conditional(Base):
         with_parent_data: bool = False,
     ) -> Any:
 
-        for condition_parser_tuple in self._condition_parsers:
-            condition_parser, parser = condition_parser_tuple
+        parser_data = {
+            "data": data,
+            "parent_data": parent_data,
+            "with_parent_data": with_parent_data,
+            "config": self.config,
+        }
 
-            condition_value = parse.value_from_parser(
-                parser=condition_parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
-            )
+        value = parse.value_from_parser(
+            parser=self._parser,
+            **parser_data,
+        )
 
-            if condition_value:
-                value = parse.value_from_parser(
-                    parser=parser,
-                    data=data,
-                    parent_data=parent_data,
-                    with_parent_data=with_parent_data,
-                    config=self.config,
+        for case in self._cases:
+            if not isinstance(case, tuple):
+                raise TypeError(
+                    "Case must be of type tuple (<case-value>, <return-parser>)",
                 )
 
-                return value
+            case_value, return_parser = case
 
-        if self._default_parser:
+            if case_value == value:
+                if mix.is_built_in_type(return_parser):
+                    return return_parser
+
+                return parse.value_from_parser(
+                    parser=return_parser,
+                    **parser_data,
+                )
+
+        if self._default:
+            if mix.is_built_in_type(self._default):
+                return self._default
+
             return parse.value_from_parser(
-                parser=self._default_parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
+                parser=self._default,
+                **parser_data,
             )
 
         return None
 
 
-class ConcatText(Or):
+class IF(Base):
     def __init__(
         self,
-        *args: Parser,
-        separator: str = " ",
+        if_parser: Parser,
+        then_parser: Any,
+        else_parser: Optional[Any] = None,
+        condition: Optional[Callable] = None,
     ):
 
-        self._separator = separator
-
-        super().__init__(*args)
-
-    def parse(
-        self,
-        data: Any,
-        parent_data: Any = None,
-        with_parent_data: bool = False,
-    ) -> Any:
-
-        values = []
-
-        for parser in self.parsers:
-            value = parse.value_from_parser(
-                parser=parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
-            )
-
-            if value is None:
-                continue
-
-            if not isinstance(value, str):
-                error_msg = "Value returned from {} must be type of str!"
-                raise TypeError(error_msg.format(type(parser).__name__))
-
-            values.append(value)
-
-        return self._separator.join(values)
-
-
-class JoinList(Or):
-    def parse(
-        self,
-        data: Any,
-        parent_data: Any = None,
-        with_parent_data: bool = False,
-    ) -> Any:
-
-        values = []
-
-        for parser in self.parsers:
-            value = parse.value_from_parser(
-                parser=parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
-            )
-
-            if not value:
-                continue
-
-            if not isinstance(value, list):
-                error_msg = "Value returned from {} must be type of list!"
-                raise TypeError(error_msg.format(type(parser).__name__))
-
-            values += value
-
-        return values
-
-
-class MergeDict(Or):
-    def parse(
-        self,
-        data: Any,
-        parent_data: Any = None,
-        with_parent_data: bool = False,
-    ) -> Any:
-
-        joined_dictionary: Dict[Any, Any] = {}
-
-        for parser in self.parsers:
-            value = parse.value_from_parser(
-                parser=parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
-            )
-
-            if not value:
-                continue
-
-            if not isinstance(value, dict):
-                error_msg = "Value returned from {} must be type of dict!"
-                raise TypeError(error_msg.format(type(parser).__name__))
-
-            joined_dictionary = {**joined_dictionary, **value}
-
-        return joined_dictionary
-
-
-class ItemDict(Base):
-    def __init__(
-        self,
-        ignore_non_values: bool = False,
-        exception_on_non_values: bool = False,
-        **kwargs,
-    ):
-
-        self._ignore_non_values = ignore_non_values
-        self._exception_on_non_values = exception_on_non_values
-        self._parser_dict = kwargs
+        self._if_parser = if_parser
+        self._then_parser = then_parser
+        self._else_parser = else_parser
+        self._condition = condition
 
     def parse(
         self,
@@ -257,61 +161,42 @@ class ItemDict(Base):
         with_parent_data: bool = False,
     ) -> Any:
 
-        parser_dict = {}
+        parser_data = {
+            "data": data,
+            "parent_data": parent_data,
+            "with_parent_data": with_parent_data,
+            "config": self.config,
+        }
 
-        for name, parser in self._parser_dict.items():
+        condition_value = parse.value_from_parser(
+            parser=self._if_parser,
+            **parser_data,
+        )
+
+        if self._has_condition(condition_value):
+            if mix.is_built_in_type(self._then_parser):
+                return self._then_parser
+
             value = parse.value_from_parser(
-                parser=parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
+                parser=self._then_parser,
+                **parser_data,
             )
 
-            if self._ignore_non_values and value is None:
-                continue
+            return value
 
-            if self._exception_on_non_values and value is None:
-                error_msg = "Value for dict key %s cannot be emtpy!"
+        if self._else_parser:
+            if mix.is_built_in_type(self._else_parser):
+                return self._else_parser
 
-                raise ValueError(error_msg % name)
-
-            parser_dict[name] = value
-
-        return parser_dict
-
-
-class ValueList(Base):
-    def __init__(
-        self,
-        *args: Parser,
-        ignore_non_values: bool = True,
-    ):
-
-        self._parser_list = args
-        self._ignore_non_values = ignore_non_values
-
-    def parse(
-        self,
-        data: Any,
-        parent_data: Any = None,
-        with_parent_data: bool = False,
-    ) -> Any:
-
-        parser_list = []
-
-        for parser in self._parser_list:
-            value = parse.value_from_parser(
-                parser=parser,
-                data=data,
-                parent_data=parent_data,
-                with_parent_data=with_parent_data,
-                config=self.config,
+            return parse.value_from_parser(
+                parser=self._else_parser,
+                **parser_data,
             )
 
-            if self._ignore_non_values and value is None:
-                continue
+        return None
 
-            parser_list.append(value)
+    def _has_condition(self, value):
+        if self._condition:
+            return self._condition(value)
 
-        return parser_list
+        return value
