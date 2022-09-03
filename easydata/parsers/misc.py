@@ -5,7 +5,6 @@ from easydata.parsers.clause import OR
 from easydata.typing import Parser
 from easydata.utils import parse
 
-
 __all__ = (
     "ConcatText",
     "JoinList",

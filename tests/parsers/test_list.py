@@ -1,7 +1,7 @@
 import pytest
 
 import easydata as ed
-from tests.factory import data_dict, data_html, data_list
+from tests.factory import data_dict, data_list
 
 expected_urls = [
     "https://demo.com/imgs/1.jpg",
