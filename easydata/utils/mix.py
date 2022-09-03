@@ -300,3 +300,7 @@ def parse_float(
         return round(value, decimals)
 
     return value
+
+
+def is_built_in_type(value):
+    return isinstance(value, (int, str, float, dict, list, bool, tuple))
