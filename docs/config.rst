@@ -15,24 +15,24 @@ For a list of available built-in config variables see: :ref:`config-reference`.
 
 Populating config
 =================
-Config can be populated using different mechanisms, each of which having a different
-precedence. Here is the list of them in decreasing order of precedence:
+The Config can be populated using different mechanisms, each of which having a different
+precedence. Here is a list of them in decreasing order of precedence:
 
-* Config per model (most precedence)
+* Config per model (highest precedence)
 * Project config module
-* Default global settings (less precedence)
+* Default global settings (least precedence)
 
 These mechanisms are described in more detail below.
 
 .. note::
 
     All custom config variables must start with ``ED_``, otherwise they wont be
-    recognized by config loader.
+    recognized by the config loader.
 
 Config per model
 ----------------
 Models can define it's own config attributes that will take precedence and override the
-project or global one. They can do so by defining config key and value through class
+project or global one. They can do so by defining the config key and value through a class
 attribute:
 
 .. code-block:: python
@@ -56,7 +56,7 @@ Note that the config module should be on the Python
 
 .. note::
 
-    Design decision that all config variables start with ``ED_`` is due to possibility
+    The design decision that all config variables start with ``ED_`` is due to possibility
     to use config or settings module from a different framework, e.g. ``scrapy``
     and to prevent any name conflicts.
 
@@ -90,7 +90,7 @@ Examples above will return default config values or if they are overwritten or n
 via :ref:`config-project-config-module`
 
 Or via ``config`` property in a ``parser``, ``model`` or ``processor`` components.
-Through ``config`` property in a component, we will get any config value that was defined or
+Through the ``config`` property in a component, we will get any config value that was defined or
 overwritten in a ``model``.
 
 .. _config-reference:
