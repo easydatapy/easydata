@@ -22,7 +22,7 @@ are some prerequisites for the tutorial that have to be followed:
 
 Creating Model
 ==============
-We will use following html in examples bellow:
+We will use following html in examples below:
 
 .. code-block:: python
 
@@ -116,7 +116,7 @@ etc.).
 
             item_images = ed.ListParser(
                 ed.pq('.images img::src-items'),
-                parser=ed.UrlParser()
+                parser=ed.Url()
             )
         """
 
@@ -126,8 +126,8 @@ Parsing data with Model
 
 Calling parse to get item dict
 -----------------------------------
-In example bellow we can see how newly created ``ProductItemModel`` will
-parse provided HTML data into ``dict`` object.
+In the example below we can see how the newly created ``ProductItemModel`` will
+parse provided HTML data into a ``dict`` object.
 
 .. code-block:: python
 
@@ -141,8 +141,8 @@ Output:
 
     {
         'brand': 'EasyData',
-        'description': 'Basic product info. EasyData product is newest addition \
-                        to python world. Color: Black. Material: Aluminium.',
+        'description': 'Basic product info. EasyData product is newest and greatest \
+                        addition to python world. Color: Black. Material: Aluminium.',
         'color': 'Black',
         'images': [
             'http://demo.com/img1.jpg',
@@ -159,7 +159,7 @@ Calling parse from a method inside model
 ---------------------------------------------
 Advantages of calling ``parse`` from a method inside a model, is that you
 can put all extraction logic (making a request, reading feed file, etc.)
-inside item model and have better (depends on a use case) code organization.
+inside item model and have better code organization.
 
 .. code-block:: python
 
@@ -180,7 +180,7 @@ inside item model and have better (depends on a use case) code organization.
             item_data = item_model.parse_item(response.text)
 
             with open("test_item.txt", "w") as text_file:
-                text_file.write(json.dumps(text_file))
+                text_file.write(json.dumps(item_data))
 
 Now we can just use our model like this:
 
@@ -196,7 +196,7 @@ and there is no need to call ``parse`` on item model object.
 Adding Data Processor
 =====================
 Data processors are extensions to models which help to prepare/convert
-data for parser in cases data is more complex and with regular query
+data for parser in the cases where data is more complex and with regular query
 selectors it cannot be selected in it's raw form.
 
 .. tip::
@@ -287,14 +287,14 @@ Lets check how ``DataJsonFromReToDictProcessor`` in our example works in more de
         )
     ]
 
-First parameter in ``DataJsonFromReToDictProcessor`` is our regex pattern which will
+The first parameter in ``DataJsonFromReToDictProcessor`` is our regex pattern which will
 extract json data from our HTML sample above.
 
-Second parameter is ``new_source``. This will tell our processor to store extracted
+The second parameter is ``new_source``. This will tell our processor to store the extracted
 json data as a separate source and not to overwrite our HTML source. We can see in
-our example that item parsers (``item_name`` and ``item_brand``), which are selecting
-data from json source, need also ``source`` parameter specified, so that query selectors,
-know from which source they need to select/query data.
+our example that the item parsers ``item_name`` and ``item_brand``, which are selecting
+data from the json source, also need the ``source`` parameter specified, so that the query selectors
+know which source they need to select/query data from.
 
 Example:
 
@@ -305,8 +305,8 @@ Example:
         source='json_info'
     )
 
-If we didn't set ``new_source`` in ``DataJsonFromReToDictProcessor``, then extracted
-json data would override default HTML source and bellow case would throw error
+If we didn't set the ``new_source`` parameter in ``DataJsonFromReToDictProcessor``,
+then the extracted json data would override default HTML source and the below case would throw an error
 because there wouldn't be any HTML data to extract info from.
 
 .. code-block:: python
@@ -346,9 +346,9 @@ for a parser, their purpose is to modify already parsed item dictionary.
 
 .. tip::
 
-    Similar to *data* processors, greatest benefit is to create your own *item*
-    processors and reuse them between different models. For example: validation
-    for item dictionary.
+    Similar to *data* processors, the greatest benefit is to create your own *item*
+    processors and reuse them across different models. For example, you could implement
+    validation for an item dictionary.
 
 Example
 -------
@@ -427,12 +427,11 @@ Lets see how ``ItemDiscountProcessor`` works in more detail.
             ed.ItemDiscountProcessor()
         ]
 
-``ItemDiscountProcessor`` looks for parsed ``price`` and ``sale_price`` in item
-dictionary and calculates discount between these two values. Finally it creates a new
-discount key in item dictionary and adds discount value to it. If our price and sale
-price values live under different keys under item dictionary than default ones ``price``
-and ``sale_price``, then we can through parameters change those default values to suit
-our needs. All parameters that ``ItemDiscountProcessor`` accepts are ``item_price_key``,
+``ItemDiscountProcessor`` looks for the parsed ``price`` and ``sale_price`` values in the item
+dictionary and calculates the discount between these two values. Finally it creates a new
+discount key in the item dictionary and adds the discount value to it. If our price and sale
+price values live under different keys under the item dictionary then the default ones are ``price``
+and ``sale_price``. All of the parameters that ``ItemDiscountProcessor`` accepts are ``item_price_key``,
 ``item_sale_price_key``, ``item_discount_key``, ``decimals``, ``no_decimals``,
 ``remove_item_sale_price_key``.
 
@@ -477,8 +476,8 @@ EasyData ships with multiple items processors to handle different case scenarios
 
 Next Steps
 ==========
-It's great to have an understanding how is data shared between components, especially
+It's great to have an understanding of how the data is shared between components, especially
 if you are planing to build custom parsers or processors. For a brief explanation
-to see how everything works underneath, please refer to :ref:`architecture` section.
+to see how everything works underneath, please refer to the :ref:`architecture` section.
 
-For more advanced features please go to :ref:`advanced` section.
+For more advanced features please go to the :ref:`advanced` section.

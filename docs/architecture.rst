@@ -13,17 +13,16 @@ Architecture
 * item processors
 * data bag
 
-Each of these components can be used independently to process data and because of that,
-writing tests for a custom build components is easy and straightforward without a need
-to utilize mocks.
+Each of the ``easydata`` components can be used independently to process data, which
+makes writing tests significantly easier. This is is easier because there is not a need
+to utilize mocks in testing.
 
 .. topic:: Most important component is a model.
 
-    Model glues all other components together, parses data and outputs item dictionary
-    as a result.
+    The Model component glues all of the other components together, parses data, and outputs an item dictionary.
 
 
-First let create some variables, which will hold different kind of data, that will be
+First let create some variables, which will hold different kinds of data, and this will be
 passed to a ``parse_item`` method later in this tutorial.
 
 .. code-block:: python
@@ -31,7 +30,7 @@ passed to a ``parse_item`` method later in this tutorial.
     >> json_text = '{"price": 999.90}'
     >> html_text = '<p class="sale_price">499.9<p>'
 
-First we will create a simple ``ItemModel`` and explain how data is passed and processed
+First we will create a simple ``ItemModel`` and explain how the data is passed and processed
 through other components.
 
 .. code-block:: python
@@ -65,10 +64,10 @@ and other core components is done after we call ``parse_item`` method for a firs
 
 .. note::
 
-    Design decision not to use ``__init__`` for class initialization is in order to add
-    ``ItemModel`` as a mixin to your existing class if needed.
+    The design decision to not use ``__init__`` for class initialization is in order to add
+    ``ItemModel`` as a mixin to your existing class.
 
-Now lets pass our variables with different types of data to ``parse_item`` method.
+Now lets pass our variables with different types of data to the ``parse_item`` method.
 
 .. code-block:: python
 
@@ -77,13 +76,13 @@ Now lets pass our variables with different types of data to ``parse_item`` metho
 
 .. note::
 
-    In a result we are missing ``sale_price`` in our dictionary. This is intentionally
-    since all properties that start with ``_item`` will be deleted before final output.
+    In the result, we are missing the ``sale_price`` key in our dictionary. This is intentional
+    since all properties that start with ``_item`` will be deleted before the final output.
 
-When we pass our ``json_text`` and ``html_text`` to ``parse_item``, our model will get registered
-with *model manager* which basically handles are components specified in our model. Model
-is registered within *model manager* only when we call ``parse_item`` for the first time. In next
-step through *model manager* our passed ``json_text`` and ``html_text`` data will be stored
+When we pass our ``json_text`` and ``html_text`` to the ``parse_item`` method, our model will get registered
+with *model manager* which is in charge of handling are components specified in our model. The model
+is registered within *model manager* only when we call the ``parse_item`` method for the first time. In the next
+step, the *model manager* is passed through the ``json_text`` and ``html_text`` data will be stored
 into a ``DataBag`` object dictionary under ``data`` and ``html`` keys respectively. All parsers
 and processors will by default look in a ``DataBag`` for a ``data`` key, unless specified
 otherwise in a processor or a parser. We can see in our example model above, that a ``PriceFloat``
@@ -101,13 +100,13 @@ data processors.
 When ``DataBag`` is created under the hood on a ``parse_item`` call, it will be passed
 first through **data processors**, where it will be modified or transformed and in next
 step will be passed further to item parsers. In item parsers, data will be extracted from
-a ``DataBag`` and it's values stored in a item dictionary.
+a ``DataBag`` and it's values are stored in a item dictionary.
 
-Before final output, item dictionary will get passed through ``item_processors``, if there is
-a need for item dictionary *keys* or *values* to be modified.
+Before the final output, the item dictionary will get passed through ``item_processors``, and, if needed,
+the item dictionary *keys* or *values* will be modified.
 
 
 Next steps
 ==========
-To get better understanding regarding processors and many other components, please proceed
-further to :ref:`advanced` section.
+To get a better understanding regarding processors and many other components, please proceed
+further to the :ref:`advanced` section.
