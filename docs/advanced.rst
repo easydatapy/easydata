@@ -6,20 +6,19 @@ Advanced
 
 Guide Assumptions
 =================
-This guide is designed for those that already went through :ref:`getting-started`
+This guide is designed for those that already went through the :ref:`getting-started`
 and :ref:`architecture` sections.
 
 
 Creating block models
 =====================
-*Item block models* are ``ItemModel`` objects but with a difference that its
-purpose is to be used as a reusable extension that contains predefined item
-parsers and processors. To explain this functionality in more details is best
-to show it through examples bellow.
+*Item block models* are ``ItemModel`` objects but with a difference, which is
+to be used as a reusable extension that contains predefined item parsers and processors.
+It is easier to explain this functionality through examples, which begain below.
 
 Basic block model
 -----------------
-Lets first create sample *HTML* text stored in a ``test_html`` variable.
+Let's first create sample *HTML* text stored in a ``test_html`` variable.
 
 .. code-block:: python
 
@@ -58,8 +57,8 @@ data from the *HTML* above.
             ('discount', ItemDiscountProcessor())
         ]
 
-As mentioned before, model blocks as above are meant to be used withing ``ItemModel``.
-Now lets create ``ItemModel`` which will utilize ``block_models`` property with
+As mentioned before, the model blocks above are meant to be used within ``ItemModel``.
+Now let's create ``ItemModel`` which will utilize the ``block_models`` property with
 ``PricingBlockModel`` as a value in a list.
 
 .. code-block:: python
@@ -85,7 +84,7 @@ Now lets create ``ItemModel`` which will utilize ``block_models`` property with
             contains=['yes']
         )
 
-Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
+Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
 .. code-block:: python
 
@@ -106,8 +105,8 @@ Output:
         'stock': True
     }
 
-As we can see from the result, ``discount`` was made through a ``ItemDiscountProcessor``
-which was added in a ``PricingBlockModel``.
+As we can see from the result, ``discount`` was made through a ``ItemDiscountProcessor``,
+which was added in ``PricingBlockModel``.
 
 If needed, we can easily disable ``ItemDiscountProcessor`` within our ``ProductItemModel``.
 
@@ -172,7 +171,7 @@ Example:
                     ('discount', ed.ItemDiscountProcessor())
                 )
 
-Now lets use ``PricingCssBlockModel`` in our ``ProductItemModel``.
+Now let's use ``PricingCssBlockModel`` in our ``ProductItemModel``.
 
 .. code-block:: python
 
@@ -186,7 +185,7 @@ Now lets use ``PricingCssBlockModel`` in our ``ProductItemModel``.
 
         ...
 
-Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
+Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
 .. code-block:: python
 
@@ -210,10 +209,10 @@ Output:
 
 Model as item property
 ======================
-Item properties in a model can have instead of a parser object also a ``ItemModel``
-object which will produce dictionary value.
+Item properties in a model can have an ``ItemModel`` object instead of a parser object. They can also have a
+object that will produce dictionary value.
 
-In example bellow we will reuse ``PricingCssBlockModel`` from previous section.
+In the example below we will reuse ``PricingCssBlockModel`` from the previous section.
 
 .. code-block:: python
 
@@ -239,7 +238,7 @@ In example bellow we will reuse ``PricingCssBlockModel`` from previous section.
             contains=['yes']
         )
 
-Now lets parse *HTML* with ``ProductItemModel`` and print it's output.
+Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
 .. code-block:: python
 
@@ -268,11 +267,11 @@ Advanced processor utilization
 
 Named processors
 ----------------
-We already got to know item and data processors in the :ref:`getting-started`
-section and here we will explain how to use named item and data processors from
+We already are familiar with item and data processors from the :ref:`getting-started`
+section; therefore, now we will explain how to use named item and data processors from
 blocks or models that were dynamically added through a custom model initialization.
 
-For starters lets create *block models* without named item processors.
+For starters let's create *block models* without any named item processors.
 
 .. code-block:: python
 
@@ -291,7 +290,7 @@ For starters lets create *block models* without named item processors.
 
 Now if we wanted to override ``ItemDiscountProcessor`` in our item model, that
 wouldn't be possible. Lets see what happens if we added another ``ItemDiscountProcessor``
-with custom parameters in our model.
+with custom parameters to our model.
 
 .. code-block:: python
 
@@ -307,8 +306,8 @@ with custom parameters in our model.
         ...
 
 In this case ``ItemDiscountProcessor`` from our ``ProductItemModel`` would be joined
-together with the same processor from the ``PricingBlockModel``. For better understanding
-lets just show a list how ``item_processors`` behind the scene look like now.
+together with the same processor from the ``PricingBlockModel``. For a better understanding,
+let's just show a list of how ``item_processors`` acts behind the scenes.
 
 .. code-block:: python
 
@@ -320,8 +319,8 @@ lets just show a list how ``item_processors`` behind the scene look like now.
 As we see there are two ``ItemDiscountProcessor`` while we want only
 ``ItemDiscountProcessor`` from our model and ignore one from ``PricingBlockModel``.
 
-To solve this issue, named processors are the solution. Lets recreate our
-``PricingBlockModel`` but now we will add name to ``ItemDiscountProcessor``.
+To solve this issue, named processors are the solution. Let's recreate our
+``PricingBlockModel``, but this time we will add name to ``ItemDiscountProcessor``.
 
 .. code-block:: python
 
@@ -338,8 +337,8 @@ To solve this issue, named processors are the solution. Lets recreate our
             ('discount', ed.ItemDiscountProcessor())
         ]
 
-Now if we want to override in our model, discount item processor from the ``PricingBlockModel``,
-we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingBlockModel``.
+Now if we want to override the discount item processor from the ``PricingBlockModel`` in our model,
+we will just need to assign the name to our ``ItemDiscountProcessor`` as it is in ``PricingBlockModel``.
 
 .. code-block:: python
 
@@ -357,7 +356,7 @@ we just assign same name to our ``ItemDiscountProcessor`` as it is in ``PricingB
 Now only ``ItemDiscountProcessor`` from our model would get processed.
 
 We can even remove ``ItemDiscountProcessor`` from from the ``PricingBlockModel`` by
-adding ``None`` to our named key in ``tuple`` as we can see in example bellow.
+adding ``None`` to our named key in ``tuple`` as we can see in example below.
 
 .. code-block:: python
 
@@ -399,7 +398,7 @@ Lets demonstrate this in example below.
         ]
 
 
-Now lets parse our ``ProductItemModel`` and print it's output.
+Now let's parse our ``ProductItemModel`` and print its output.
 
 .. code-block:: python
 
@@ -415,18 +414,18 @@ Output:
         'discount': 50.05
     }
 
-As we can see in our result output, that only ``'discount'`` and it's value are returned,
-while ``'price'`` and ``'sale_price'`` item keys with it's values got deleted, but only after
-they were already processed by item processors.
+As we can see in the result above, there is only ``'discount'`` and it's value is returned.
+Both of the ``'price'`` and ``'sale_price'`` item key/value pairs were deleted, but only after
+they were already processed by the item processors.
 
 
 Item method
 ===========
 In some cases our item parsers just won't parse value from data properly due to
-it's complexity and in those cases we can make item methods instead of making parser
-instance on a model property.
+its complexity and in those cases we can make item methods instead of making a parser
+instance on the model property.
 
-Lets demonstrate first with a parser instance on a model property to get more clarity.
+Let's demonstrate first with an parser instance on a model property to get more clarity.
 
 .. code-block:: python
 
@@ -434,7 +433,7 @@ Lets demonstrate first with a parser instance on a model property to get more cl
         item_brand = ed.Text(ed.jp('brand'))
 
 Now in this example instead of defining ``Text`` parser on an item property, we
-will create item method which will produce exact same end result.
+will create item method which will produce the exact same end result.
 
 .. code-block:: python
 
@@ -449,23 +448,23 @@ It's encouraged that you create your own data processors to modify data, so that
 custom processors can be reused between other models, but there are some edge
 and specific cases which will occur hopefully not often and for that kind of
 situations we can override ``preprocess_data`` or ``process_data`` methods from the
-``ItemModel`` class. Follow tutorials bellow to get more info regarding these
+``ItemModel`` class. Follow the tutorials below to get more info regarding these
 two methods.
 
-In example bellow we have badly structured json text with missing closing bracket
-and because of that it cannot be converted to dict. With ``preprocess_data`` we
+In the example below we have badly structured json text with missing closing bracket
+and because of that, it cannot be converted to a ``dict`` type. With ``preprocess_data`` we
 can fix it before data is processed by ``data_processors`` and later on, when
 json is parsed into dictionary by ``DataJsonToDictProcessor``, we will modify this
-dictionary in a ``process_data`` method so that item parsers can use it.
+dictionary in a ``process_data`` method so that the item parsers can use it.
 
 .. code-block:: python
 
     test_json_text = '{"brand": "EasyData"'
 
-Now lets create our model which will process ``test_json_text`` and utilize
-``preprocess_data`` method which will fix bad json in order to be converted
+Now lets create our model, which will process ``test_json_text`` and utilize
+``preprocess_data`` method, which will fix bad json in order to be converted
 into dictionary by a processor. We will also utilize ``process_data`` which
-will create new data source called ``brand_type``.
+will create a new data source called ``brand_type``.
 
 .. code-block:: python
 
@@ -490,7 +489,7 @@ will create new data source called ``brand_type``.
 
             return data
 
-Now lets parse our ``test_json_text`` with ``ProductItemModel`` and show it's output.
+Now let's parse our ``test_json_text`` with ``ProductItemModel`` and show its output.
 
 .. code-block:: python
 
@@ -511,12 +510,12 @@ Output:
 Item processing
 ===============
 In a similar way as ``data_processors``, it's encouraged that you create your
-own item processors to modify item dictionary, so that custom processors can be
+own item processors to modify the item dictionary, so that custom processors can be
 reused between other models, but there are some edge and specific cases which will
 occur hopefully not often and for that kind of situations we can override
 ``preprocess_item`` or ``process_item`` methods from the ``ItemModel`` class.
 
-Follow example bellow to get more info regarding these two methods.
+Follow example below to get more info regarding these two methods.
 
 .. code-block:: python
 
@@ -525,12 +524,12 @@ Follow example bellow to get more info regarding these two methods.
         'sale_price': 1
     }
 
-Now lets create our model which will process our ``test_dict``. With a ``preprocess_item``
+Now let's create our model which will process our ``test_dict``. With a ``preprocess_item``,
 we will modify item dictionary before ``item_processors`` are fired so that we can prepare
-item in order to be used in  ``item_processors``. In example bellow we will fix wrong sale
-price, so that ``ItemDiscountProcessor`` can properly calculate discount and later we will
-utilize ``process_item`` method, where new dictionary item ``final_sale`` will be created
-with bool value, which is determined if price is discounted or not.
+items in order to be used in  ``item_processors``. In the example below, we will fix wrong sale
+price, so that ``ItemDiscountProcessor`` can properly calculate discount and later on we will
+utilize the ``process_item`` method, where new dictionary item ``final_sale`` will be created
+with bool value, which is determined if the price is discounted or not.
 
 .. code-block:: python
 
@@ -554,7 +553,7 @@ with bool value, which is determined if price is discounted or not.
 
             return item
 
-Now lets parse our ``test_dict`` with ``ProductItemModel`` and show it's output.
+Now let's parse our ``test_dict`` with ``ProductItemModel`` and show its output.
 
 .. code-block:: python
 
@@ -581,14 +580,14 @@ Output:
 
 With items
 ==========
-``ItemModel`` has an option to retrieve multiple items from a provided data.
+``ItemModel`` has an option to retrieve multiple items from a provided data source.
 
 
 Item Validation
 ===============
-``easydata`` doesn't come with validation solution since it's main purpose is to
+``easydata`` does not come with validation solution since its main purpose is to
 transform data, but it's easy to create your own solution via custom item processor
-which handles validation or to handle validation after model returns dict item.
+which handles validation or to handle validation after model returns a dict item.
 
 Some validation libraries that we recommend:
 
