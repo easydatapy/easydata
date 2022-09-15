@@ -53,3 +53,89 @@ def test_count(parser, test_data, result):
 def test_count_error(parser, test_data):
     with pytest.raises(TypeError):
         parser.parse(test_data)
+
+
+@pytest.mark.parametrize(
+    "parser, test_list, expected_result",
+    [
+        (
+            ed.Avg(ed.jp("variants[].price")),
+            [
+                {"price": 2549},
+                {"price": 2705},
+                {"price": 2670},
+            ],
+            2641.3333333333335,
+        ),
+        (
+            ed.Avg(ed.jp("variants[].price"), decimals=2),
+            [
+                {"price": 2549},
+                {"price": 2705},
+                {"price": 2670},
+            ],
+            2641.33,
+        ),
+        (
+            ed.Avg(ed.jp("variants[].price"), decimals=2),
+            [
+                {"price": "2549"},
+                {"price": "2705"},
+                {"price": "2670"},
+            ],
+            2641.33,
+        ),
+        (
+            ed.Avg(ed.jp("variants[].price"), decimals=2),
+            [
+                {"price": "2549.0"},
+                {"price": "2705.0"},
+                {"price": "2670.0"},
+            ],
+            2641.33,
+        ),
+        (
+            ed.Avg(ed.jp("variants[].price")),
+            [
+                {"price": "2549"},
+                {"price": None},
+                {"price": "2670"},
+            ],
+            2609.5,
+        ),
+        (
+            ed.Avg(ed.jp("variants[].price")),
+            [],
+            None,
+        ),
+    ],
+)
+def test_avg(parser, test_list, expected_result):
+    test_data = {"variants": test_list}
+
+    assert parser.parse(test_data) == expected_result
+
+
+@pytest.mark.parametrize(
+    "parser, test_list, expected_result",
+    [
+        (
+            ed.AvgInt(ed.jp("variants[].price")),
+            [
+                {"price": 2549},
+                {"price": 2705},
+                {"price": 2670},
+            ],
+            2641,
+        ),
+        (
+            ed.AvgInt(ed.jp("variants[].price")),
+            [],
+            None,
+        ),
+    ],
+)
+def test_avg_int(parser, test_list, expected_result):
+    test_data = {"variants": test_list}
+
+    assert parser.parse(test_data) == expected_result
