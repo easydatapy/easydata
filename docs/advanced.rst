@@ -79,7 +79,7 @@ Now let's create ``ItemModel`` which will utilize the ``block_models`` property 
             ed.pq('.brand::text')
         )
 
-        item_stock = ed.Bool(
+        item_stock = ed.Has(
             ed.pq('.stock::attr(available)'),
             contains=['yes']
         )
@@ -233,7 +233,7 @@ In the example below we will reuse ``PricingCssBlockModel`` from the previous se
             sale_price_css='#sale-price::text'
         )
 
-        item_stock = ed.Bool(
+        item_stock = ed.Has(
             ed.pq('.stock::attr(available)'),
             contains=['yes']
         )

@@ -166,9 +166,9 @@ When set to ``True``, it will convert all chars in a dict values to lowercase.
 .. option:: val_cdeny
 
 
-BoolDict
+HasDict
 ========
-.. autoclass:: easydata.parsers.dict::BoolDict
+.. autoclass:: easydata.parsers.dict::HasDict
 
 examples coming soon ...
 

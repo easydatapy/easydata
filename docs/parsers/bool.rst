@@ -1,12 +1,12 @@
 .. _`parsers-bool`:
 
 ============
-Bool Parsers
+Has Parsers
 ============
 
-Bool
+Has
 ====
-.. autoclass:: easydata.parsers.bool::Bool
+.. autoclass:: easydata.parsers.bool::Has
 
 Getting Started
 ---------------
@@ -16,12 +16,12 @@ Lets import our easydata module first.
 
     >>> import easydata as ed
 
-``Bool`` supports any query object for fetching data.
+``Has`` supports any query object for fetching data.
 
 .. code-block:: python
 
     >>> test_dict = {'info': {'stock': True}}
-    >>> ed.Bool(ed.jp('info.stock')).parse(test_dict)
+    >>> ed.Has(ed.jp('info.stock')).parse(test_dict)
     True
 
 In this case if ``jp`` returns ``None``, then bool parser will also return ``False``.
@@ -29,10 +29,82 @@ In this case if ``jp`` returns ``None``, then bool parser will also return ``Fal
 .. code-block:: python
 
     >>> test_dict = {}
-    >>> ed.Bool(ed.jp('invalid-key')).parse(test_dict)
+    >>> ed.Has(ed.jp('invalid-key')).parse(test_dict)
     False
 
 Use of query selectors is not required, as we can see bellow.
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().parse(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().parse(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().parse(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().parse(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().parse(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Has().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().transform(test_data)
+    True
+
+    >>> test_data = True
+    >>> ed.Bool().parse(test_data)
+    True
 
     >>> test_data = True
     >>> ed.Bool().transform(test_data)
@@ -58,7 +130,7 @@ also accepted.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> ed.Bool(contains=['pro 13']).parse(text)
+    >>> ed.Has(contains=['pro 13']).parse(text)
     True
 
 .. option:: ccontains
@@ -69,7 +141,7 @@ that keys are case sensitive.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> ed.Bool(contains=['Pro 13']).parse(text)
+    >>> ed.Has(contains=['Pro 13']).parse(text)
     True
 
 Lets try with lowercase keys.
@@ -77,7 +149,7 @@ Lets try with lowercase keys.
 .. code-block:: python
 
     >>> text = 'Easybook Pro 13'
-    >>> ed.Bool(contains=['Pro 13']).parse(text)
+    >>> ed.Has(contains=['Pro 13']).parse(text)
     False
 
 .. option:: contains_query
@@ -89,7 +161,7 @@ query selector to get our contains keys.
 .. code-block:: python
 
     >>> test_dict = {'title': 'Easybook Pro 13', 'info': {'brand': 'Easybook}'}
-    >>> ed.Bool(ed.jp('title'), contains_query=ed.jp('info.brand')).parse(text)
+    >>> ed.Has(ed.jp('title'), contains_query=ed.jp('info.brand')).parse(text)
     True
 
 .. option:: contains_query_source
@@ -102,7 +174,7 @@ query selector to get our contains keys.
     import easydata as ed
 
     class ProductItemModel(ed.ItemModel):
-        item_stock = parsers.Bool(
+        item_stock = parsers.Has(
             ed.jp('title'),
             contains_query=ed.jp('name')
             contains_query_source='brand_data'
@@ -131,7 +203,7 @@ Lets see in example bellow first how default behaviour works.
 .. code-block:: python
 
     >>> test_dict = None
-    >>> ed.Bool(ed.jp('info.stock')).parse(test_dict)
+    >>> ed.Has(ed.jp('info.stock')).parse(test_dict)
     False
 
 Lets set ``empty_as_false`` to ``False`` and see what it returns.
@@ -139,5 +211,5 @@ Lets set ``empty_as_false`` to ``False`` and see what it returns.
 .. code-block:: python
 
     >>> test_dict = None
-    >>> ed.Bool(ed.jp('info.stock'), empty_as_false=False).parse(test_dict)
+    >>> ed.Has(ed.jp('info.stock'), empty_as_false=False).parse(test_dict)
     None

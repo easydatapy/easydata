@@ -75,15 +75,15 @@ Lets pass some sample data to our choice parser and see the results.
     >>> choice_parser.parse({"title": "some new item"})
     'unknown'
 
-Bool parser instead of a search key list
+Has parser instead of a search key list
 #########################################
 Lets use our ``Choice`` parser in a model and demonstrate how a specific choice can have
-it's own lookup values with search keys through a ``Bool`` parser. ``Bool`` parser also
+it's own lookup values with search keys through a ``Has`` parser. ``Has`` parser also
 provides different search parameters in order to create more accurate match.
 
 .. note::
 
-    Using *Bool* parser as a dedicated lookup for a choice key, probably won't be needed in
+    Using *Has* parser as a dedicated lookup for a choice key, probably won't be needed in
     most cases since it's usage is for edge cases and for most situations, a simple list of
     search keys should suffice as seen in examples above.
 
@@ -101,7 +101,7 @@ provides different search parameters in order to create more accurate match.
             lookup_items=['name', 'category'],
             choices = [
                 ("accessory", ["phone case", "watch strap"]),
-                ("watch", ed.Bool(
+                ("watch", ed.Has(
                     ed.jp('description'),  # this lookup will only be used for a watch choice
 
                     # our search keys looking for a match are case sensitive
@@ -128,7 +128,7 @@ see bellow.
         ],
         choices = [
             ("accessory", ["phone case", "watch strap"]),
-            ("watch", ed.Bool(
+            ("watch", ed.Has(
                 ed.jp('description'),
                 ccontains=['TIMEXXX', 'EASYWATCH']
             )),

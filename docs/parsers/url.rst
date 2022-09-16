@@ -23,7 +23,7 @@ Lets import first ``easydata`` module.
 
     >>> import easydata as ed
 
-``Bool`` supports any query object for fetching data.
+``Has`` supports any query object for fetching data.
 
 .. code-block:: python
 

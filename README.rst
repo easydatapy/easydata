@@ -157,7 +157,7 @@ item *dict*.
             key='color'
         )
 
-        item_stock = ed.Bool(
+        item_stock = ed.Has(
             ed.pq('.stock::attr(available)'),
             contains=['yes']
         )
