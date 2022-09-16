@@ -6,8 +6,8 @@ from typing import List, Optional, Union
 from easytxt import sentences
 
 from easydata.parsers.base import Base, BaseData
-from easydata.parsers.bool import Bool
 from easydata.parsers.data import Data
+from easydata.parsers.has import Has
 from easydata.parsers.price import PriceFloat, PriceText
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearchBase
@@ -16,7 +16,7 @@ from easydata.utils import mix
 __all__ = (
     "Dict",
     "TextDict",
-    "BoolDict",
+    "HasDict",
     "PriceFloatDict",
     "PriceTextDict",
 )
@@ -268,7 +268,7 @@ class TextDict(Dict):
         return values
 
 
-class BoolDict(TextDict):
+class HasDict(TextDict):
     def __init__(
         self,
         *args,
@@ -293,7 +293,7 @@ class BoolDict(TextDict):
 
     @property
     def _default_value_parser_obj(self):
-        return Bool(
+        return Has(
             query=self._value_query,
             **self._value_bool_parser_properties,
             **self._value_text_parser_properties,
