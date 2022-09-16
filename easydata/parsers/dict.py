@@ -1,4 +1,4 @@
-from functools import lru_cache
+from functools import cached_property
 from typing import Any
 from typing import Dict as TypeDict
 from typing import List, Optional, Union
@@ -88,8 +88,7 @@ class Dict(BaseData):
             **kwargs,
         )
 
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def _key_parser(self):
         # Initialize and validate key parser
         key_parser_obj = self.__key_parser or self._default_key_parser_obj
@@ -100,8 +99,7 @@ class Dict(BaseData):
 
         return key_parser_obj
 
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def _value_parser(self):
         # Initialize and validate value parser
         value_parser_obj = self.__value_parser or self._default_value_parser_obj

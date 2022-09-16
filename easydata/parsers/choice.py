@@ -1,5 +1,5 @@
 from abc import ABC
-from functools import lru_cache
+from functools import cached_property
 from typing import Any, List, Optional
 
 from easytxt import text
@@ -55,8 +55,7 @@ class BaseLookups(Base, ABC):
 
         return lookup_values
 
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def _initialized_lookups(self):
         initialized_lookups = []
 

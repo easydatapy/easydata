@@ -1,5 +1,5 @@
 from abc import ABC
-from functools import lru_cache
+from functools import cached_property
 from typing import Any, Callable, Iterator, List, Optional
 
 from easydata.managers import ModelManager
@@ -17,8 +17,7 @@ __all__ = (
 
 
 class BaseModel(ABC):
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def model_manager(self) -> ModelManager:
         return ModelManager(self)
 

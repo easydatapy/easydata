@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from functools import lru_cache
+from functools import cached_property
 from typing import Any, Dict, Iterator, List, Optional
 
 import xmltodict
@@ -322,8 +322,7 @@ class DataVariantsProcessor(DataBaseProcessor):
             for var_iter_data in parse.variants_data(iter_data, variants_source):
                 yield var_iter_data
 
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def _parser(self) -> Optional[BaseData]:
         return Data(self._query) if self._query else self.__parser
 
