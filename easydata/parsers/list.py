@@ -1,4 +1,4 @@
-from functools import lru_cache
+from functools import cached_property
 from typing import Any, Callable
 from typing import List as ListType
 from typing import Optional, Union
@@ -28,6 +28,8 @@ class List(BaseData):
         unique: bool = True,
         max_num: Optional[int] = None,
         split_key: Optional[Union[ListType[str], str]] = None,
+        allow_parser: Optional[Base] = None,
+        deny_parser: Optional[Base] = None,
         preprocess_allow: Optional[Callable] = None,
         process_allow: Optional[Callable] = None,
         **kwargs,
@@ -43,11 +45,12 @@ class List(BaseData):
 
         self.__parser = parser
         self.__parser_obj = None
+        self.__allow_parser = allow_parser
+        self.__deny_parser = deny_parser
 
         super().__init__(**kwargs)
 
-    @property  # type: ignore
-    @lru_cache(maxsize=None)
+    @cached_property
     def _parser(self):
         # Initialize and validate value parser
         value_parser = self.__parser or self._default_parser_obj
@@ -55,6 +58,20 @@ class List(BaseData):
         mix.validate_parser(value_parser)
 
         return value_parser.init_config(self.config)
+
+    @cached_property
+    def _allow_parser(self):
+        # Initialize and validate allow parser
+        mix.validate_parser(self.__allow_parser)
+
+        return self.__allow_parser.init_config(self.config)
+
+    @cached_property
+    def _deny_parser(self):
+        # Initialize and validate deny parser
+        mix.validate_parser(self.__deny_parser)
+
+        return self.__deny_parser.init_config(self.config)
 
     @property
     def _default_parser_obj(self):
@@ -74,9 +91,18 @@ class List(BaseData):
                 callable_param=self._preprocess_allow,
             )
 
-        parsed_list_values = [
-            self._parser.parse(data, lv, True) for lv in list_values  # type: ignore
-        ]
+        parsed_list_values = []
+
+        for lv in list_values:
+            if self.__allow_parser and not self._allow_parser.parse(data, lv, True):
+                # Filter out any unwanted list values
+                continue
+
+            if self.__deny_parser and self._deny_parser.parse(data, lv, True):
+                # Filter out any unwanted list values
+                continue
+
+            parsed_list_values.append(self._parser.parse(data, lv, True))  # type: ignore
 
         processed_list_values = self._process_list_values(parsed_list_values)
 
@@ -186,7 +212,7 @@ class TextList(List):
             **kwargs,
         )
 
-    @property
+    @cached_property
     def _default_parser_obj(self):
         return Text(**self._text_parser_properties)
 
@@ -272,7 +298,7 @@ class UrlList(TextList):
             **kwargs,
         )
 
-    @property
+    @cached_property
     def _default_parser_obj(self):
         return Url(
             **self._url_parser_properties,
