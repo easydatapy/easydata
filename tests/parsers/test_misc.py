@@ -161,7 +161,7 @@ def test_value_list(ignore_non_values, result):
 
     value_list_parser = ed.ValueList(
         ed.Text(ed.jp("color")),
-        ed.Bool(ed.jp("display"), contains=["retina2"]),
+        ed.Has(ed.jp("display"), contains=["retina2"]),
         ed.Text(ed.jp("ram"), source="specs"),
         ed.Text(ed.jp("features.brand")),
         ignore_non_values=ignore_non_values,

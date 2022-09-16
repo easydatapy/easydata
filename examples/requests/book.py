@@ -22,7 +22,7 @@ class BookItemModel(ItemModel):
         domain="books.toscrape.com",
     )
 
-    item_stock = ed.Bool(ed.pq(".availability::has_class(instock)"))
+    item_stock = ed.Has(ed.pq(".availability::has_class(instock)"))
 
     item_description = ed.Description(
         ed.pq("#product_description ~ p:eq(0)"),

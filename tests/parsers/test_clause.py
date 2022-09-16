@@ -30,8 +30,8 @@ from tests.factory import data_dict, data_html
         ),
         (
             ed.OR(
-                ed.Bool(ed.pq(".brand::text"), contains=["WrongData"]),
-                ed.Bool(ed.pq(".brand::text"), contains=["EasyData"]),
+                ed.Has(ed.pq(".brand::text"), contains=["WrongData"]),
+                ed.Has(ed.pq(".brand::text"), contains=["EasyData"]),
             ),
             True,
         ),
@@ -66,8 +66,8 @@ def test_or(parser, result):
         ),
         (
             ed.OR(
-                ed.Bool(ed.pq(".brand::text"), contains=["WrongData"]),
-                ed.Bool(ed.pq(".brand::text"), default=False, contains=["Wrong2Data"]),
+                ed.Has(ed.pq(".brand::text"), contains=["WrongData"]),
+                ed.Has(ed.pq(".brand::text"), default=False, contains=["Wrong2Data"]),
                 strict_none=True,
             ),
             False,

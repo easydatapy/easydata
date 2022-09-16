@@ -2,16 +2,39 @@ from typing import Any, Optional, Union
 
 from easytxt import text
 
+from easydata.parsers.base import BaseData
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearchBase
 
 __all__ = (
     "Bool",
     "IBool",
+    "Has",
+    "IHas",
 )
 
 
-class Bool(Text):
+class Bool(BaseData):
+    def parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+
+        return bool(value)
+
+
+class IBool(BaseData):
+    def parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+
+        return not super(IBool, self).parse_value(value, data)
+
+
+class Has(Text):
     def __init__(
         self,
         *args,
@@ -49,13 +72,10 @@ class Bool(Text):
         if isinstance(value, (float, int)):
             return bool(value)
 
-        if isinstance(value, str):
-            if "true" == value.lower():
-                return True
-            elif "false" == value.lower():
-                return False
+        if not value:
+            return False
 
-        value = super(Bool, self).parse_value(value, data)
+        value = super(Has, self).parse_value(value, data)
 
         if not value:
 
@@ -84,16 +104,22 @@ class Bool(Text):
         if self._has_value:
             return bool(value)
 
+        if value and isinstance(value, str):
+            if "true" == value.lower():
+                return True
+            elif "false" == value.lower():
+                return False
+
         return False
 
 
-class IBool(Bool):
+class IHas(Has):
     def parse_value(
         self,
         value: Any,
         data: Any,
     ):
-        value = super(IBool, self).parse_value(value, data)
+        value = super(IHas, self).parse_value(value, data)
 
         if value is None:
             return value

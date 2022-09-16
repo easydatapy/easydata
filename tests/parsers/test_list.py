@@ -74,7 +74,7 @@ expected_multiplied_urls = [
         #         query=ed.jp("variants"),
         #         parser=ed.StackedParser(
         #             color=ed.Text(ed.jp("color"), uppercase=True),
-        #             stocked=ed.Bool(ed.jp("stock")),
+        #             stocked=ed.Has(ed.jp("stock")),
         #         ),
         #     ),
         #     data_dict.variants_data,

@@ -22,7 +22,7 @@ def test_choice_choices(test_data, result):
         choices=[
             ("accessory", ["phone case"]),
             ("watch", "watch"),
-            ("monitor", ed.Bool(ccontains=["LCD"])),
+            ("monitor", ed.Has(ccontains=["LCD"])),
             ("notebook", [r"book\b"]),
             (
                 "phone",
@@ -56,7 +56,7 @@ def test_choice_lookup_queries_choice_bool_parser_source(
             choices=[
                 (
                     "phone",
-                    ed.Bool(
+                    ed.Has(
                         query=ed.jp(bool_query),
                         ccontains=["phone", "CELL"],
                         source="json_data",

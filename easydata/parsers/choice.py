@@ -6,7 +6,7 @@ from easytxt import text
 
 from easydata.data import DataBag
 from easydata.parsers.base import Base
-from easydata.parsers.bool import Bool
+from easydata.parsers.has import Has
 from easydata.parsers.text import Text
 from easydata.queries.base import QuerySearchBase
 from easydata.utils import mix
@@ -113,7 +113,7 @@ class Choice(BaseLookups):
         for choice_data in self._choices:
             choice_value, choice_search_data = choice_data
 
-            if isinstance(choice_search_data, Bool):
+            if isinstance(choice_search_data, Has):
                 choice_search_data.init_config(self.config)
 
                 if choice_search_data.parse(data=data):

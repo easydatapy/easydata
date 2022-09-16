@@ -246,7 +246,7 @@ def test_item_model_with_multi_items():
                 options=ed.List(
                     query=ed.jp("options"),
                     parser=ed.ItemDict(
-                        quantity=ed.Bool(ed.SearchInt(ed.jp("quantity")))
+                        quantity=ed.Has(ed.SearchInt(ed.jp("quantity")))
                     ),
                 ),
             ),
@@ -281,7 +281,7 @@ def test_item_model_with_multi_items():
                     source="color_data_key",
                     uppercase=True,
                 ),
-                screen_sizes=ed.BoolDict(
+                screen_sizes=ed.HasDict(
                     key_parser=ed.Text(ed.jp("size")),
                     val_query=ed.jp("stock"),
                     source="color_data_variants",

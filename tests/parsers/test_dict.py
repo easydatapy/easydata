@@ -13,7 +13,7 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
             ed.Dict(
                 ed.pq("#size-variants li::items"),
                 key_parser=ed.Text(ed.pq("::text")),
-                val_parser=ed.Bool(
+                val_parser=ed.Has(
                     ed.pq("::attr(size-stock)"),
                     contains=["true"],
                 ),
@@ -25,7 +25,7 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
             ed.Dict(
                 ed.pq("#size-variants li::items"),
                 key_query=ed.pq("::text"),
-                val_parser=ed.Bool(
+                val_parser=ed.Has(
                     ed.pq("::attr(size-stock)"),
                     contains=["true"],
                 ),
@@ -46,7 +46,7 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
             ed.Dict(
                 ed.jp("sizes"),
                 key_parser=ed.Text(),
-                val_parser=ed.Bool(),
+                val_parser=ed.Has(),
             ),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
@@ -67,7 +67,7 @@ EXPECTED_DICT_RESULT = {"l": True, "xl": False, "xxl": True}
         (
             ed.Dict(
                 ed.jp("sizes"),
-                val_parser=ed.Bool(),
+                val_parser=ed.Has(),
             ),
             data_dict.sizes,
             EXPECTED_DICT_RESULT,
@@ -162,7 +162,7 @@ def test_dict_variations(test_data, result, properties):
 
 
 def test_bool_dict():
-    bool_dict_parser = ed.BoolDict(
+    bool_dict_parser = ed.HasDict(
         ed.pq("#size-variants li::items"),
         key_query=ed.pq("::text"),
         val_query=ed.pq("::attr(size-stock)"),
@@ -207,7 +207,7 @@ def test_bool_dict():
     ],
 )
 def test_bool_dict_variations(test_data, result, properties):
-    bool_dict_parser = ed.BoolDict(**properties)
+    bool_dict_parser = ed.HasDict(**properties)
     assert bool_dict_parser.parse(test_data) == result
 
 

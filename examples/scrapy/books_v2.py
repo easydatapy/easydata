@@ -29,7 +29,7 @@ class BooksSpider(ItemModelCrawlSpider):
             ed.pq("#product_gallery .item img::src-items"),
             domain="books.toscrape.com",
         ),
-        stock=ed.Bool(ed.pq(".availability::has_class(instock)")),
+        stock=ed.Has(ed.pq(".availability::has_class(instock)")),
         description=ed.Description(
             ed.pq("#product_description ~ p:eq(0)"),
             # remove "...more" since it doesn't do anything

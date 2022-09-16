@@ -73,7 +73,7 @@ class ProductJsonModelWithVariantItems(ed.ItemModel):
 
     item_key = ed.Text(source="color_data_key", uppercase=True)
 
-    item_screen_sizes = ed.BoolDict(
+    item_screen_sizes = ed.HasDict(
         key_parser=ed.Text(ed.jp("size")),
         val_query=ed.key("stock"),
         source="color_data_variants",
@@ -120,7 +120,7 @@ class ProductJsonModelWithComplexVariantItems(ed.ItemModel):
     item_sizes = ed.Dict(
         source="color_data_variants",
         key_parser=ed.Text(ed.jp("size")),
-        val_parser=ed.Bool(
+        val_parser=ed.Has(
             ed.jp(
                 "stock_data[?id==`{stock_id}`] | [0].stock",
                 params={"stock_id": ed.SearchInt(ed.jp("stock_id"))},
@@ -147,7 +147,7 @@ class ProductJsonModelWithMultiItems(ed.ItemModel):
 
     item_key = ed.Text(source="color_data_key", uppercase=True)
 
-    item_screen_sizes = ed.BoolDict(
+    item_screen_sizes = ed.HasDict(
         key_parser=ed.Text(ed.jp("size")),
         val_query=ed.jp("stock"),
         source="color_data_variants",
