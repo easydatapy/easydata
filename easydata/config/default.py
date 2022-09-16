@@ -14,6 +14,10 @@ ED_DATE_FORMAT: str = "%m/%d/%Y"
 
 ED_TIME_FORMAT: str = "%H:%M:%S"
 
+ED_SP_DATETIME_FORMAT: str = "%Y-%m-%dT%H:%M:%S"
+
+ED_SP_DATE_FORMAT: str = "%Y-%m-%d"
+
 ED_DATETIME_FORMATS: Optional[List[str]] = None
 
 ED_DATETIME_LANGUAGE: Optional[str] = None
