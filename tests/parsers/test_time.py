@@ -50,6 +50,23 @@ test_date_sentence = "It has happened on 10 Dec 2018 at 10:55:50."
             "Fri, 10 Dec 2018 10:55:50",
             "10.12.2018",
         ),
+        (ed.SPDateTime(), "2018-12-10T10:55:50", "12/10/2018 10:55:50"),
+        (
+            ed.SPDateTime(sp_datetime_format="%Y/%m/%d %H:%M:%S"),
+            "2018/12/10 10:55:50",
+            "12/10/2018 10:55:50",
+        ),
+        (
+            ed.SPDateTime(
+                sp_datetime_format="%Y/%m/%d %H:%M:%S",
+                datetime_format="%m-%d-%YT%H:%M:%S"
+            ),
+            "2018/12/10 10:55:50",
+            "12-10-2018T10:55:50",
+        ),
+        (ed.SPDate(), "2018-12-10", "12/10/2018"),
+        (ed.SPDate(sp_date_format="%Y/%m/%d"), "2018/12/10", "12/10/2018"),
+        (ed.SPDate(date_format="%m-%d-%Y"), "2018-12-10", "12-10-2018"),
     ],
 )
 def test_year_search(parser, test_data, result):
