@@ -102,7 +102,7 @@ it's value from there instead in a ``DataBag``.
     *from_item* cannot be used in a standalone parser and it will work only if it's used
     in a *model*.
 
-Lets create a ``model`` which will parse HTML data. We will use a ``Bool`` parser
+Lets create a ``model`` which will parse HTML data. We will use a ``Has`` parser
 as example in this case since it inherits ``Data`` parser.
 
 .. code-block:: python
@@ -129,7 +129,7 @@ Now our model:
             ed.pq('.name::text'),
         )
 
-        item_signed = ed.Bool(
+        item_signed = ed.Has(
             from_item='name',
             contains=['autographed', 'signed']
         )
