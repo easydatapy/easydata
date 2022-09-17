@@ -324,4 +324,7 @@ def process_item_parser(
     elif isinstance(parser, Base):
         return parser.parse(data, parent_data, with_parent_data)
 
+    if parent_data:
+        return parser(parent_data, data)
+
     return parser(data)
