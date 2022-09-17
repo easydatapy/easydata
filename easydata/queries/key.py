@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import yaml
 
@@ -10,6 +10,8 @@ from easydata.utils import pseudo
 __all__ = (
     "KeySearch",
     "KeyStrictSearch",
+    "NKeySearch",
+    "NKeyStrictSearch",
 )
 
 
@@ -159,4 +161,37 @@ class KeySearch(QuerySearch):
 
 
 class KeyStrictSearch(KeySearch):
+    strict = True
+
+
+class NKeySearch(KeySearch):
+    def parse(
+        self,
+        data: Any,
+        query: Optional[str],
+    ):
+
+        if query:
+            data = self._multi_query_data(
+                data=data,
+                queries=query.split("."),
+            )
+
+        return self._process_data_key_values(data)
+
+    def _multi_query_data(self, data: Any, queries: List[str]):
+        query = queries.pop(0)
+
+        data = data.get(query)
+
+        if not queries or data is None:
+            return data
+
+        if not isinstance(data, dict):
+            raise TypeError("key can perform nested queries only on dict objects")
+
+        return self._multi_query_data(data, queries)
+
+
+class NKeyStrictSearch(NKeySearch):
     strict = True

@@ -6,6 +6,8 @@ from easydata.exceptions import QuerySearchDataEmpty, QuerySearchResultNotFound
 
 test_data_dict = {"product_type": "smartphone"}
 
+test_nested_data_dict = {"info": {"brand": {"name": "EasyData"}}}
+
 test_data_json = '{"product_type": "smartphone"}'
 
 test_data_prices_dict = {"prices": {"price": 79, "sale_price": 50}}
@@ -46,6 +48,19 @@ expected_image_list = [
 )
 def test_key_query(query, test_data, result):
     assert ed.key(query).get(test_data) == result
+
+
+@pytest.mark.parametrize(
+    "query, test_data, result",
+    [
+        ("prices.price", test_data_prices_dict, 79),
+        ("prices.price2", test_data_prices_dict, None),
+        ("prices.price2.value", test_data_prices_dict, None),
+        ("info.brand.name", test_nested_data_dict, "EasyData"),
+    ],
+)
+def test_nkey_query(query, test_data, result):
+    assert ed.nkey(query).get(test_data) == result
 
 
 @pytest.mark.parametrize(
@@ -99,6 +114,19 @@ def test_key_query_pseudo_key_exception():
         ed.key("prices::wrong").get(test_data_prices_dict)
 
     assert "pseudo key 'wrong' is not supported" in str(excinfo.value).lower()
+
+
+@pytest.mark.parametrize(
+    "query, test_data",
+    [
+        ("prices.price.value", test_data_prices_dict),
+    ],
+)
+def test_key_nested_query_exception(query, test_data):
+    with pytest.raises(TypeError) as excinfo:
+        ed.nkey(query).get(test_data)
+
+    assert "key can perform nested" in str(excinfo.value).lower()
 
 
 def test_key_query_strict_query_non_existent_error():
