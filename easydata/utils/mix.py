@@ -4,6 +4,7 @@ from typing import Any, Callable, List, Optional, Union
 from easytxt.text import to_list as multiply_to_list
 from pyquery import PyQuery
 
+from easydata import groups
 from easydata.config.loader import ConfigLoader
 from easydata.data import DataBag
 from easydata.parsers.base import Base
@@ -135,14 +136,17 @@ def iter_attr_data_from_obj(
     ignore_attr_prefix: Optional[List[str]] = None,
 ):
 
-    attr_name = extract_attr_names_from_obj(
+    attr_names = extract_attr_names_from_obj(
         obj=obj,
         attr_prefixes=attr_prefixes,
         ignore_attr_prefix=ignore_attr_prefix,
     )
 
-    for attr_name in attr_name:
+    for attr_name in attr_names:
         attr_value = getattr(obj, attr_name)
+
+        if isinstance(attr_value, type(groups.ItemGroup)):
+            attr_value = attr_value()
 
         yield attr_name, attr_value
 
@@ -304,3 +308,20 @@ def parse_float(
 
 def is_built_in_type(value):
     return isinstance(value, (int, str, float, dict, list, bool, tuple))
+
+
+def process_item_parser(
+    parser,
+    data: Any,
+    parent_data: Any = None,
+    with_parent_data: bool = False,
+):
+    if parser is None:
+        return None
+
+    if isinstance(parser, (str, bool, float, int, list, dict)):
+        return parser
+    elif isinstance(parser, Base):
+        return parser.parse(data, parent_data, with_parent_data)
+
+    return parser(data)

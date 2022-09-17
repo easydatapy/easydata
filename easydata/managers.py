@@ -2,6 +2,7 @@ from typing import Iterator, List
 
 from easydata import models
 from easydata.data import DataBag
+from easydata.groups import ItemGroup
 from easydata.loaders import ObjectLoader
 from easydata.mixins import ConfigMixin
 from easydata.parsers.base import Base as BaseParser
@@ -32,6 +33,8 @@ class ModelManager(ConfigMixin):
         self._item_parsers: dict = {}
 
         self._item_protected_names: List[str] = []
+
+        self._item_groups: List[str] = []
 
         self._config_properties: dict = {}
 
@@ -111,19 +114,12 @@ class ModelManager(ConfigMixin):
     def _process_item_parser(self, item_key: str, data: DataBag):
         item_parser = self._item_parsers[item_key]
 
-        if item_parser is None:
-            return None
-
-        if isinstance(item_parser, (str, bool, float, int, list, dict)):
-            return item_parser
-        elif isinstance(item_parser, models.ItemModel):
+        if isinstance(item_parser, models.ItemModel):
             data = data.copy(item_parser.model_manager)
 
             return item_parser.parse_item(data)
-        elif isinstance(item_parser, BaseParser):
-            return item_parser.parse(data)
 
-        return item_parser(data)
+        return mix.process_item_parser(item_parser, data)
 
     @property
     def _drop_item_exception(self):
@@ -172,12 +168,28 @@ class ModelManager(ConfigMixin):
     def _data_to_item(self, data: DataBag):
         item = data.get_all()
 
+        item = self._merge_groups_items(item)
+
         item = self._apply_item_processors(item)
 
         if not item:
             return None
 
         return self._remove_protected_item_keys(item)
+
+    def _merge_groups_items(self, item):
+        if self._item_groups:
+            for item_group in self._item_groups:
+                key_values = item[item_group]
+
+                if key_values:
+                    item |= key_values
+
+                # Remove group dictionary from item since it's key value are
+                # merged into item
+                del item[item_group]
+
+        return item
 
     def _init_model(self, model):
         if hasattr(model, "block_models"):
@@ -226,11 +238,24 @@ class ModelManager(ConfigMixin):
     def _load_item_parsers_from_model(self, model):
         item_attr_items = mix.iter_attr_data_from_obj(
             obj=model,
-            attr_prefixes=["item_", "_item_"],
+            attr_prefixes=["item_", "_item_", "Item"],
             ignore_attr_prefix=self._ignore_item_attr_prefix,
         )
 
         for item_name, parser_method in item_attr_items:
+            if item_name.startswith("Item"):
+                if not isinstance(parser_method, ItemGroup):
+                    raise TypeError(
+                        "%s can support only type of ItemGroup" % item_name
+                    )
+
+                self._item_groups.append(item_name)
+
+                group_item_protected_names = parser_method.group_item_protected_names
+
+                if group_item_protected_names:
+                    self._item_protected_names += group_item_protected_names
+
             if item_name.startswith("item_"):
                 item_name = item_name.replace("item_", "")
 
