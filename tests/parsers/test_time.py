@@ -59,7 +59,7 @@ test_date_sentence = "It has happened on 10 Dec 2018 at 10:55:50."
         (
             ed.SPDateTime(
                 sp_datetime_format="%Y/%m/%d %H:%M:%S",
-                datetime_format="%m-%d-%YT%H:%M:%S"
+                datetime_format="%m-%d-%YT%H:%M:%S",
             ),
             "2018/12/10 10:55:50",
             "12-10-2018T10:55:50",
