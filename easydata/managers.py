@@ -166,6 +166,8 @@ class ModelManager(ConfigMixin):
         return item
 
     def _data_to_item(self, data: DataBag):
+        self._load_item_cb(data)
+
         item = data.get_all()
 
         item = self._merge_groups_items(item)
@@ -288,6 +290,11 @@ class ModelManager(ConfigMixin):
                 data = model.preprocess_data(data)
 
         return data
+
+    def _load_item_cb(self, data: DataBag):
+        for model in self._models:
+            if hasattr(model, "load_item"):
+                model.load_item(data)
 
     def _process_data_cb(self, data: DataBag):
         for model in self._models:
