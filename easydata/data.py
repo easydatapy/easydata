@@ -32,6 +32,9 @@ class DataBag(ConfigMixin):
     def has(self, arg_name):
         return hasattr(self, arg_name)
 
+    def set(self, item_key: str, item_value: Any):
+        self._cached_results[item_key] = item_value
+
     def get(self, item_key: str) -> Any:
         """Each item class field or item method are called only once
         and results are cached which leads to a faster performance!"""
@@ -58,10 +61,11 @@ class DataBag(ConfigMixin):
         return {}
 
     def get_multi(self, item_keys: List[str]):
-        results = {}
+        results = self._cached_results
 
         for item_key in item_keys:
-            results[item_key] = self.get(item_key)
+            if item_key not in results:
+                results[item_key] = self.get(item_key)
 
         return results
 
