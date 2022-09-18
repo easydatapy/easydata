@@ -14,6 +14,7 @@ from tests.factory.models import (
     ProductJsonModelWithVariantDropItems,
     ProductJsonModelWithVariantItems,
     ProductModel,
+    ProductModelLoadItem,
     SettingsBlockModel,
 )
 
@@ -30,6 +31,16 @@ item_model_expected_result = {
 
 def test_item_model():
     product_model = ProductModel()
+
+    item = product_model.parse_item(
+        data_html.prices_and_variants, json_data=test_dict_source
+    )
+
+    assert item == item_model_expected_result
+
+
+def test_item_model_load_item():
+    product_model = ProductModelLoadItem()
 
     item = product_model.parse_item(
         data_html.prices_and_variants, json_data=test_dict_source

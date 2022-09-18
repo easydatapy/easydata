@@ -1,4 +1,5 @@
 import easydata as ed
+from easydata.data import DataBag
 
 
 class ProductModel(ed.ItemModel):
@@ -11,6 +12,21 @@ class ProductModel(ed.ItemModel):
     item_designer = ed.Text(from_item="brand")
 
     item_name = ed.Text(ed.pq(".name::text"))
+
+    def item_stock(self, data):
+        return data["json_data"]["info"]["stock"]
+
+
+class ProductModelLoadItem(ed.ItemModel):
+    item_language = "en"
+
+    item_tags = ["phones", "ecommerce"]
+
+    _item_brand = ed.Text(ed.jp("brand"), source="json_data")
+
+    def load_item(self, db: DataBag):
+        db.set("name", ed.pq(".name::text").get(db))
+        db.set("designer", db.get("brand"))
 
     def item_stock(self, data):
         return data["json_data"]["info"]["stock"]
