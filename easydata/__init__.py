@@ -1,4 +1,4 @@
-__version__ = "0.3.7"
+__version__ = "0.3.8"
 
 from easydata.blocks import *  # noqa: F401 F403
 from easydata.groups import *  # noqa: F401 F403
