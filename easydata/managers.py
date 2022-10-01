@@ -259,10 +259,10 @@ class ModelManager(ConfigMixin):
                     self._item_protected_names += group_item_protected_names
 
             if item_name.startswith("item_"):
-                item_name = item_name.replace("item_", "")
+                item_name = item_name[5:]
 
             if item_name.startswith("_item_"):
-                item_name = item_name.replace("_item_", "")
+                item_name = item_name[6:]
 
                 if item_name not in self._item_protected_names:
                     self._item_protected_names.append(item_name)
