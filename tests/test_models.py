@@ -246,6 +246,17 @@ def test_item_model_with_multi_items():
         (
             data_dict.item_with_options,
             ed.StackedModel(
+                ed.ItemDiscountProcessor(),
+                ED_PRICE_DECIMALS=1,
+                name_item_title=ed.Text(ed.jp("title")),
+                price=ed.PriceFloat(ed.jp("price")),
+                _sale_price=ed.PriceFloat(ed.jp("sale_price")),
+            ),
+            [{"discount": 50.0, "name_item_title": "EasyBook pro 15", "price": 100.0}],
+        ),
+        (
+            data_dict.item_with_options,
+            ed.StackedModel(
                 _brand_data=ed.Data(ed.jp("brand")),
                 brand=ed.Data(from_item="brand_data<jp>name"),
             ),
