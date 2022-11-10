@@ -24,6 +24,13 @@ def _parse_float(
     return float(value) if is_str_float(value) else None
 
 
+def _parse_int(value: str):
+    try:
+        return int(value)
+    except ValueError:
+        return None
+
+
 def unique_list(list_data: list) -> list:
     unique_list_data = []
 
@@ -304,6 +311,22 @@ def parse_float(
         return round(value, decimals)
 
     return value
+
+
+def parse_int(
+    value: Any,
+) -> Optional[int]:
+
+    if isinstance(value, int):
+        return value
+    elif isinstance(value, float):
+        return int(value)
+    elif isinstance(value, str):
+        value.strip()
+
+        return _parse_int(value)
+
+    return None
 
 
 def is_built_in_type(value):
