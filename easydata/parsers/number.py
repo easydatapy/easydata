@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from easydata.parsers.base import BaseData
 from easydata.parsers.price import BaseNum, BasePriceFloat
 from easydata.utils import mix
 
 __all__ = (
+    "SFloat",
+    "SInt",
     "Float",
     "Int",
     "FloatText",
@@ -60,7 +62,77 @@ class DefaultNumConfigMixin:
         return self.config.get("ED_NUMBER_MAX_VALUE")
 
 
+class SFloat(BaseData):
+    def __init__(
+        self,
+        *args,
+        decimals: Optional[int] = None,
+        **kwargs,
+    ):
+
+        self._decimals = decimals
+
+        super().__init__(*args, **kwargs)
+
+    def parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+
+        if value is None:
+            return None
+
+        return mix.parse_float(
+            value=value,
+            decimals=self._decimals,
+        )
+
+
+class SInt(BaseData):
+    def parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+
+        return mix.parse_int(value)
+
+
 class Float(DefaultNumConfigMixin, BaseNum):
+    def __init__(
+        self,
+        *args,
+        parse_bool: bool = True,
+        **kwargs,
+    ):
+
+        self._parse_bool = parse_bool
+
+        super().__init__(
+            *args,
+            **kwargs,
+        )
+
+    def parse_value(
+        self,
+        value: Any,
+        data: Any,
+    ):
+
+        if isinstance(value, bool):
+            return float(value) if self._parse_bool else None
+
+        return super().parse_value(value, data)
+
+    def _parse_num_value(self, value: Any):
+        return mix.parse_float(
+            value=value,
+            decimals=self._decimals,
+        )
+
+
+class Int(BaseNum):
     def __init__(
         self,
         *args,
@@ -81,29 +153,13 @@ class Float(DefaultNumConfigMixin, BaseNum):
         data: Any,
     ):
 
-        if self._parse_bool and isinstance(value, bool):
-            value = float(value)
+        if isinstance(value, bool):
+            return int(value) if self._parse_bool else None
 
         return super().parse_value(value, data)
 
     def _parse_num_value(self, value: Any):
-        return mix.parse_float(
-            value=value,
-            decimals=self._decimals,
-        )
-
-
-class Int(NumToIntMixin, Float):
-    def parse_value(
-        self,
-        value: Any,
-        data: Any,
-    ):
-
-        if self._parse_bool and isinstance(value, bool):
-            return int(value)
-
-        return super().parse_value(value, data)
+        return mix.parse_int(value=value)
 
 
 class FloatText(NumToStrMixin, Float):

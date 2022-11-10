@@ -70,12 +70,15 @@ class BaseNum(Str, ABC):
         data: Any,
     ):
 
-        value = super().parse_value(value=value, data=data)
+        if isinstance(value, (float, int)):
+            value = self._parse_num_value(value)
+        else:
+            value = super().parse_value(value=value, data=data)
 
-        if value is None:
-            return None
+            if value is None:
+                return None
 
-        value = self._parse_num_value(value)
+            value = self._parse_num_value(value)
 
         if value is None:
             return None

@@ -203,9 +203,9 @@ class DateTime(BaseDateTime):
             settings["NORMALIZE"] = self._date_normalize  # type: ignore
 
         if self._return_time_as_period is not None:
-            settings["RETURN_TIME_AS_PERIOD"] = (
-                self._return_time_as_period  # type: ignore
-            )
+            settings[
+                "RETURN_TIME_AS_PERIOD"
+            ] = self._return_time_as_period  # type: ignore
 
         if self._parsers is not None:
             settings["PARSERS"] = self._parsers  # type: ignore
@@ -214,9 +214,9 @@ class DateTime(BaseDateTime):
             settings["FUZZY"] = self._fuzzy  # type: ignore
 
         if self._prefer_locale_date_order is not None:
-            settings["PREFER_LOCALE_DATE_ORDER"] = (
-                self._prefer_locale_date_order  # type: ignore
-            )
+            settings[
+                "PREFER_LOCALE_DATE_ORDER"
+            ] = self._prefer_locale_date_order  # type: ignore
 
         if self._default_languages is not None:
             settings["DEFAULT_LANGUAGES"] = self._default_languages  # type: ignore

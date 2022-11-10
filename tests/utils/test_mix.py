@@ -123,4 +123,4 @@ def test_multiply_list_values_multiply_key(multiply_keys):
     ],
 )
 def test_is_str_float(value, result):
-    return mix.is_str_float(value) == result
+    assert mix.is_str_float(value) == result

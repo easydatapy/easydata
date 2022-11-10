@@ -71,7 +71,7 @@ class BaseData(Base, ABC):
         process_value: Optional[Union[Callable, Base]] = None,
         empty_as_none: bool = False,
         debug: bool = False,
-        debug_source: bool = None,
+        debug_source: bool = False,
     ):
 
         if query and from_item:
