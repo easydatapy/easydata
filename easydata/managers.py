@@ -247,9 +247,7 @@ class ModelManager(ConfigMixin):
         for item_name, parser_method in item_attr_items:
             if item_name.startswith("Item"):
                 if not isinstance(parser_method, ItemGroup):
-                    raise TypeError(
-                        "%s can support only type of ItemGroup" % item_name
-                    )
+                    raise TypeError("%s can support only type of ItemGroup" % item_name)
 
                 self._item_groups.append(item_name)
 

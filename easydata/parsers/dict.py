@@ -26,8 +26,8 @@ class Dict(BaseData):
     def __init__(
         self,
         query: Optional[QuerySearchBase] = None,
-        key_parser: Base = None,
-        val_parser: Base = None,
+        key_parser: Optional[Base] = None,
+        val_parser: Optional[Base] = None,
         key_query: Optional[QuerySearchBase] = None,
         val_query: Optional[QuerySearchBase] = None,
         dict_val_from_key: bool = False,

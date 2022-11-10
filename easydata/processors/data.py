@@ -42,7 +42,7 @@ class DataBaseProcessor(BaseProcessor, ABC):
         new_source: Optional[str] = None,
         process_source_data=None,
         debug: bool = False,
-        debug_raw: bool = None,
+        debug_raw: bool = False,
     ):
 
         self._source = source
