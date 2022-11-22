@@ -2,21 +2,29 @@ from abc import ABC
 from functools import cached_property
 from typing import Optional
 
-from scrapy import Spider
 from scrapy.http import Response
 from scrapy.item import Item
-from scrapy.spiders import CrawlSpider
+from scrapy.spiders import (
+    CrawlSpider,
+    CSVFeedSpider,
+    SitemapSpider,
+    Spider,
+    XMLFeedSpider,
+)
 
 from easydata.contrib.scrapy.models import ItemModel
 
 __all__ = (
-    "ItemModelMixin",
-    "ItemModelSpider",
-    "ItemModelCrawlSpider",
+    "EDMixin",
+    "EDCrawlSpider",
+    "EDCSVFeedSpider",
+    "EDSitemapSpider",
+    "EDSpider",
+    "EDXMLFeedSpider",
 )
 
 
-class ItemModelMixin:
+class EDMixin:
     item_model_cls: Optional[Item] = None
 
     item_model_obj: Optional[ItemModel] = None
@@ -33,6 +41,11 @@ class ItemModelMixin:
         if not isinstance(to_json, bool):
             to_json = self.parse_item_model_response_json
 
+        if not self.item_model_instance:
+            raise NotImplementedError(
+                "Item model must be registered in order to use this method"
+            )
+
         return self.item_model_instance.parse_res2items(
             response,
             to_json=to_json,
@@ -40,7 +53,7 @@ class ItemModelMixin:
         )
 
     @cached_property
-    def item_model_instance(self) -> ItemModel:
+    def item_model_instance(self) -> Optional[ItemModel]:
         item_model_cls = getattr(self, "ItemModel", None)
 
         if item_model_cls:
@@ -50,18 +63,28 @@ class ItemModelMixin:
         elif self.item_model_obj:
             return self.item_model_obj
 
-        error_msg = "ItemModel can be implemented through item_model_cls or inner class"
-
-        raise NotImplementedError(error_msg)
+        return None
 
     def init_item_model_obj(self, item_model_cls):
         """Override this method in order to pass parameters to __init__ in item model"""
         return item_model_cls()
 
 
-class ItemModelSpider(ItemModelMixin, Spider, ABC):
+class EDCrawlSpider(EDMixin, CrawlSpider, ABC):
     pass
 
 
-class ItemModelCrawlSpider(ItemModelMixin, CrawlSpider, ABC):
+class EDCSVFeedSpider(EDMixin, CSVFeedSpider, ABC):
+    pass
+
+
+class EDSitemapSpider(EDMixin, SitemapSpider, ABC):
+    pass
+
+
+class EDSpider(EDMixin, Spider, ABC):
+    pass
+
+
+class EDXMLFeedSpider(EDMixin, XMLFeedSpider, ABC):
     pass
