@@ -83,12 +83,12 @@ minor tweaks to this documentation or the core.
     getting_started
     architecture
     advanced
-    scrapy
-    requests
     config
     parsers/index
     queries/index
     processors/index
     extending/index
+    scrapy
+    requests
     faq
     contributing
