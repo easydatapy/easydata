@@ -54,7 +54,7 @@ data from the *HTML* above.
         )
 
         item_processors = [
-            ('discount', ItemDiscountProcessor())
+            ('discount', ed.ItemDiscountProcessor())
         ]
 
 As mentioned before, the model blocks above are meant to be used within ``ItemModel``.
@@ -90,7 +90,7 @@ Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_html)
+    >>> item_model.parse_item(test_html)
 
 Output:
 
@@ -153,10 +153,11 @@ Example:
 
     class PricingCssBlockModel(ed.ItemModel):
         def __init__(self,
-            price_css,
-            sale_price_css,
-            calculate_discount = True
+            price_css: str,
+            sale_price_css: str,
+            calculate_discount: bool = True
         ):
+            self.item_processors = []
 
             self.item_price = ed.PriceFloat(
                 ed.pq(price_css)
@@ -191,7 +192,7 @@ Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_html)
+    >>> item_model.parse_item(test_html)
 
 Output:
 
@@ -244,7 +245,7 @@ Now let's parse *HTML* with ``ProductItemModel`` and print its output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_html)  # test_html from previous section
+    >>> item_model.parse_item(test_html)  # test_html from previous section
 
 Output:
 
@@ -386,11 +387,11 @@ Lets demonstrate this in example below.
 
     class ProductItemModel(ed.ItemModel):
         _item_price = ed.PriceFloat(
-            pq('#price::text')
+            ed.pq('#price::text')
         )
 
         _item_sale_price = ed.PriceFloat(
-            pq('#sale-price::text')
+            ed.pq('#sale-price::text')
         )
 
         item_processors = [
@@ -404,7 +405,7 @@ Now let's parse our ``ProductItemModel`` and print its output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_html)  # test_html from previous section
+    >>> item_model.parse_item(test_html)  # test_html from previous section
 
 Output:
 
@@ -468,6 +469,10 @@ will create a new data source called ``brand_type``.
 
 .. code-block:: python
 
+    import easydata as ed
+    from easydata.data import DataBag
+
+
     class ProductItemModel(ed.ItemModel):
         item_brand = ed.Text(ed.jp('brand'))
 
@@ -477,25 +482,27 @@ will create a new data source called ``brand_type``.
             ed.DataJsonToDictProcessor()
         ]
 
-        def preprocess_data(self, data):
-            data['data'] = data['data'] + '}'
-            return data
+        def preprocess_data(self, db: DataBag):
+            db['main'] = db['main'] + '}'
+            return db
 
-        def process_data(self, data):
-            if 'easydata' in data['data']['brand'].lower():
-                data['brand_type'] = 'local'
+        def process_data(self, db: DataBag):
+            if 'easydata' in db.get('brand').lower():
+                db['brand_type'] = 'local'
             else:
-                data['brand_type'] = 'other'
+                db['brand_type'] = 'other'
 
-            return data
+            return db
 
 Now let's parse our ``test_json_text`` with ``ProductItemModel`` and show its output.
 
 .. code-block:: python
 
+    >>> test_json_text = '{"brand": "EasyData"'
+
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_json_text)
+    >>> item_model.parse_item(test_json_text)
 
 Output:
 
@@ -542,13 +549,13 @@ with bool value, which is determined if the price is discounted or not.
             ed.ItemDiscountProcessor()
         ]
 
-        def preprocess_item(self, item):
+        def preprocess_item(self, item: dict):
             if item['sale_price'] <= 1:
                 item['sale_price'] = 0
 
             return item
 
-        def process_item(self, item):
+        def process_item(self, item: dict):
             item['final_sale'] = bool(item['discount'])
 
             return item
@@ -559,7 +566,7 @@ Now let's parse our ``test_dict`` with ``ProductItemModel`` and show its output.
 
     >>> item_model = ProductItemModel()
 
-    >>> item_model.parse(test_dict)
+    >>> item_model.parse_item(test_dict)
 
 Output:
 

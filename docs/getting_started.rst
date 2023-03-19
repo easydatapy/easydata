@@ -106,15 +106,15 @@ etc.).
 
         item_images = ed.List(
             ed.pq('.images img::items'),
-            parser=ed.UrlParser(
+            parser=ed.Url(
                 ed.pq('::src')
             )
         )
 
         """
-        Alternative with selecting src values in a first css query:
+        Alternative shortcut to get list of image urls:
 
-            item_images = ed.ListParser(
+            item_images = ed.List(
                 ed.pq('.images img::src-items'),
                 parser=ed.Url()
             )
@@ -239,7 +239,7 @@ Lets create our item model with ``data_processors`` included.
     class ProductItemModel(ed.ItemModel):
         data_processors = [
             ed.DataJsonFromReToDictProcessor(
-                r'var json_data = (.*?);',
+                query=r'var json_data = (.*?);',
                 new_source='json_info'
             )
         ]
@@ -282,7 +282,7 @@ Lets check how ``DataJsonFromReToDictProcessor`` in our example works in more de
 
     data_processors = [
         ed.DataJsonFromReToDictProcessor(
-            r'var json_data = (.*?);',
+            query=r'var json_data = (.*?);',
             new_source='json_info'
         )
     ]
@@ -300,7 +300,7 @@ Example:
 
 .. code-block:: python
 
-    item_name = ed.TextParser(
+    item_name = ed.Text(
         ed.key('name'),
         source='json_info'
     )
@@ -311,7 +311,7 @@ because there wouldn't be any HTML data to extract info from.
 
 .. code-block:: python
 
-    item_css_name = ed.TextParser(
+    item_css_name = ed.Text(
         ed.pq('.name::text'),
     )
 
@@ -377,7 +377,7 @@ Lets create our item model with ``item_processors``
 
 
     class ProductItemModel(ed.ItemModel):
-        item_name = ed.TextParser(
+        item_name = ed.Text(
             ed.pq('#name::text', rm='.brand')
         )
 
