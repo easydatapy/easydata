@@ -31,6 +31,8 @@ Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-drop`
 
+* :ref:`parsers-math`
+
 * :ref:`parsers-misc`
 
 .. toctree::
@@ -51,4 +53,5 @@ Purpose of parsers is to extract data and to transform it into desired format.
     email
     dictionary
     drop
+    math
     misc
