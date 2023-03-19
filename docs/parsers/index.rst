@@ -11,7 +11,7 @@ Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-list`
 
-* :ref:`parsers-bool`
+* :ref:`parsers-has`
 
 * :ref:`parsers-clause`
 
@@ -31,6 +31,8 @@ Purpose of parsers is to extract data and to transform it into desired format.
 
 * :ref:`parsers-drop`
 
+* :ref:`parsers-misc`
+
 .. toctree::
     :maxdepth: 2
     :hidden:
@@ -39,7 +41,7 @@ Purpose of parsers is to extract data and to transform it into desired format.
     text
     url
     list
-    bool
+    has
     clause
     choice
     description
@@ -49,3 +51,4 @@ Purpose of parsers is to extract data and to transform it into desired format.
     email
     dictionary
     drop
+    misc

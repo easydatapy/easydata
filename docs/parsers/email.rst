@@ -1,8 +1,8 @@
 .. _`parsers-email`:
 
-=============
-Email Parsers
-=============
+=====
+Email
+=====
 
 Email
 =====

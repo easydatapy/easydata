@@ -1,8 +1,8 @@
 .. _`parsers-data`:
 
-============
-Data Parsers
-============
+====
+Data
+====
 
 BaseData
 ========
@@ -69,8 +69,8 @@ we can see bellow.
     >>> ed.Data(ed.jp('info.name')).parse(test_dict)
     'EasyBook pro 15'
 
-We can also specify list of queries were each selected data from one query selector is passed
-on to another query selector.
+We can also specify multiple queries with ``ed.cor`` where data is selected from the
+the first matching query.
 
 Now lets create a ``Data`` parser with multiple queries and use ``re`` query which can select
 content with regex pattern.
@@ -80,10 +80,10 @@ content with regex pattern.
     test_dict = {'info': {'name': 'EasyBook pro 15'}}
 
     data_parser = ed.Data(
-        [
+        ed.cor(
             ed.jp('info.name'),
             ed.re(r'\bpro .+'),
-        ]
+        ),
     )
 
 Now lets parse result.
@@ -138,7 +138,7 @@ Result:
 
 .. code-block:: python
 
-    >>> ProductItemModel().parse(test_html)
+    >>> ProductItemModel().parse_item(test_html)
     {'name': 'John Doe autographed baseball.', 'signed': True}
 
 .. option:: default
@@ -148,7 +148,7 @@ by selectors.
 
 .. code-block:: python
 
-    >>> test_dict = {'info': {'brand': ''}}
+    >>> test_dict = {'info': {'brand': None}}
     >>> ed.Data(query=ed.jp('info.brand'), default='EasyData').parse(test_dict)
     'EasyData'
 
@@ -191,7 +191,7 @@ Result:
 
 .. code-block:: python
 
-    >>> ProductItemModel().parse(test_html)
+    >>> ProductItemModel().parse_item(test_dict)
     {'name': 'EasyBook pro 15', 'description': 'EasyBook pro 15'}
 
 .. option:: source
@@ -231,7 +231,7 @@ Now lets pass our variables, that we created before, with different kind of data
 
 .. code-block:: python
 
-    >>> product_model.parse(data=test_dict, html=test_html)
+    >>> ProductItemModel().parse_item(data=test_dict, html=test_html)
     {'brand': 'EasyData', 'name': 'EasyBook pro 15'}
 
 
@@ -248,7 +248,7 @@ value will be ``None``.
     test_dict = {'info': {'name': 'EasyBook pro 15'}}
     data_parser = ed.Data(
         ed.jp('info.name'),
-        process_raw_value=lambda value, data: "EasyData " + value
+        process_raw_value=lambda value, db: "EasyData " + db
     )
 
 Lets parse ``test_dict`` and get our result.

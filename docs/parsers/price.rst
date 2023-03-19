@@ -1,8 +1,8 @@
 .. _`parsers-price`:
 
-=============
-Price Parsers
-=============
+=====
+Price
+=====
 
 PriceFloat
 ==========

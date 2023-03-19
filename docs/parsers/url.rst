@@ -1,8 +1,8 @@
 .. _`parsers-url`:
 
-===========
-Url Parsers
-===========
+===
+Url
+===
 
 Url
 ===
@@ -17,13 +17,6 @@ To read docs regarding other parameters than the one described here, please go t
 
 Getting Started
 ---------------
-Lets import first ``easydata`` module.
-
-.. code-block:: python
-
-    >>> import easydata as ed
-
-``Has`` supports any query object for fetching data.
 
 .. code-block:: python
 
@@ -45,8 +38,7 @@ Lets first try to change existing one.
 
 .. code-block:: python
 
-    >>> test_url = 'https://demo.com/?home=true''
-    >>> ed.Url(qs={'home': 'false'}).parse(test_url)
+    >>> ed.Url(qs={'home': 'false'}).parse('https://demo.com/?home=true')
     'https://demo.com/?home=false'
 
 Now lets try to change existing one and at the same time add a new query
@@ -55,7 +47,7 @@ string value.
 .. code-block:: python
 
     >>> test_url = 'https://demo.com/?home=true'
-    >>> parsers.Url(qs={'home': 'false', 'country': 'SI'}).parse(test_url)
+    >>> ed.Url(qs={'home': 'false', 'country': 'SI'}).parse(test_url)
     'https://demo.com/?home=false&country=SI'
 
 .. option:: remove_qs
@@ -67,8 +59,7 @@ and value will be removed as we can see bellow.
 
 .. code-block:: python
 
-    >>> test_url = 'https://demo.com/?home=false&country=SI'
-    >>> ed.Url(remove_qs='home').parse(test_url)
+    >>> ed.Url(remove_qs='home').parse('https://demo.com/?home=false&country=SI')
     'https://demo.com/?country=SI'
 
 We can also delete multiple query string keys and it's values at the same time
@@ -85,8 +76,7 @@ will be removed.
 
 .. code-block:: python
 
-    >>> test_url = 'https://demo.com/?home=false&country=SI'
-    >>> ed.Url(remove_qs=True).parse(test_url)
+    >>> ed.Url(remove_qs=True).parse('https://demo.com/?home=false&country=SI')
     'https://demo.com/'
 
 .. option:: from_text
@@ -96,8 +86,7 @@ bellow.
 
 .. code-block:: python
 
-    >>> test_text = 'Home url is:  https://demo.com/home  !!!'
-    >>> ed.Url(from_text=True).parse(test_text)
+    >>> ed.Url(from_text=True).parse('Home url is:  https://demo.com/home  !!!')
     'https://demo.com/home'
 
 .. option:: domain
@@ -108,8 +97,7 @@ with a domain name will help with full url link construction.
 
 .. code-block:: python
 
-    >>> test_url = '/product/1122'
-    >>> ed.Url(domain='http://demo.com').parse(test_url)
+    >>> ed.Url(domain='http://demo.com').parse('/product/1122')
     'http://demo.com/product/1122'
 
 domain parameter value can also be provided without a protocol like ``http`` or
@@ -118,8 +106,7 @@ order to construct full url.
 
 .. code-block:: python
 
-    >>> test_url = '/product/1122'
-    >>> ed.Url(domain='demo.com').parse(test_url)
+    >>> ed.Url(domain='demo.com').parse('/product/1122')
     'https://demo.com/product/1122'
 
 .. note::
@@ -136,8 +123,7 @@ protocol value ``https`` by specifying new value into protocol parameter.
 
 .. code-block:: python
 
-    >>> test_url = '/product/1122'
-    >>> ed.Url(domain='demo.com', protocol='ftp').parse(test_url)
+    >>> ed.Url(domain='demo.com', protocol='ftp').parse('/product/1122')
     'ftp://demo.com/product/1122'
 
 .. note::

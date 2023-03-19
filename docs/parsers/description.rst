@@ -1,8 +1,8 @@
 .. _`parsers-description`:
 
-===================
-Description Parsers
-===================
+===========
+Description
+===========
 Description parsers by default will remove redundant spaces, capitalize sentences,
 fix bad encoding and add stop keys if they are missing in a sentences. They can
 also parse html tables into readable sentences and offer many options to manipulate
@@ -587,3 +587,10 @@ Example:
     >>> test_text = '- color: Black - material: Aluminium. Last Sentence'
     >>> ed.FeaturesDict(test_text).parse(test_text)
     {'Color': 'Black', 'Material': 'Aluminium'}
+
+
+Feature
+=======
+.. autoclass:: easydata.parsers.desc::Feature
+
+examples coming soon ...

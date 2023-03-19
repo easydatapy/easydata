@@ -7,13 +7,6 @@ KeySearch (key)
 
 ``KeyQuery`` (shortcut: ``key``) allows you to select a value from a dictionary by key.
 
-Lets import our easydata module first.
-
-.. code-block:: python
-
-    >>> import easydata as ed
-
-
 Examples
 ========
 .. code-block:: python

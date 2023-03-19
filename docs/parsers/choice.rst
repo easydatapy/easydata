@@ -1,8 +1,8 @@
 .. _`parsers-choice`:
 
-==============
-Choice Parsers
-==============
+======
+Choice
+======
 
 Choice
 ======

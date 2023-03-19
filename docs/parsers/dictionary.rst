@@ -1,8 +1,8 @@
 .. _`parsers-dictionary`:
 
-==================
-Dictionary Parsers
-==================
+==========
+Dictionary
+==========
 
 Dict
 ====

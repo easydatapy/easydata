@@ -1,8 +1,8 @@
 .. _`parsers-text`:
 
-============
-Text Parsers
-============
+====
+Text
+====
 
 Text
 ====
@@ -13,11 +13,6 @@ texts like titles or similar.
 
 Getting Started
 ---------------
-Lets import first ``easydata`` module.
-
-.. code-block:: python
-
-    >>> import easydata as ed
 
 ``Text`` supports query selectors for fetching data.
 
@@ -32,20 +27,17 @@ between chars.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook    Pro 13 &lt;3 uÌˆnicode'
-    >>> ed.Text().parse(test_text)
+    >>> ed.Text().parse('Easybook    Pro 13 &lt;3 uÌˆnicode')
     Easybook Pro 13 <3 ünicode
 
 Floats, integers will get transformed to string automatically.
 
 .. code-block:: python
 
-    >>> test_int = 123
-    >>> ed.Text().parse(test_int)
+    >>> ed.Text().parse(123)
     '123'
 
-    >>> test_float = 123.12
-    >>> ed.Text().parse(test_float)
+    >>> ed.Text().parse(123.12)
     '123.12'
 
 Parameters
@@ -58,8 +50,7 @@ parameter to ``False`` to disable text normalization.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook Pro 13 &lt;3 uÌˆnicode'
-    >>> ed.Text(normalize=False).parse(test_text)
+    >>> ed.Text(normalize=False).parse('Easybook Pro 13 &lt;3 uÌˆnicode')
     Easybook Pro 13 &lt;3 uÌˆnicode
 
 .. option:: capitalize
@@ -69,8 +60,7 @@ to ``True``. By default is set to ``False``.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook PRO 15'
-    >>> ed.Text(capitalize=True).parse(test_text)
+    >>> ed.Text(capitalize=True).parse('easybook PRO 15')
     Easybook PRO 15
 
 .. option:: title
@@ -80,8 +70,7 @@ become lowercase with ``title`` parameter set to ``True``.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook PRO 15'
-    >>> ed.Text(title=True).parse(test_text)
+    >>> ed.Text(title=True).parse('easybook PRO 15')
     Easybook Pro 15
 
 .. option:: uppercase
@@ -91,8 +80,7 @@ parameter set to ``True``.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook PRO 15'
-    >>> ed.Text(uppercase=True).parse(test_text)
+    >>> ed.Text(uppercase=True).parse('easybook PRO 15')
     EASYBOOK PRO 15
 
 .. option:: lowercase
@@ -102,8 +90,7 @@ parameter set to ``True``.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook PRO 15'
-    >>> ed.Text(lowercase=True).parse(test_text)
+    >>> ed.Text(lowercase=True).parse('easybook PRO 15')
     easybook pro 15
 
 .. option:: replace_keys
@@ -138,16 +125,14 @@ Text can be split by ``split_key``. By default split index is ``0``.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook-pro_13'
-    >>> ed.Text(split_key='-').parse(test_text)
+    >>> ed.Text(split_key='-').parse('easybook-pro_13')
     easybook
 
 Lets specify split index through tuple.
 
 .. code-block:: python
 
-    >>> test_text = 'easybook-pro_13'
-    >>> ed.Text(split_key=('-', -1)).parse(test_text)
+    >>> ed.Text(split_key=('-', -1)).parse('easybook-pro_13')
     pro_13
 
 .. option:: split_keys
@@ -168,8 +153,7 @@ shown at the end result. Lets see how it works in example bellow.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook Pro 13'
-    >>> ed.Text(max_chars=8).parse(test_text)
+    >>> ed.Text(take=8).parse('Easybook Pro 13')
     Easybook
 
 .. option:: skip
@@ -179,8 +163,7 @@ Lets see how it works in example bellow.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook Pro 13'
-    >>> ed.Text(skip=8).parse(test_text)
+    >>> ed.Text(skip=8).parse('Easybook Pro 13')
     Pro 13
 
 .. option:: text_num_to_numeric
@@ -205,16 +188,14 @@ one between chars. Lets test it in our bellow example:
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook   Pro  15'
-    >>> ed.Text().parse(test_text)
+    >>> ed.Text().parse('Easybook   Pro  15')
     Easybook Pro 15
 
 Now lets change ``fix_spaces`` parameter to ``False`` and see what happens.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook   Pro  15'
-    >>> ed.Text(fix_spaces=False).parse(test_text)
+    >>> ed.Text(fix_spaces=False).parse('Easybook   Pro  15')
     Easybook   Pro  15
 
 .. option:: escape_new_lines
@@ -224,16 +205,14 @@ see in example bellow:
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook\nPro\n15'
-    >>> ed.Text().parse(test_text)
+    >>> ed.Text().parse('Easybook\nPro\n15')
     Easybook Pro 15
 
 Now lets change ``escape_new_lines`` parameter to ``False`` and see what happens.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook\nPro\n15'
-    >>> ed.Text(escape_new_lines=False).parse(test_text)
+    >>> ed.Text(escape_new_lines=False).parse('Easybook\nPro\n15')
     Easybook\nPro\n15
 
 .. option:: new_line_replacement
@@ -244,8 +223,7 @@ default setting by changing value of ``new_line_replacement`` parameter.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook\nPro\n15'
-    >>> ed.Text(new_line_replacement='<br>').parse(test_text)
+    >>> ed.Text(new_line_replacement='<br>').parse('Easybook\nPro\n15')
     Easybook<br>Pro<br>15
 
 .. option:: add_stop
@@ -255,8 +233,7 @@ parameter to ``True``.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook Pro  15'
-    >>> ed.Text(add_stop=True).parse(test_text)
+    >>> ed.Text(add_stop=True).parse('Easybook Pro  15')
     Easybook Pro 15.
 
 By default ``.`` is added but we can provide our custom char if needed. Instead
@@ -265,6 +242,20 @@ provide char as we can see in example bellow.
 
 .. code-block:: python
 
-    >>> test_text = 'Easybook Pro  15'
-    >>> ed.Text(add_stop='!').parse(test_text)
+    >>> ed.Text(add_stop='!').parse('Easybook Pro  15')
     Easybook Pro 15!
+
+
+Str
+===
+.. autoclass:: easydata.parsers.text::Str
+
+``Str`` parser is same as ``Text`` parser but with ``add_stop`` and ``add_stop``
+set to ``False`` by default and because of that ``Str`` parser is also much performant
+with it's default params than ``Text`` parser. Use ``Str`` parser when performance
+is critical.
+
+.. code-block:: python
+
+    >>> ed.Str().parse('Easybook\nPro\n15 &lt;3 uÌˆnicode')
+    Easybook\nPro\n15 &lt;3 uÌˆnicode

@@ -1,8 +1,8 @@
 .. _`parsers-list`:
 
-============
-List Parsers
-============
+====
+List
+====
 
 List
 ====
@@ -15,19 +15,13 @@ examples.
 
 Getting Started
 ---------------
-Lets import first ``easydata`` module and use ``jp`` selector together with ``pq``.
-
-.. code-block:: python
-
-    >>> import easydata as ed
-
 **EXAMPLE WITH JSON DATA SOURCE:**
 
 Lets first try to parse simple json text.
 
-.. code-block:: js
+.. code-block:: python
 
-    {
+    test_json_text = {
         'images': [
             {'src': 'https://demo.com/imgs/1.jpg'},
             {'src': 'https://demo.com/imgs/2.jpg'},
@@ -35,16 +29,14 @@ Lets first try to parse simple json text.
         ]
     }
 
-Lets assume that we loaded ``json`` above into ``test_json_text`` variable.
-
 ``List`` supports any query object for fetching data. In example bellow we will
 use ``jp`` to query dict object. ``jp`` will also automatically convert our
-json text into python ``dictionary`` or ``list``.
+json text into python ``dictionary`` or ``list`` if it's not already python object.
 
 .. code-block:: python
 
     list_parser = ed.List(
-        ed.jp('images.src')
+        ed.jp('images[].src'),
         parser=ed.Url()
     )
 
@@ -55,19 +47,19 @@ This would print output like:
 
 .. code-block:: python
 
-    [
+    test_json_text = [
         'https://demo.com/imgs/1.jpg',
         'https://demo.com/imgs/2.jpg',
         'https://demo.com/imgs/3.jpg'
     ]
 
 We can also use selector in our ``Url`` parser if needed. Lets demonstrate this in
-example bellow. Lets assume we use same ``test_json_text`` variable as before.
+example bellow.
 
 .. code-block:: python
 
     list_parser = ed.List(
-        ed.jp('images')
+        ed.jp('images'),
         parser=ed.Url(
             ed.jp('src')
         )
@@ -160,7 +152,7 @@ parameter set to ``True``.
 .. code-block:: python
 
     list_parser = ed.List(
-        ed.jp('images')
+        ed.jp('images'),
         parser=ed.Url()
     )
 
@@ -184,7 +176,7 @@ parameter to ``False`` and see what happens.
 .. code-block:: python
 
     list_parser = ed.List(
-        ed.jp('images')
+        ed.jp('images'),
         parser=ed.Url(),
         unique=False
     )

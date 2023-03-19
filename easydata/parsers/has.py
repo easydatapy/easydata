@@ -24,7 +24,7 @@ class Bool(BaseData):
         return bool(value)
 
 
-class IBool(BaseData):
+class IBool(Bool):
     def parse_value(
         self,
         value: Any,

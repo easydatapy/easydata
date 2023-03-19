@@ -1,8 +1,8 @@
 .. _`parsers-time`:
 
-============
-Time Parsers
-============
+====
+Time
+====
 Time parsers are based upon ``Text`` parser and therefore inherits all parameters
 from it and it's usage. One differences is that ``normalize`` parameter is set to
 ``False`` while in ``Text`` parser is set to ``True`` by default.
@@ -126,6 +126,14 @@ will work.
     >>> ed.DateTimeSearch().parse(test_text)
     '12/10/2018 10:55:50'
 
+
+SPDateTime
+==========
+.. autoclass:: easydata.parsers.time::SPDateTime
+
+examples coming soon ...
+
+
 Date
 ====
 .. autoclass:: easydata.parsers.time::Date
@@ -218,6 +226,13 @@ will work.
     >>> test_text = 'It has happened on 10 Dec 2018 at 10:55:50'
     >>> ed.DateSearch().parse(test_text)
     '12/10/2018'
+
+
+SPDate
+======
+.. autoclass:: easydata.parsers.time::SPDate
+
+examples coming soon ...
 
 
 Time
