@@ -79,7 +79,12 @@ class BaseLookups(Base, ABC):
 
 
 class Choice(BaseLookups):
-    def __init__(self, choices: list, default_choice: Optional[str] = None, **kwargs):
+    def __init__(
+        self,
+        choices: list,
+        default_choice: Optional[str] = None,
+        **kwargs,
+    ):
 
         self._choices = choices
         self._default_choice = default_choice
