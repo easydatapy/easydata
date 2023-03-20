@@ -130,3 +130,7 @@ protocol value ``https`` by specifying new value into protocol parameter.
 
     Default value of *protocol* parameter can be defined through a config
     variable :ref:`config-ed-url-protocol` in a config file or a model.
+
+.. option:: from_qs
+
+.. option:: from_qs_unquote

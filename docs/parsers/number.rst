@@ -10,6 +10,10 @@ SFloat
 
 examples coming soon ...
 
+Parameters
+----------
+.. option:: decimals
+
 
 SInt
 ====
@@ -23,6 +27,10 @@ Float
 .. autoclass:: easydata.parsers.number::Float
 
 examples coming soon ...
+
+Parameters
+----------
+.. option:: parse_bool
 
 
 Int

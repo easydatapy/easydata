@@ -181,6 +181,8 @@ If our text is in different language we need to change language value in
 our ``language`` parameter. Currently supported languages are only
 ``en, es, hi and ru``.
 
+.. option:: language
+
 .. option:: fix_spaces
 
 By default all multiple spaces will be removed and left with only single
@@ -244,6 +246,12 @@ provide char as we can see in example bellow.
 
     >>> ed.Text(add_stop='!').parse('Easybook Pro  15')
     Easybook Pro 15!
+
+.. option:: separator
+
+.. option:: index
+
+.. option:: strip
 
 
 Str

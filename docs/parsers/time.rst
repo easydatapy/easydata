@@ -102,6 +102,50 @@ Now with a year that it's over our ``max_year`` limit.
     >>> ed.DateTime(max_year='2020').parse(test_date_text)
     None
 
+.. option:: today
+
+.. option:: language
+
+.. option:: locales
+
+.. option:: region
+
+.. option:: date_formats
+
+.. option:: date_order
+
+.. option:: timezone
+
+.. option:: to_timezone
+
+.. option:: return_as_timezone_aware
+
+.. option:: prefer_day_of_month
+
+.. option:: prefer_dates_from
+
+.. option:: relative_base
+
+.. option:: strict_parsing
+
+.. option:: require_parts
+
+.. option:: skip_tokens
+
+.. option:: date_normalize
+
+.. option:: return_time_as_period
+
+.. option:: parsers
+
+.. option:: fuzzy
+
+.. option:: prefer_locale_date_order
+
+.. option:: default_languages
+
+.. option:: language_detection_confidence_threshold
+
 
 DateTimeSearch
 ==============
@@ -132,6 +176,10 @@ SPDateTime
 .. autoclass:: easydata.parsers.time::SPDateTime
 
 examples coming soon ...
+
+Parameters
+----------
+.. option:: sp_datetime_format
 
 
 Date
@@ -233,6 +281,10 @@ SPDate
 .. autoclass:: easydata.parsers.time::SPDate
 
 examples coming soon ...
+
+Parameters
+----------
+.. option:: sp_date_format
 
 
 Time

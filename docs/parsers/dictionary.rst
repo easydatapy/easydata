@@ -10,6 +10,8 @@ Dict
 
 examples coming soon ...
 
+Parameters
+----------
 .. option:: query
 
 .. option:: key_parser
@@ -19,6 +21,8 @@ examples coming soon ...
 .. option:: key_query
 
 .. option:: val_query
+
+.. option:: dict_val_from_key
 
 .. option:: ignore_non_values
 
@@ -114,6 +118,8 @@ removed and left with only single one between chars.
 
 .. option:: key_cdeny
 
+.. option:: key_default
+
 
 TextDict
 ========
@@ -121,6 +127,8 @@ TextDict
 
 examples coming soon ...
 
+Parameters
+----------
 .. option:: val_normalize
 
 * Default: *True*
@@ -172,6 +180,8 @@ HasDict
 
 examples coming soon ...
 
+Parameters
+----------
 .. option:: val_contains
 
 .. option:: val_ccontains
@@ -189,6 +199,8 @@ PriceFloatDict
 
 examples coming soon ...
 
+Parameters
+----------
 .. option:: val_decimals
 
 * Default: *2*

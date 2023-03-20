@@ -263,3 +263,9 @@ Lets parse ``test_dict`` and get our result.
 ``process_value`` accepts a callable function and works in a similar way as
 ``process_raw_value``. Provided function is fired just before value is outputted and
 it's purpose is to add final editing to a value if needed.
+
+.. option:: empty_as_none
+
+.. option:: debug
+
+.. option:: debug_source

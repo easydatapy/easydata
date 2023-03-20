@@ -74,6 +74,10 @@ In this case, data parsed in a first parser was returned, since it's css selecto
 was able to find this time data and because of that, ``Text`` parser returned a
 value. All other parsers further down the line are ignored when first match is found.
 
+Parameters
+----------
+.. option:: strict_none
+
 
 WITH
 ====
@@ -126,9 +130,23 @@ SWITCH
 
 examples coming soon ...
 
+Parameters
+----------
+.. option:: default
+
 
 IF
 ==
 .. autoclass:: easydata.parsers.clause::IF
 
 examples coming soon ...
+
+Parameters
+----------
+.. option:: if_parser
+
+.. option:: then_parser
+
+.. option:: else_parser
+
+.. option:: condition

@@ -262,6 +262,10 @@ Now lets parse ``test_text`` data and print our result.
         'https://demo.com/imgs/2.jpg'
     ]
 
+.. option:: allow_parser
+
+.. option:: deny_parser
+
 
 TextList
 ========
@@ -564,6 +568,10 @@ We would still get same result as in example above.
 .. option:: new_line_replacement
 
 .. option:: add_stop
+
+.. option:: deny
+
+.. option:: cdeny
 
 
 UrlList

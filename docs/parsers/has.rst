@@ -72,31 +72,6 @@ query selector to get our contains keys.
     >>> ed.Has(ed.jp('title'), contains_query=ed.jp('info.brand')).parse(test_dict)
     True
 
-.. option:: contains_query_source
-
-``contains_query_source`` will work only when our bool parser is used inside
-``model`` in order to select different source from ``data`` object.
-
-.. code-block:: python
-
-    import easydata as ed
-
-    class ProductItemModel(ed.ItemModel):
-        item_stock = parsers.Has(
-            ed.jp('title'),
-            contains_query=ed.jp('name')
-            contains_query_source='brand_data'
-        )
-
-Now lets test our newly created ``model`` with adding multiple data sources to it.
-
-.. code-block:: python
-
-    >>> test_dict = {'title': 'Easybook Pro 13'}
-    >>> test_brand_dict = {'name': 'Easybook'}
-    >>> item_model = ProductItemModel().parse(test_dict, brand_data=test_brand_dict)
-    {'stock': True}
-
 
 IHas
 ====

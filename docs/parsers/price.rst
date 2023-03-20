@@ -137,6 +137,18 @@ We can completely disable number rounding to decimals by settings
     Default value of *decimals* parameter can be defined through a config variable
     :ref:`config-ed-price-decimals` in a config file or a model.
 
+.. option:: decimals
+
+.. option:: min_value
+
+.. option:: max_value
+
+.. option:: normalize
+
+.. option:: currency_hint
+
+.. option:: decimal_separator
+
 
 PriceInt
 ========

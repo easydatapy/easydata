@@ -508,6 +508,24 @@ If our text is in different language we need to change language value in
 our ``language`` parameter. Currently supported languages regarding
 ``text_num_to_numeric`` are only ``en, es, hi and ru``.
 
+.. option:: merge_sentences
+
+.. option:: stop_keys_split
+
+.. option:: stop_keys_ignore
+
+.. option:: sentence_separator
+
+.. option:: feature_split_keys
+
+.. option:: autodetect_html
+
+.. option:: html_text_to_sentences
+
+.. option:: css_query
+
+.. option:: exclude_css
+
 
 Description
 ===========

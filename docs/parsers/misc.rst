@@ -40,6 +40,10 @@ Now lets parse ``test_html`` data and print our result.
 
     'EasyData Easybook Pro 13'
 
+ Parameters
+----------
+.. option:: separator
+
 
 JoinList
 ========
@@ -149,6 +153,12 @@ ItemDict
 
 examples coming soon ...
 
+Parameters
+----------
+.. option:: ignore_non_values
+
+.. option:: exception_on_non_values
+
 
 ValueList
 =========
@@ -156,9 +166,17 @@ ValueList
 
 examples coming soon ...
 
+Parameters
+----------
+.. option:: ignore_non_values
+
 
 StringFormat
 ============
 .. autoclass:: easydata.parsers.misc::StringFormat
 
 examples coming soon ...
+
+Parameters
+----------
+.. option:: exception_on_non_values

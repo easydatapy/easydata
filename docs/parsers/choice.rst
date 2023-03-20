@@ -141,54 +141,18 @@ see bellow.
 
 Parameters
 ----------
-.. option:: lookup_parsers
+.. option:: lookups
 
 We can specify one or multiple lookup parsers where search keys will look for a match.
 
 .. code-block:: python
 
         ...
-        lookup_parsers=[
+        lookups=[
             ed.Text(ed.jp('category')),
             ed.Text(ed.jp('title'))
         ]
         ...
-
-.. option:: lookup_queries
-
-Instead of ``lookup_parsers`` we can specify list of query search objects as a
-value in a ``lookup_queries`` parameter. Behind the scenes they will be passed
-to a ``Text`` parser.
-
-.. code-block:: python
-
-        ...
-        lookup_queries=[ed.jp('category'), ed.jp('title')]
-        ...
-
-.. option:: lookup_items
-
-When ``Choice`` parser is used in a model beside other item parsers, we can use their
-parsed value as a lookup values. To achieve this, we specify ``lookup_items`` parameter
-which needs to contain list of one or multiple item names from a model.
-
-.. code-block:: python
-
-    import easydata as ed
-
-
-    class ProductItemModel(ed.ItemModel):
-        item_name = ed.Text(ed.jp('name'))
-
-        _item_category = ed.Text(ed.jp('category'))
-
-        item_type = ed.Choice(
-            lookup_items=['name', 'category'],
-            choices = [
-                ("accessory", ["phone case", "watch strap"]),
-                ("watch", "watch"),
-            ]
-        )
 
 .. option:: choices
 
@@ -199,3 +163,5 @@ params.
 
 Examples of ``choices`` parameter usage is already shown thoroughly in a
 :ref:`parsers-choice-getting-started` section.
+
+.. option:: default_choice
